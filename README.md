@@ -1,5 +1,5 @@
 # RFmerge
-[![Research software impact](http://depsy.org/api/package/cran/hydroTSM/badge.svg)](http://depsy.org/package/r/hydroTSM) [![Build Status](https://travis-ci.org/hzambran/hydroTSM.svg?branch=master)](https://travis-ci.org/hzambran/hydroTSM)
+[![status](https://tinyverse.netlify.com/badge/RFmerge)](https://CRAN.R-project.org/package=RFmerge) [![monthly](http://cranlogs.r-pkg.org/badges/mapview)](https://www.rpackages.io/package/mapview) [![total](http://cranlogs.r-pkg.org/badges/grand-total/RFmerge)](https://www.rpackages.io/package/RFmerge) [![CRAN](http://www.r-pkg.org/badges/version/RFmerge)](https://cran.r-project.org/package=RFmerge) [![License](https://img.shields.io/badge/license-GPL%20%28%3E=%203%29-lightgrey.svg?style=flat)](http://www.gnu.org/licenses/gpl-3.0.html)
 
 RFmerge provides an S3 implementation of the Random Forest MErging Procedure (RF-MEP), which combines two or more satellite-based datasets (e.g., precipiation products, topography) with ground observations to produce a new dataset with improved spatio-temporal distribution of the target field. 
 
@@ -24,7 +24,7 @@ install_github("hzambran/RFmerge")
 
 ## A simple first application:
 
-Loading required packages:
+### Loading required packages:
 
 ```{r Loading_other_pks, eval = TRUE, message=FALSE}
 library(zoo)
@@ -35,7 +35,7 @@ library(raster)
 library(RFmerge)
 ```
 
-Loading times series and metadata of ground observations:
+### Loading times series and metadata of ground observations:
 
    
 ```{r Loading_GroundObservarions, eval = TRUE}
@@ -49,7 +49,7 @@ stations <- ValparaisoPPgis
 ( stations <- st_as_sf(stations, coords = c('lon', 'lat'), crs = 4326) )
 ```
 
-Loading satellite based datasets:
+### Loading satellite-based datasets:
    
 ```{r LoadingSatelliteData, eval = TRUE}
 chirps.fname   <- system.file("extdata/CHIRPS5km.tif",package="RFmerge")
@@ -61,6 +61,8 @@ PERSIANNcdr5km   <- brick(prsnncdr.fname)
 ValparaisoDEM5km <- raster(dem.fname)
 ```
 
+### Reprojecting input datsets
+
 Reprojecting the input datsets from geographic coordinates into WGS 84 / UTM zone 19S (EPSG:32719):
 
 ```{r ReprojectingRasters}
@@ -69,13 +71,9 @@ utmz19s.p4s <- CRS("+init=epsg:32719") # WGS 84 / UTM zone 19S
 CHIRPS5km.utm        <- projectRaster(from=CHIRPS5km, crs=utmz19s.p4s)
 PERSIANNcdr5km.utm   <- projectRaster(from=PERSIANNcdr5km, crs=utmz19s.p4s)
 ValparaisoDEM5km.utm <- projectRaster(from=ValparaisoDEM5km, crs=utmz19s.p4s)
-```
 
-```{r ReprojectingMetadata}
 stations.utm <- sf::st_transform(stations, crs=32719) # for 'sf' objects
-```
 
-```{r ReprojectingSHP}
 ValparaisoSHP.utm <- sf::st_transform(ValparaisoSHP, crs=32719)
 ```
 
@@ -89,23 +87,16 @@ lat       <- st.coords[, "Y"]
 ValparaisoPPgis.utm <- data.frame(ID=stations.utm[["Code"]], lon=lon, lat=lat)
 ```
 
-Raster cavariates to be used in `RFmerge`:
+### Covariates
+
+Raster covariates to be used in `RFmerge`:
 
 ```{r CovariatesCreation}
 covariates.utm <- list(chirps=CHIRPS5km.utm, persianncdr=PERSIANNcdr5km.utm, 
                    dem=ValparaisoDEM5km.utm)
 ```
 
-
-
-Runing `RFmerge` without using parallelisation (default option):
-
-```{r RFmergeWithoutParallelisation, eval = FALSE}
-drty.out <- "~/Test.nop"
-rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm,
-                 id="ID", lat="lat", lon="lon", 
-                 mask=ValparaisoSHP, drty.out = drty.out, training=0.8)
-```
+### Running `RFmerge` 
 
 Runing `RFmerge` with parallelisation in GNU/Linux machines:
 
@@ -117,15 +108,7 @@ rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.
                  parallel="parallel")
 ```
 
-Runing `RFmerge` with parallelisation in Window$ machines:
 
-```{r RFmergeWithWindowsParallelisation, eval = FALSE}
-drty.out <- "~/Test.par"
-rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm, 
-                 id="Code", lat="lat", lon="lon", 
-                 mask=ValparaisoSHP, drty.out = drty.out, training=0.8,
-                 parallel="parallelWin")
-```
 
 ## Reporting bugs, requesting new features
 
