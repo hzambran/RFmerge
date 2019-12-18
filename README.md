@@ -21,6 +21,114 @@ library(devtools)
 install_github("hzambran/RFmerge")
 ```
 
+
+## A simple first application:
+
+Loading required packages:
+
+```{r Loading_other_pks, eval = TRUE, message=FALSE}
+library(zoo)
+library(hydroTSM)
+library(hydroGOF)
+library(sf)
+library(raster)
+```
+
+Load the `RFmerge` package, which contains the main function used in the analysis and required datasets:
+
+```{r LoadingRFmerge, eval = TRUE, message=FALSE}
+library(RFmerge)
+```
+
+Loading input data:
+
+   
+```{r Loading_GroundObservarions, eval = TRUE}
+data(ValparaisoPPts)    
+data(ValparaisoPPgis) 
+data(ValparaisoSHP)  
+```
+
+```{r SpatialMetadata}
+stations <- ValparaisoPPgis
+( stations <- st_as_sf(stations, coords = c('lon', 'lat'), crs = 4326) )
+```
+   
+```{r LoadingSatelliteData, eval = TRUE}
+chirps.fname   <- system.file("extdata/CHIRPS5km.tif",package="RFmerge")
+prsnncdr.fname <- system.file("extdata/PERSIANNcdr5km.tif",package="RFmerge")
+dem.fname      <- system.file("extdata/ValparaisoDEM5km.tif",package="RFmerge")
+
+CHIRPS5km        <- brick(chirps.fname)
+PERSIANNcdr5km   <- brick(prsnncdr.fname)
+ValparaisoDEM5km <- raster(dem.fname)
+```
+
+Reprojecting the input datsets from geographic coordinates into WGS 84 / UTM zone 19S (EPSG:32719):
+
+```{r ReprojectingRasters}
+utmz19s.p4s <- CRS("+init=epsg:32719") # WGS 84 / UTM zone 19S
+
+CHIRPS5km.utm        <- projectRaster(from=CHIRPS5km, crs=utmz19s.p4s)
+PERSIANNcdr5km.utm   <- projectRaster(from=PERSIANNcdr5km, crs=utmz19s.p4s)
+ValparaisoDEM5km.utm <- projectRaster(from=ValparaisoDEM5km, crs=utmz19s.p4s)
+```
+
+
+```{r ReprojectingMetadata}
+stations.utm <- sf::st_transform(stations, crs=32719) # for 'sf' objects
+```
+
+
+Third, we reproject the polygon with the boundaries used to define the study area from geographic coordinates into WGS 84 / UTM zone 19S (EPSG:32719):
+
+```{r ReprojectingSHP}
+ValparaisoSHP.utm <- sf::st_transform(ValparaisoSHP, crs=32719)
+```
+
+
+
+```{r FinalMEtadata}
+st.coords <- st_coordinates(stations.utm)
+lon       <- st.coords[, "X"]
+lat       <- st.coords[, "Y"]
+
+ValparaisoPPgis.utm <- data.frame(ID=stations.utm[["Code"]], lon=lon, lat=lat)
+```
+
+```{r CovariatesCreation}
+covariates.utm <- list(chirps=CHIRPS5km.utm, persianncdr=PERSIANNcdr5km.utm, 
+                   dem=ValparaisoDEM5km.utm)
+```
+
+
+
+Without using parallelisation (default option):
+```{r RFmergeWithoutParallelisation, eval = FALSE}
+drty.out <- "~/Test.nop"
+rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm,
+                 id="ID", lat="lat", lon="lon", 
+                 mask=ValparaisoSHP, drty.out = drty.out, training=0.8)
+```
+
+Using parallelisation in GNU/Linux machines:
+```{r RFmergeWithLinuxParallelisation, eval = TRUE}
+drty.out <- "~/Test.par"
+rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm,
+                 id="ID", lat="lat", lon="lon",  
+                 mask=ValparaisoSHP.utm, drty.out = drty.out, training=0.8,
+                 parallel="parallel")
+```
+
+Using parallelisation in Window$ machines
+```{r RFmergeWithWindowsParallelisation, eval = FALSE}
+drty.out <- "~/Test.par"
+rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm, 
+                 id="Code", lat="lat", lon="lon", 
+                 mask=ValparaisoSHP, drty.out = drty.out, training=0.8,
+                 parallel="parallelWin")
+```
+
 ## Reporting bugs, requesting new features
 
 If you find an error in some function, or want to report a typo in the documentation, or to request a new feature (and wish it be implemented :) you can do it [here](https://github.com/hzambran/hydroTSM/issues)
@@ -33,20 +141,26 @@ citation("RFmerge")
 
 To cite RFmerge in publications use:
 
->  Mauricio Zambrano-Bigiarini. hydroTSM: Time Series Management, Analysis and Interpolation for Hydrological Modelling. R package version 0.5-1. URL https://hzambran.github.io/hydroTSM/. DOI:10.5281/zenodo.839864
+> Zambrano-Bigiarini, M.; Baez-Villanueva, O.M., Giraldo-Osorio, J. RFmerge: Merging of Satellite Datasets with Ground Observations using Random Forests. R package version 0.1-0. URL https://hzambran.github.io/RFmerge/. DOI:10.5281/zenodo.1287350
 
 > Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2019). RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements, Remote Sensing of Environment, (accepted).
 
-A BibTeX entry for LaTeX users is
 
->  @Manual{hydroTSM,  
->    title = {hydroTSM: Time Series Management, Analysis and Interpolation for Hydrological Modelling},  
->    author = {{Mauricio Zambrano-Bigiarini}},  
->    note = {R package version 0.5-1},  
->    url = {https://hzambran.github.io/hydroTSM/},  
->    doi = {10.5281/zenodo.839864},  
->  }
+BibTeX entries for LaTeX users are:
 
+> @Manual{Zambrano-Bigiarini+al2019-RFmerge_pkg,
+>     title = {RFmerge: Merging of Satellite Datasets with Ground Observations using Random Forests},
+>     author = {{Mauricio Zambrano-Bigiarini} and {Oscar M. Baez-Villanueva} and {Juan Giraldo-Osorio}},
+>     note = {R package version 0.1 . doi:10.5281/zenodo.1287350},
+>     url = {https://CRAN.R-project.org/package=RFmerge},
+>   }
+
+> @Article{BaezVillanueva+al2019-RFmerge_article,
+>     title = {RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements},
+>     journal = {Remote Sensing of Environment},
+>     author = {{Baez-Villanueva} and O. M. and {Zambrano-Bigiarini} and {M.} and {Beck} and {H.} and {McNamara} and {I.} and {Ribbe} and {L.} and {Nauditt} and {A.} and {Birkel} and {C.} and {Verbist} and {K.} and {Giraldo-Osorio} and {J.D.} and {Thinh} and {N.X.}},
+>     year = {2019},
+>   }
 
 ## Vignette 
 [Here](https://cran.r-project.org/web/packages/hydroTSM/vignettes/hydroTSM_Vignette-knitr.pdf) you can find an introductory vignette showing the use of several hydroTSM functions.
@@ -63,6 +177,7 @@ A BibTeX entry for LaTeX users is
 
 ## See Also 
 
+* [hydroTSM: Time Series Management, Analysis and Interpolation for Hydrological Modelling](https://github.com/hzambran/hydroTSM).
+
 * [hydroGOF: Goodness-of-fit functions for comparison of simulated and observed hydrological time series](https://github.com/hzambran/hydroGOF).
 
-* [hydroPSO: Model-independent Particle Swarm Optimisation (PSO) for environmental/hydrological models](https://github.com/hzambran/hydroPSO).
