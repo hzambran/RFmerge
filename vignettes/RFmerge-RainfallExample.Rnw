@@ -1,0 +1,7 @@
+\documentclass{article}
+\usepackage{pdfpages}
+%\VignetteIndexEntry{RF-MEP2019_vignette}
+
+\begin{document}
+\includepdf[pages=-, fitpaper=true]{rfmerge-RainfallExample.pdf}
+\end{document}

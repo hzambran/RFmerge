@@ -1,0 +1,57 @@
+## -*- R -*-
+citHeader("To cite 'RFmerge' in publications use:")
+
+year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", meta$Date, perl = TRUE)
+vers <- paste("R package version", meta$Version)
+
+citEntry(
+         entry="Article",
+         title= "RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements",
+         journal="Remote Sensing of Environment",
+         author="Baez-Villanueva, O. M. and Zambrano-Bigiarini, M. and Beck, H. and McNamara, I. and Ribbe, L. and Nauditt, A. and Birkel, C. and Verbist, K. and Giraldo-Osorio, J.D. and Thinh, N.X.",
+         volume= "",
+         number="",
+         pages="",
+         year="2019",
+         note="",
+         doi="",
+         url="",
+         textVersion="Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2019). RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements, Remote Sensing of Environment, (accepted).",
+         key = "BaezVillanueva+al2019-RFmerge_article"
+         )
+
+#citEntry(
+#         entry="Article",
+#         title= "Standard Particle Swarm Optimisation 2011 at CEC-2013: A baseline for future PSO improvements",
+#         journal="Proceedings of 2013 IEEE Congress on Evolutionary Computation (CEC'2013)",
+#         author="Zambrano-Bigiarini, M. and M. Clerc and R. Rojas",
+#         volume= "",
+#         number="",
+#         pages="",
+#         year="2013",
+#         note="(accepted)",
+#         textVersion="Zambrano-Bigiarini, M., M. Clerc, R. Rojas (2013), Standard Particle Swarm Optimisation 2011 at CEC-2013: A baseline for future PSO improvements, In Proceedings of 2013 IEEE Congress on Evolutionary Computation (CEC'2013) (accepted)",
+#         key = "Zambrano-Bigiarini+al2013-hydroPSO_article2"
+#         )
+
+citEntry(entry	= "Manual",
+	 title	= "RFmerge: Merging of Satellite Datasets with Ground Observations using Random Forests",
+	 author = c(person("Mauricio Zambrano-Bigiarini", email = "mzb.devel@gmail.com", role=c("aut", "cre", "cph")), 
+                    person("Oscar M. Baez-Villanueva", email = "obaezvil@th-koeln.de", role=c("aut", "cph")), 
+                    person("Juan Giraldo-Osorio", email = "j.giraldoo@javeriana.edu.co", role=c("ctb")) 
+                   ),
+	 year = year,
+	 note = paste(vers, ". doi:10.5281/zenodo.1287350"),
+         url = "https://CRAN.R-project.org/package=RFmerge",
+	 textVersion = paste(
+	               "Zambrano-Bigiarini, M.; Baez-Villanueva O.M.; Giraldo-Osorio, J. (", year, "). ",
+                       "RFmerge: Merging of Satellite Datasets with Ground Observations using Random Forests. ",
+                        vers, 
+                       ". URL https://cran.r-project.org/package=RFmerge",
+                       ". DOI:10.5281/zenodo.1287350",
+                       ".", sep=""),
+         key = "Zambrano-Bigiarini+al2019-RFmerge_pkg"
+	 )
+
+#citFooter("We have invested a lot of time and effort in creating hydroPSO, please cite it if you use it !")
+

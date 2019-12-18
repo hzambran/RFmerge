@@ -1,0 +1,18 @@
+importFrom("raster", brick, stack, mask, extract, nlayers, raster, distance, rasterize, writeRaster, compareRaster)
+#importFrom("velox", velox)
+importFrom("sp", "coordinates<-", areaSpatialGrid)
+importFrom("sf", st_is, st_crs)
+importFrom("zoo", is.zoo, index, write.zoo)
+importFrom("utils", write.table, installed.packages, ls.str)
+importFrom("parallel", makeCluster, stopCluster, clusterApply) 
+#importFrom("doParallel", registerDoParallel) 
+importFrom("pbapply", pbsapply, pboptions)
+importFrom("randomForest", randomForest) 
+importFrom("methods", "as")
+importFrom("stats", "na.omit")
+
+
+exportPattern("^[^\\.]")
+
+S3method(RFmerge, default)
+S3method(RFmerge, zoo)

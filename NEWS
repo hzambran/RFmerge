@@ -1,0 +1,5 @@
+NEWS/ChangeLog for hydroTSM
+--------------------------
+0.1-0   15-Nov-2019
+        o First release
+        o It depends on R >= 3.5.0 because serialized objects (.rds data files) in serialize/load version 3 cannot be read in older versions
