@@ -131,7 +131,7 @@ BibTeX entries for LaTeX users are:
 
 > @Manual{Zambrano-Bigiarini+al2019-RFmerge_pkg,
 >     title = {RFmerge: Merging of Satellite Datasets with Ground Observations using Random Forests},
->     author = {{Mauricio Zambrano-Bigiarini} and {Oscar M. Baez-Villanueva} and {Juan Giraldo-Osorio}},
+>     author = {Zambrano-Bigiarini, M. and Baez-Villanueva, O.M. and Giraldo-Osorio, J.},
 >     note = {R package version 0.1 . doi:10.5281/zenodo.1287350},
 >     url = {https://CRAN.R-project.org/package=RFmerge},
 >   }
@@ -139,7 +139,7 @@ BibTeX entries for LaTeX users are:
 > @Article{BaezVillanueva+al2019-RFmerge_article,
 >     title = {RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements},
 >     journal = {Remote Sensing of Environment},
->     author = {{Baez-Villanueva} and O. M. and {Zambrano-Bigiarini} and {M.} and {Beck} and {H.} and {McNamara} and {I.} and {Ribbe} and {L.} and {Nauditt} and {A.} and {Birkel} and {C.} and {Verbist} and {K.} and {Giraldo-Osorio} and {J.D.} and {Thinh} and {N.X.}},
+>     author = {Baez-Villanueva, O. M. and Zambrano-Bigiarini, M. and Beck, H. and McNamara, I. and Ribbe, L. and Nauditt, A. Birkel, C. and Verbist, K. and Giraldo-Osorio, J.D. and Thinh, N.X.},
 >     year = {2019},
 >   }
 
