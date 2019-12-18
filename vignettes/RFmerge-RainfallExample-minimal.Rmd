@@ -369,6 +369,10 @@ grid()
 ```
 
 
+# Full vignette
+In order to reduce the package dependencies for CRAN, this vignette was built with reduced functionality. The full vignette can be found [here](https://github.com/hzambran/RFmerge/blob/master/vignettes/RFmerge-RainfallExample-full.pdf).
+
+
 # Software details
 
 This tutorial was built under: 

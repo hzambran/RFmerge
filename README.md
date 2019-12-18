@@ -144,7 +144,7 @@ BibTeX entries for LaTeX users are:
 >   }
 
 ## Vignette 
-[Here](https://github.com/hzambran/RFmerge/blob/master/vignettes/RFmerge-RainfallExample.pdf) you can find an introductory vignette showing the use of `RFmege` to create an improved precipitation dataset by combining the satellite-based CHIRPSv2 and PERSIANN-CDR precipitation products, elevations from a DEM and rainfall observations recorded in rain gauges.
+[Here](https://github.com/hzambran/RFmerge/blob/master/vignettes/RFmerge-RainfallExample-full.pdf) you can find an introductory vignette showing the use of `RFmege` to create an improved precipitation dataset by combining the satellite-based CHIRPSv2 and PERSIANN-CDR precipitation products, elevations from a DEM and rainfall observations recorded in rain gauges.
 
 
 
