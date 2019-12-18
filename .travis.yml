@@ -7,3 +7,5 @@ r:
  - release
  - devel
 
+sudo apt-get install -y gdal-bin
+
