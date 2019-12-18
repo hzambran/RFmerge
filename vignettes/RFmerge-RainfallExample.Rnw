@@ -3,5 +3,5 @@
 %\VignetteIndexEntry{RF-MEP2019_vignette}
 
 \begin{document}
-\includepdf[pages=-, fitpaper=true]{rfmerge-RainfallExample.pdf}
+\includepdf[pages=-, fitpaper=true]{RFmerge-RainfallExample.pdf}
 \end{document}
