@@ -1,7 +1,7 @@
 Package: RFmerge
 Type: Package
 Title: Merging of Satellite Datasets with Ground Observations using Random Forests
-Version: 0.1
+Version: 0.1-1
 Author: Mauricio Zambrano-Bigiarini [aut, cre, cph] (<https://orcid.org/0000-0002-9536-643X>), Oscar M. Baez-Villanueva [aut, cph], Juan Giraldo-Osorio [ctb]
 Authors@R: c(person("Mauricio Zambrano-Bigiarini", email = "mzb.devel@gmail.com", role=c("aut", "cre", "cph"), comment=c(ORCID = "0000-0002-9536-643X")), person("Oscar M. Baez-Villanueva", email = "obaezvil@th-koeln.de", role=c("aut", "cph")), person("Juan Giraldo-Osorio", email = "j.giraldoo@javeriana.edu.co", role=c("ctb")) )
 Maintainer: Mauricio Zambrano-Bigiarini <mzb.devel@gmail.com>
@@ -9,7 +9,7 @@ Description: S3 implementation of the Random Forest MErging Procedure (RF-MEP), 
 License: GPL (>=3)
 Depends: R (>= 3.5.0)
 Imports: raster, sp, sf, randomForest, zoo, parallel, methods, stats, utils, pbapply
-Suggests: knitr, rgdal, hydroGOF
+Suggests: knitr, rgdal
 VignetteBuilder: knitr
 URL: https://github.com/hzambran/RFmerge
 MailingList: https://stat.ethz.ch/mailman/listinfo/r-sig-ecology
@@ -17,4 +17,4 @@ BugReports: https://github.com/hzambran/RFmerge/issues
 LazyLoad: yes
 NeedsCompilation: no
 Repository: CRAN
-Packaged: Tue Dec 17 22:24:31 -03 2019; hzambran
+Packaged: Wed Dec 18 16:37:21 -03 2019; hzambran
