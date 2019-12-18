@@ -17,6 +17,9 @@ apt_packages:
     - libgdal-dev
     - libxml2-dev
     - libproj-dev
+    - libudunits2-0 
+    - libudunits2-dev
+
 
 notifications:
   email:
