@@ -32,27 +32,24 @@ library(hydroTSM)
 library(hydroGOF)
 library(sf)
 library(raster)
-```
-
-Load the `RFmerge` package, which contains the main function used in the analysis and required datasets:
-
-```{r LoadingRFmerge, eval = TRUE, message=FALSE}
 library(RFmerge)
 ```
 
-Loading input data:
+Loading times series and metadata of ground observations:
 
    
 ```{r Loading_GroundObservarions, eval = TRUE}
-data(ValparaisoPPts)    
+data(ValparaisoPPts)
 data(ValparaisoPPgis) 
-data(ValparaisoSHP)  
+data(ValparaisoSHP)
 ```
 
 ```{r SpatialMetadata}
 stations <- ValparaisoPPgis
 ( stations <- st_as_sf(stations, coords = c('lon', 'lat'), crs = 4326) )
 ```
+
+Loading satellite based datasets:
    
 ```{r LoadingSatelliteData, eval = TRUE}
 chirps.fname   <- system.file("extdata/CHIRPS5km.tif",package="RFmerge")
@@ -74,19 +71,15 @@ PERSIANNcdr5km.utm   <- projectRaster(from=PERSIANNcdr5km, crs=utmz19s.p4s)
 ValparaisoDEM5km.utm <- projectRaster(from=ValparaisoDEM5km, crs=utmz19s.p4s)
 ```
 
-
 ```{r ReprojectingMetadata}
 stations.utm <- sf::st_transform(stations, crs=32719) # for 'sf' objects
 ```
-
-
-Third, we reproject the polygon with the boundaries used to define the study area from geographic coordinates into WGS 84 / UTM zone 19S (EPSG:32719):
 
 ```{r ReprojectingSHP}
 ValparaisoSHP.utm <- sf::st_transform(ValparaisoSHP, crs=32719)
 ```
 
-
+Creating a new object with the spatial location of the ground observations in  WGS 84 / UTM zone 19S:
 
 ```{r FinalMEtadata}
 st.coords <- st_coordinates(stations.utm)
@@ -96,6 +89,8 @@ lat       <- st.coords[, "Y"]
 ValparaisoPPgis.utm <- data.frame(ID=stations.utm[["Code"]], lon=lon, lat=lat)
 ```
 
+Raster cavariates to be used in `RFmerge`:
+
 ```{r CovariatesCreation}
 covariates.utm <- list(chirps=CHIRPS5km.utm, persianncdr=PERSIANNcdr5km.utm, 
                    dem=ValparaisoDEM5km.utm)
@@ -103,7 +98,8 @@ covariates.utm <- list(chirps=CHIRPS5km.utm, persianncdr=PERSIANNcdr5km.utm,
 
 
 
-Without using parallelisation (default option):
+Runing `RFmerge` without using parallelisation (default option):
+
 ```{r RFmergeWithoutParallelisation, eval = FALSE}
 drty.out <- "~/Test.nop"
 rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm,
@@ -111,7 +107,8 @@ rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.
                  mask=ValparaisoSHP, drty.out = drty.out, training=0.8)
 ```
 
-Using parallelisation in GNU/Linux machines:
+Runing `RFmerge` with parallelisation in GNU/Linux machines:
+
 ```{r RFmergeWithLinuxParallelisation, eval = TRUE}
 drty.out <- "~/Test.par"
 rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm,
@@ -120,7 +117,8 @@ rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.
                  parallel="parallel")
 ```
 
-Using parallelisation in Window$ machines
+Runing `RFmerge` with parallelisation in Window$ machines:
+
 ```{r RFmergeWithWindowsParallelisation, eval = FALSE}
 drty.out <- "~/Test.par"
 rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm, 
@@ -131,7 +129,7 @@ rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.
 
 ## Reporting bugs, requesting new features
 
-If you find an error in some function, or want to report a typo in the documentation, or to request a new feature (and wish it be implemented :) you can do it [here](https://github.com/hzambran/hydroTSM/issues)
+If you find an error in some function, or want to report a typo in the documentation, or to request a new feature (and wish it be implemented :) you can do it [here](https://github.com/hzambran/RFmerge/issues)
 
 
 ## Citation 
@@ -163,16 +161,13 @@ BibTeX entries for LaTeX users are:
 >   }
 
 ## Vignette 
-[Here](https://cran.r-project.org/web/packages/hydroTSM/vignettes/hydroTSM_Vignette-knitr.pdf) you can find an introductory vignette showing the use of several hydroTSM functions.
+[Here](https://github.com/hzambran/RFmerge/blob/master/vignettes/RFmerge-RainfallExample.pdf) you can find an introductory vignette showing the use of `RFmege` to create an improved precipitation dataset by combining the satellite-based CHIRPSv2 and PERSIANN-CDR precipitation products, elevations from a DEM and rainfall observations recorded in rain gauges.
 
 
 
 ## Related Material 
 
-* *R: a statistical environment for hydrological analysis* (**EGU-2010**)  [abstract](http://meetingorganizer.copernicus.org/EGU2010/EGU2010-13008.pdf), [poster](http://www.slideshare.net/hzambran/egu2010-ra-statisticalenvironmentfordoinghydrologicalanalysis-9095709).
-
-* *Using R for analysing spatio-temporal datasets: a satellite-based precipitation case study* (**EGU-2017**) [abstract](http://meetingorganizer.copernicus.org/EGU2017/EGU2017-18343.pdf), [poster](https://doi.org/10.5281/zenodo.570145).
-
+* *A novel methodology for merging different gridded precipitation products and ground-based measurements* (**EGU-2019**)  [abstract](https://meetingorganizer.copernicus.org/EGU2019/EGU2019-10659.pdf). EGU General Assembly 2019. Wien, Austria. (oral presentation). HS7.2 Precipitation Modelling: uncertainty, variability, assimilation, ensemble simulation and downscaling. Abstract EGU2019-10659
 
 
 ## See Also 
