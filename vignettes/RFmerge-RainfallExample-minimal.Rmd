@@ -353,8 +353,11 @@ nse.table  <- data.frame(ID=eval.gis[["ID"]], CHIRPS=tmp, PERSIANN_CDR=tmp, RF_M
 # Computing the NSE between the observed rainfall measured in each one of the raingauges 
 # of the training dataset and CHIRPSv2, PERSIANN-CDR, the merged product `rfmep`:
 
-for (i in 1:nsres) 
-  nse.table[, (i+1)] = NSE(sim= sres[[i]], obs = eval.ts)
+for (i in 1:nsres) {
+  ldates <- time(eval.ts)
+  lsim   <- zoo(sres[[i]], ldates)
+  nse.table[, (i+1)] = NSE(sim= lsim, obs= eval.ts)
+} # FOR end
 
 # Boxplot with a graphical comparison
 sres.cols <- c("powderblue", "palegoldenrod", "mediumseagreen")
