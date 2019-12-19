@@ -148,7 +148,7 @@ BibTeX entries for LaTeX users are:
 > @Manual{Zambrano-Bigiarini+al2019-RFmerge_pkg,
 >     title = {RFmerge: Merging of Satellite Datasets with Ground Observations using Random Forests},
 >     author = {Zambrano-Bigiarini, M. and Baez-Villanueva, O.M. and Giraldo-Osorio, J.},
->     note = {R package version 0.1 . doi:10.5281/zenodo.1287350},
+>     note = {R package version 0.1-2. doi:10.5281/zenodo.3583369},
 >     url = {https://CRAN.R-project.org/package=RFmerge},
 >   }
 

@@ -20,20 +20,6 @@ citEntry(
          key = "BaezVillanueva+al2019-RFmerge_article"
          )
 
-#citEntry(
-#         entry="Article",
-#         title= "Standard Particle Swarm Optimisation 2011 at CEC-2013: A baseline for future PSO improvements",
-#         journal="Proceedings of 2013 IEEE Congress on Evolutionary Computation (CEC'2013)",
-#         author="Zambrano-Bigiarini, M. and M. Clerc and R. Rojas",
-#         volume= "",
-#         number="",
-#         pages="",
-#         year="2013",
-#         note="(accepted)",
-#         textVersion="Zambrano-Bigiarini, M., M. Clerc, R. Rojas (2013), Standard Particle Swarm Optimisation 2011 at CEC-2013: A baseline for future PSO improvements, In Proceedings of 2013 IEEE Congress on Evolutionary Computation (CEC'2013) (accepted)",
-#         key = "Zambrano-Bigiarini+al2013-hydroPSO_article2"
-#         )
-
 citEntry(entry	= "Manual",
 	 title	= "RFmerge: Merging of Satellite Datasets with Ground Observations using Random Forests",
 	 author = c(person("Mauricio Zambrano-Bigiarini", email = "mzb.devel@gmail.com", role=c("aut", "cre", "cph")), 
@@ -41,14 +27,14 @@ citEntry(entry	= "Manual",
                     person("Juan Giraldo-Osorio", email = "j.giraldoo@javeriana.edu.co", role=c("ctb")) 
                    ),
 	 year = year,
-	 note = paste(vers, ". doi:10.5281/zenodo.1287350"),
+	 note = paste(vers, ". doi:10.5281/zenodo.3581515"),
          url = "https://CRAN.R-project.org/package=RFmerge",
 	 textVersion = paste(
 	               "Zambrano-Bigiarini, M.; Baez-Villanueva O.M.; Giraldo-Osorio, J. (", year, "). ",
                        "RFmerge: Merging of Satellite Datasets with Ground Observations using Random Forests. ",
                         vers, 
                        ". URL https://cran.r-project.org/package=RFmerge",
-                       ". DOI:10.5281/zenodo.1287350",
+                       ". DOI:10.5281/zenodo.3581515",
                        ".", sep=""),
          key = "Zambrano-Bigiarini+al2019-RFmerge_pkg"
 	 )
