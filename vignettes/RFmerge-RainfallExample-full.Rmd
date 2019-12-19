@@ -108,7 +108,6 @@ names(CHIRPS5km)      <- ldates
 names(PERSIANNcdr5km) <- ldates  
 ```
 
-\newpage
 Then, we want to visualise the first six rows of the spatial metadata:
 
 ```{r ExploringMetadata}
@@ -245,7 +244,7 @@ covariates.utm <- list(chirps=CHIRPS5km.utm, persianncdr=PERSIANNcdr5km.utm,
 ```
 
 
-## Set up
+## Setup
 
 Finally, before running `RFmerge` we need to define the output directory (`drty.out`) that will store each one of the merged files. Then, we can run the `RFmerge` function as follows:
 
@@ -274,6 +273,9 @@ rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.
                  mask=ValparaisoSHP, drty.out = drty.out, training=0.8,
                  parallel="parallelWin")
 ```
+
+
+\newpage
 
 ## Expected outputs
 
@@ -360,7 +362,7 @@ for (i in 1:nsres) {
 } # FOR end
 ```
 
-\newpage
+
 Finally, a boxplot comparing the performance, in terms of *KGE'*, of the merged product in comparison to the original SREs used as covariates will be produced:
 
 ```{r EvaluationPlotting, fig.width=7, fig.height=7, fig.align = "center", eval = TRUE}
