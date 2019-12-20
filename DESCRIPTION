@@ -17,4 +17,4 @@ BugReports: https://github.com/hzambran/RFmerge/issues
 LazyLoad: yes
 NeedsCompilation: no
 Repository: CRAN
-Packaged: Wed Dec 18 18:15:21 -03 2019; hzambran
+Packaged: Fri Dec 20 10:03:36 -03 2019; hzambran

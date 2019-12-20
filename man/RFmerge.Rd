@@ -21,21 +21,21 @@ Merging of satellite datasets with ground observations using Random Forests (RF)
 \usage{
 RFmerge(x, ...)
 
-\method{RFmerge}{default}(x, metadata, cov, mask, drty.out, training, 
+\method{RFmerge}{default}(x, metadata, cov, mask, training, 
         id="id", lat = "lat", lon = "lon", ED = TRUE, 
         seed = NULL, ntree = 2000, na.action = stats::na.omit,
         parallel=c("none", "parallel", "parallelWin"),
 	par.nnodes=parallel::detectCores()-1, 
         par.pkgs= c("raster", "randomForest", "zoo"), write2disk=TRUE,
-        use.pb=TRUE, verbose=TRUE,...)
+        drty.out, use.pb=TRUE, verbose=TRUE,...)
 
-\method{RFmerge}{zoo}(x, metadata, cov, mask, drty.out, training, 
+\method{RFmerge}{zoo}(x, metadata, cov, mask, training, 
         id="id", lat = "lat", lon = "lon", ED = TRUE, 
         seed = NULL, ntree = 2000, na.action = stats::na.omit,
         parallel=c("none", "parallel", "parallelWin"),
 	par.nnodes=parallel::detectCores()-1, 
         par.pkgs= c("raster", "randomForest", "zoo"), write2disk=TRUE,
-        use.pb=TRUE, verbose=TRUE, ...)
+        drty.out, use.pb=TRUE, verbose=TRUE, ...)
 
 
 }
@@ -58,9 +58,6 @@ All time-varying covariates in \code{cov} MUST have the same number of layers (b
     \item{mask}{
 OPTIONAL. If provided, the final merged product maks out all values in \code{cov} outside \code{mask}. \cr
 Spatial object (vectorial) with the spatial borders of the study area (e.g., catchment, administrative borders). \code{class(mask)} must be \kbd{SpatialPolygonsDataFrame} or \kbd{sf} with "POLYGON" or "MULTIPOLYGON" geometry.
-}
-   \item{drty.out}{
-Character with the full path to the directory where the final merged product will be exported as well as the training and evaluation datasets.
 }
    \item{training}{
 Numeric indicating the percentage of stations that will be used in the training set. \cr
@@ -103,8 +100,12 @@ Numeric indicating the maximum number trees to grow in the Random Forest algorit
 A function to specify the action to be taken if NAs are found.  (NOTE: If given, this argument must be named.)
 }   
   \item{write2disk}{
-logical, indicates if the output merged raster layers will be written to the disk. By default \code{write2disk=TRUE}
+logical, indicates if the output merged raster layers and the training and avaluation datasets (two files each, one with time series and other with metadata) will be written to the disk. By default \code{write2disk=TRUE}
 }
+   \item{drty.out}{
+Character with the full path to the directory where the final merged product will be exported as well as the training and evaluation datasets. Only used when \code{write2disk=TRUE}
+}
+
   \item{use.pb}{
 logical, indicates if a progress bar should be used to show the progress of the random forest computations (it might reduce a bit the performance of the computations, but it is useful to track if everything is working well). By default \code{use.pb=TRUE}
 } 

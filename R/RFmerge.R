@@ -60,7 +60,7 @@
 #
 # 'ntree'     : number of decision trees generated in the Random Forest. The default value is set to 2000. If this value is too low, the prediction may be biased.              
 #
-# 'write2disk': logical, indicates if the output merged raster layers will be written to the disk. By default \code{write2disk=TRUE}
+# 'write2disk': logical, indicates if the output merged raster layers and the training and avaluation datasets (two files each, one with time series and other with metadata) will be written to the disk. By default \code{write2disk=TRUE}
 #
 # 'verbose'  : logical, indicates if progress messages are to be printed. By default \code{verbose=TRUE}
 #
@@ -69,35 +69,36 @@
 RFmerge <- function(x, ...) UseMethod("RFmerge")
 
 
-RFmerge.default <- function(x, metadata, cov, mask, drty.out, training, 
+RFmerge.default <- function(x, metadata, cov, mask, training, 
                             id="id", lat = "lat", lon = "lon", ED = TRUE, 
                             seed = NULL, ntree = 2000, na.action = stats::na.omit,
                             parallel=c("none", "parallel", "parallelWin"),
 	                    par.nnodes=parallel::detectCores()-1, 
                             par.pkgs= c("raster", "randomForest", "zoo"), 
-                            write2disk=TRUE, use.pb=TRUE, verbose=TRUE,
+                            write2disk=TRUE, drty.out, use.pb=TRUE, verbose=TRUE,
                             ...) {
 
      # Checking that 'x' is a zoo object
      if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo' !!")
 
-     RFmerge.zoo(x=x, metadata=metadata, cov=cov, mask=mask, drty.out=drty.out, 
+     RFmerge.zoo(x=x, metadata=metadata, cov=cov, mask=mask, 
                  training=training, id=id, lon=lon, lat=lat, ED=ED, 
                  seed=seed, ntree=ntree, na.action=na.action, 
                  parallel=parallel, par.nnodes=par.nnodes, par.pkgs=par.pkgs, 
-                 write2disk=TRUE, use.pb=TRUE, verbose=verbose, ...)
+                 write2disk=TRUE, drty.out=drty.out, use.pb=TRUE, 
+                 verbose=verbose, ...)
 
 } # 'RFmerge.default' end
 
 
 
-RFmerge.zoo <- function(x, metadata, cov, mask, drty.out, training, 
+RFmerge.zoo <- function(x, metadata, cov, mask, training, 
                         id="id", lat = "lat", lon = "lon", ED = TRUE, 
                         seed = NULL, ntree = 2000, na.action = stats::na.omit,
                         parallel=c("none", "parallel", "parallelWin"),
 	                par.nnodes=parallel::detectCores()-1, 
                         par.pkgs= c("raster", "randomForest", "zoo"), 
-                        write2disk=TRUE, use.pb=TRUE, verbose=TRUE,
+                        write2disk=TRUE, drty.out, use.pb=TRUE, verbose=TRUE,
                         ...) {
 
   parallel <- match.arg(parallel)    
@@ -276,21 +277,23 @@ RFmerge.zoo <- function(x, metadata, cov, mask, drty.out, training,
    } # ELSE end    
     
 
+  # If the user wants to write the outputs to the disk
+  if ( write2disk) {
+    # Exporting the training dataset to the output directory
+    fname <- file.path(training.drty, "Training_ts.txt")
+    zoo::write.zoo(train.ts, file=fname)
 
-  # Exporting the training dataset to the output directory
-  fname <- file.path(training.drty, "Training_ts.txt")
-  zoo::write.zoo(train.ts, file=fname)
-
-  fname <- file.path(training.drty, "Training_metadata.txt")
-  utils::write.table(train.metadata, file=fname, row.names=FALSE, sep=",")
+    fname <- file.path(training.drty, "Training_metadata.txt")
+    utils::write.table(train.metadata, file=fname, row.names=FALSE, sep=",")
   
-  # Exporting the evaluation dataset to the output directory
-  if (training < 1) {
-    fname <- file.path(evaluation.drty, "Evaluation_ts.txt")
-    zoo::write.zoo(eval.ts, file=fname)
+    # Exporting the evaluation dataset to the output directory
+    if (training < 1) {
+      fname <- file.path(evaluation.drty, "Evaluation_ts.txt")
+      zoo::write.zoo(eval.ts, file=fname)
 
-    fname <- file.path(evaluation.drty, "Evaluation_metadata.txt")
-    utils::write.table(eval.metadata, file=fname, row.names=FALSE, sep=",", quote=FALSE)
+      fname <- file.path(evaluation.drty, "Evaluation_metadata.txt")
+      utils::write.table(eval.metadata, file=fname, row.names=FALSE, sep=",", quote=FALSE)
+    } # IF end
   } # IF end
 
   # output object

@@ -103,8 +103,8 @@ Runing `RFmerge` with parallelisation in GNU/Linux machines:
 ```{r RFmergeWithLinuxParallelisation, eval = TRUE}
 drty.out <- "~/Test.par"
 rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm,
-                 id="ID", lat="lat", lon="lon",  
-                 mask=ValparaisoSHP.utm, drty.out = drty.out, training=0.8,
+                 id="ID", lat="lat", lon="lon",  mask=ValparaisoSHP.utm, 
+                 training=0.8, write2disk=TRUE, drty.out= drty.out, 
                  parallel="parallel")
 ```
 
@@ -148,7 +148,7 @@ BibTeX entries for LaTeX users are:
 > @Manual{Zambrano-Bigiarini+al2019-RFmerge_pkg,
 >     title = {RFmerge: Merging of Satellite Datasets with Ground Observations using Random Forests},
 >     author = {Zambrano-Bigiarini, M. and Baez-Villanueva, O.M. and Giraldo-Osorio, J.},
->     note = {R package version 0.1-2. doi:10.5281/zenodo.3583369},
+>     note = {R package version 0.1-3. doi:10.5281/zenodo.3583369},
 >     url = {https://CRAN.R-project.org/package=RFmerge},
 >   }
 

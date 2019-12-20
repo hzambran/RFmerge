@@ -252,16 +252,16 @@ Without using parallelisation (default option):
 ```{r RFmergeWithoutParallelisation, eval = FALSE}
 drty.out <- "~/Test.nop"
 rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm,
-                 id="ID", lat="lat", lon="lon", 
-                 mask=ValparaisoSHP, drty.out = drty.out, training=0.8)
+                 id="Code", lat="lat", lon="lon", mask=ValparaisoSHP, 
+                 training=0.8, write2disk=TRUE, drty.out=drty.out)
 ```
 
 Using parallelisation in GNU/Linux machines:
-```{r RFmergeWithLinuxParallelisation, eval = TRUE}
+```{r RFmergeWithLinuxParallelisation, eval = FALSE}
 drty.out <- "~/Test.par"
 rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm,
-                 id="ID", lat="lat", lon="lon",  
-                 mask=ValparaisoSHP.utm, drty.out = drty.out, training=0.8,
+                 id="Code", lat="lat", lon="lon", mask=ValparaisoSHP, 
+                 training=0.8, write2disk=TRUE, drty.out=drty.out, 
                  parallel="parallel")
 ```
 
@@ -269,8 +269,8 @@ Using parallelisation in Window$ machines
 ```{r RFmergeWithWindowsParallelisation, eval = FALSE}
 drty.out <- "~/Test.par"
 rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm, 
-                 id="Code", lat="lat", lon="lon", 
-                 mask=ValparaisoSHP, drty.out = drty.out, training=0.8,
+                 id="Code", lat="lat", lon="lon", mask=ValparaisoSHP, 
+                 training=0.8, write2disk=TRUE, drty.out=drty.out, 
                  parallel="parallelWin")
 ```
 

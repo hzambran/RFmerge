@@ -23,7 +23,7 @@ Version: \tab 0.1-3\cr
 Date: \tab 2019-12-20\cr
 License: \tab GPL >= 3 \cr
 LazyLoad: \tab yes\cr
-Packaged: \tab Wed Dec 18 18:15:21 -03 2019; MZB \cr
+Packaged: \tab Fri Dec 20 10:03:36 -03 2019; MZB \cr
 BuiltUnder: \tab R version 3.6.2 (2019-12-12) -- "Dark and Stormy Night" ; x86_64-pc-linux-gnu (64-bit) \cr
 }
 %%~~ An overview of how to use the package, including the most important functions ~~
