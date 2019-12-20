@@ -19,8 +19,8 @@ The focus of this package has been put in providing a collection of tools useful
 \tabular{ll}{
 Package: \tab RFmerge\cr
 Type: \tab Package\cr
-Version: \tab 0.1-2\cr
-Date: \tab 2019-12-18\cr
+Version: \tab 0.1-3\cr
+Date: \tab 2019-12-20\cr
 License: \tab GPL >= 3 \cr
 LazyLoad: \tab yes\cr
 Packaged: \tab Wed Dec 18 18:15:21 -03 2019; MZB \cr

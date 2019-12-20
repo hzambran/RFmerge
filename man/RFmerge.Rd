@@ -26,7 +26,7 @@ RFmerge(x, ...)
         seed = NULL, ntree = 2000, na.action = stats::na.omit,
         parallel=c("none", "parallel", "parallelWin"),
 	par.nnodes=parallel::detectCores()-1, 
-        par.pkgs= c("raster", "randomForest", "zoo"), 
+        par.pkgs= c("raster", "randomForest", "zoo"), write2disk=TRUE,
         use.pb=TRUE, verbose=TRUE,...)
 
 \method{RFmerge}{zoo}(x, metadata, cov, mask, drty.out, training, 
@@ -34,7 +34,7 @@ RFmerge(x, ...)
         seed = NULL, ntree = 2000, na.action = stats::na.omit,
         parallel=c("none", "parallel", "parallelWin"),
 	par.nnodes=parallel::detectCores()-1, 
-        par.pkgs= c("raster", "randomForest", "zoo"), 
+        par.pkgs= c("raster", "randomForest", "zoo"), write2disk=TRUE,
         use.pb=TRUE, verbose=TRUE, ...)
 
 
@@ -102,6 +102,9 @@ Numeric indicating the maximum number trees to grow in the Random Forest algorit
    \item{na.action}{
 A function to specify the action to be taken if NAs are found.  (NOTE: If given, this argument must be named.)
 }   
+  \item{write2disk}{
+logical, indicates if the output merged raster layers will be written to the disk. By default \code{write2disk=TRUE}
+}
   \item{use.pb}{
 logical, indicates if a progress bar should be used to show the progress of the random forest computations (it might reduce a bit the performance of the computations, but it is useful to track if everything is working well). By default \code{use.pb=TRUE}
 } 

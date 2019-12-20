@@ -1,5 +1,15 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
-0.1-0   15-Nov-2019
+0.1-0   15-Dec-2019
         o First release
         o It depends on R >= 3.5.0 because serialized objects (.rds data files) in serialize/load version 3 cannot be read in older versions
+        o RMarkdown vignette was replaced by a sttic PDF  one to avoid dependencies from rgdal, hydroTSM, and hydroGOF.
+
+0.1-1   18-Dec-2019
+        o Full PDF vignette was replaced by a  minimal RMarkdown version to avoid dependencies from rgdal, hydroTSM, and hydroGOF.
+
+0.1-2   18-Dec-2019
+        o The package was built using the "--compact-vignettes="gs+qpdf"  to avoid the following WARNIG from CRAN: "'gs+qpdf' made some significant size reductions".
+
+0.1-3   20-Dec-2019
+        o new argument 'write2disk' to allow the user to choose wheter the output merged layers should be written to disk or not.

@@ -18,7 +18,7 @@
 # Started: Jan 2019 (the individual function)                                  #
 # Started: 07-Nov-2019 (the package)                                           #
 # Updates: 16-Nov-2019 ; 10-Dec-2019 ; 11-Dec-2019 ; 12-Dec-2019 ; 13-Dec-2019 #
-#          14-Dec-2019 ; 17-Dec-2019                                           #
+#          14-Dec-2019 ; 17-Dec-2019 ; 20-Dec-2019                             #
 ################################################################################
 
 # 'x'        : zoo object with ground-based values that will be used as the dependent variable to train the RF model.
@@ -58,7 +58,9 @@
 #
 # 'par.pkgs'  : OPTIONAL. Used only when \code{parallel='parallelWin'}. list of package names (as characters) that need to be loaded on each node for allowing the objective function \code{fn} to be evaluated. By default \code{c("raster", "randomForest", "zoo")}.
 #
-# 'ntree'    : number of decision trees generated in the Random Forest. The default value is set to 2000. If this value is too low, the prediction may be biased.              
+# 'ntree'     : number of decision trees generated in the Random Forest. The default value is set to 2000. If this value is too low, the prediction may be biased.              
+#
+# 'write2disk': logical, indicates if the output merged raster layers will be written to the disk. By default \code{write2disk=TRUE}
 #
 # 'verbose'  : logical, indicates if progress messages are to be printed. By default \code{verbose=TRUE}
 #
@@ -73,7 +75,7 @@ RFmerge.default <- function(x, metadata, cov, mask, drty.out, training,
                             parallel=c("none", "parallel", "parallelWin"),
 	                    par.nnodes=parallel::detectCores()-1, 
                             par.pkgs= c("raster", "randomForest", "zoo"), 
-                            use.pb=TRUE, verbose=TRUE,
+                            write2disk=TRUE, use.pb=TRUE, verbose=TRUE,
                             ...) {
 
      # Checking that 'x' is a zoo object
@@ -83,7 +85,7 @@ RFmerge.default <- function(x, metadata, cov, mask, drty.out, training,
                  training=training, id=id, lon=lon, lat=lat, ED=ED, 
                  seed=seed, ntree=ntree, na.action=na.action, 
                  parallel=parallel, par.nnodes=par.nnodes, par.pkgs=par.pkgs, 
-                 use.pb=TRUE, verbose=verbose, ...)
+                 write2disk=TRUE, use.pb=TRUE, verbose=verbose, ...)
 
 } # 'RFmerge.default' end
 
@@ -95,7 +97,7 @@ RFmerge.zoo <- function(x, metadata, cov, mask, drty.out, training,
                         parallel=c("none", "parallel", "parallelWin"),
 	                par.nnodes=parallel::detectCores()-1, 
                         par.pkgs= c("raster", "randomForest", "zoo"), 
-                        use.pb=TRUE, verbose=TRUE,
+                        write2disk=TRUE, use.pb=TRUE, verbose=TRUE,
                         ...) {
 
   parallel <- match.arg(parallel)    
@@ -261,13 +263,13 @@ RFmerge.zoo <- function(x, metadata, cov, mask, drty.out, training,
   # Evaluating an R Function 
   if (parallel=="none") {
     if (use.pb) {
-      out <- pbapply::pbsapply(X=1:ntsteps, FUN=.lrf, ldates, metadata, id, points, cov, mask, merged.drty, na.action, ntree, ED, train.ts, train.metadata, buff.dist, lsample)
-    } else out <- sapply(X=1:ntsteps, FUN=.lrf, ldates, metadata, id, points, cov, mask, merged.drty, na.action, ntree, ED, train.ts, train.metadata, buff.dist, lsample)
+      out <- pbapply::pbsapply(X=1:ntsteps, FUN=.lrf, ldates, metadata, id, points, cov, mask, merged.drty, na.action, ntree, ED, train.ts, train.metadata, buff.dist, lsample, write2disk)
+    } else out <- sapply(X=1:ntsteps, FUN=.lrf, ldates, metadata, id, points, cov, mask, merged.drty, na.action, ntree, ED, train.ts, train.metadata, buff.dist, lsample, write2disk)
     out <- stack(out)
   } else {
       if (use.pb) {
-        out <- pbapply::pbsapply(X=1:ntsteps, FUN=.lrf, ldates, metadata, id, points, cov, mask, merged.drty, na.action, ntree, ED, train.ts, train.metadata, buff.dist, lsample, cl=cl, ...)
-      } else  out <- parallel::clusterApply(cl= cl, 1:ntsteps, fun=.lrf, ldates, metadata, id, points, cov, mask, merged.drty, na.action, ntree, ED, train.ts, train.metadata, buff.dist, lsample, ...)
+        out <- pbapply::pbsapply(X=1:ntsteps, FUN=.lrf, ldates, metadata, id, points, cov, mask, merged.drty, na.action, ntree, ED, train.ts, train.metadata, buff.dist, lsample, write2disk, cl=cl, ...)
+      } else  out <- parallel::clusterApply(cl= cl, 1:ntsteps, fun=.lrf, ldates, metadata, id, points, cov, mask, merged.drty, na.action, ntree, ED, train.ts, train.metadata, buff.dist, lsample, write2disk, ...)
       out <- stack(out)
       parallel::stopCluster(cl)
       if (verbose) message("[ Parallelisation finished ! ]")
@@ -299,7 +301,7 @@ RFmerge.zoo <- function(x, metadata, cov, mask, drty.out, training,
 
 
 
-.lrf <- function(day, ldates, metadata, id, points, cov, mask, merged.drty, na.action, ntree, ED, train.ts, train.metadata, buff.dist, lsample, ...) {
+.lrf <- function(day, ldates, metadata, id, points, cov, mask, merged.drty, na.action, ntree, ED, train.ts, train.metadata, buff.dist, lsample, write2disk, ...) {
       
     # Obtaining the ground-based measurements for each day
     nr         <- nrow(train.metadata)
@@ -351,9 +353,11 @@ RFmerge.zoo <- function(x, metadata, cov, mask, drty.out, training,
       result <- raster::mask(result, mask)
 
     # Exporting the RF-MEP product for each day
-    ldate <- paste0("RF-MEP_", ldates[day], ".tif") 
-    fname <- file.path(merged.drty, ldate)
-    raster::writeRaster(result, fname, format = "GTiff", overwrite = TRUE)
+    if ( write2disk ) {
+      ldate <- paste0("RF-MEP_", ldates[day], ".tif") 
+      fname <- file.path(merged.drty, ldate)
+      raster::writeRaster(result, fname, format = "GTiff", overwrite = TRUE)
+    } # IF end
 
     return(result)
 
