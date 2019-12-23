@@ -162,7 +162,7 @@ ValparaisoDEM5km <- raster(dem.fname)
 covariates <- list(chirps=CHIRPS5km, persianncdr=PERSIANNcdr5km, 
                    dem=ValparaisoDEM5km)
 
-\dontrun{
+\donttest{
 
 # The following code assumes that the region is small enough for neglecting
 # the impact of computing Euclidean distances in geographical coordinates.
@@ -172,22 +172,21 @@ covariates <- list(chirps=CHIRPS5km, persianncdr=PERSIANNcdr5km,
 
 # without using parallelisation
 RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis, cov=covariates, 
-        id="Code", lat="lat", lon="lon", 
-        mask=ValparaisoSHP, drty.out = "~/Test", training=1)
+        id="Code", lat="lat", lon="lon", mask=ValparaisoSHP, training=1)
 
+# Limiting the maximum number of cores to be used in this toy example to 2
+par.nnodes <- max(parallel::detectCores()-1, 2)
 
 # using parallelisation in GNU/Linux machines
 RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis, cov=covariates,  
-        id="Code", lat="lat", lon="lon", 
-        mask=ValparaisoSHP, drty.out = "~/Test", training=1,
-        parallel="parallel")
+        id="Code", lat="lat", lon="lon", mask=ValparaisoSHP, training=1)
+        parallel="parallel", par.nnodes=par.nodes)
 
 
 # using parallelisation in Window$ machines
 RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis, cov=covariates,  
-        id="Code", lat="lat", lon="lon", 
-        mask=ValparaisoSHP, drty.out = "~/Test", training=1,
-        parallel="parallelWin")
+        id="Code", lat="lat", lon="lon", mask=ValparaisoSHP, training=1)
+        parallel="parallelWin", par.nnodes=par.nodes)
 }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
