@@ -214,7 +214,7 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
        stop("[ Fork clusters are not supported on Windows =>  'parallel' can not be set to '", parallel, "' ]")
     
     ifelse(parallel=="parallelWin", parallel.pkg <- "parallel",  parallel.pkg <- parallel)                
-    if ( is.na( match(parallel.pkg, utils::installed.packages()[,"Package"] ) ) ) {
+    if  ( length(find.package("parallel", quiet=TRUE)) == 0 )  {
             warning("[ Package '", parallel.pkg, "' is not installed =>  parallel='none' ]")
             parallel <- "none"
     }  else { 
