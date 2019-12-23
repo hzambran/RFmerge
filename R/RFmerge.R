@@ -85,7 +85,7 @@ RFmerge.default <- function(x, metadata, cov, mask, training,
                  training=training, id=id, lon=lon, lat=lat, ED=ED, 
                  seed=seed, ntree=ntree, na.action=na.action, 
                  parallel=parallel, par.nnodes=par.nnodes, par.pkgs=par.pkgs, 
-                 write2disk=TRUE, drty.out=drty.out, use.pb=TRUE, 
+                 write2disk=write2disk, drty.out=drty.out, use.pb=use.pb, 
                  verbose=verbose, ...)
 
 } # 'RFmerge.default' end
@@ -174,6 +174,7 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
 
   # Creating output directories, if necessary
   if (write2disk) {
+
     if ( !file.exists(drty.out) ) dir.create(drty.out)
   
     # Creating subfolders in the output directory
@@ -186,7 +187,8 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
     if ( !file.exists(training.drty) )   dir.create(training.drty)  
     if ( !file.exists(evaluation.drty) ) dir.create(evaluation.drty)  
     if ( !file.exists(merged.drty) )     dir.create(merged.drty)
-  } # IF end
+
+  } else merged.drty <- ""
   
   # Converting the training metadata into a 'SpatialPointsDataFrame'
   points <- train.metadata
@@ -228,7 +230,10 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
               logfile.fname <- paste(file.path(drty.out), "/", "parallel_logfile.txt", sep="") 
               if (file.exists(logfile.fname)) file.remove(logfile.fname)
            } # IF end
-         } else logfile.fname <- ""
+         } else 
+             if ( (R.version$os=="mingw32") | (R.version$os=="mingw64") ) {
+               logfile.fname <- "nul"
+             } else logfile.fname <- "/dev/null"
              
          if (is.na(par.nnodes)) {
            par.nnodes <- nnodes.pc
