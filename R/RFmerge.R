@@ -18,7 +18,7 @@
 # Started: Jan 2019 (the individual function)                                  #
 # Started: 07-Nov-2019 (the package)                                           #
 # Updates: 16-Nov-2019 ; 10-Dec-2019 ; 11-Dec-2019 ; 12-Dec-2019 ; 13-Dec-2019 #
-#          14-Dec-2019 ; 17-Dec-2019 ; 20-Dec-2019                             #
+#          14-Dec-2019 ; 17-Dec-2019 ; 20-Dec-2019 ; 23-Dec-2019               #
 ################################################################################
 
 # 'x'        : zoo object with ground-based values that will be used as the dependent variable to train the RF model.
@@ -75,7 +75,7 @@ RFmerge.default <- function(x, metadata, cov, mask, training,
                             parallel=c("none", "parallel", "parallelWin"),
 	                    par.nnodes=parallel::detectCores()-1, 
                             par.pkgs= c("raster", "randomForest", "zoo"), 
-                            write2disk=TRUE, drty.out, use.pb=TRUE, verbose=TRUE,
+                            write2disk=FALSE, drty.out, use.pb=TRUE, verbose=TRUE,
                             ...) {
 
      # Checking that 'x' is a zoo object
@@ -98,7 +98,7 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
                         parallel=c("none", "parallel", "parallelWin"),
 	                par.nnodes=parallel::detectCores()-1, 
                         par.pkgs= c("raster", "randomForest", "zoo"), 
-                        write2disk=TRUE, drty.out, use.pb=TRUE, verbose=TRUE,
+                        write2disk=FALSE, drty.out, use.pb=TRUE, verbose=TRUE,
                         ...) {
 
   parallel <- match.arg(parallel)    

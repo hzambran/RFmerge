@@ -26,7 +26,7 @@ RFmerge(x, ...)
         seed = NULL, ntree = 2000, na.action = stats::na.omit,
         parallel=c("none", "parallel", "parallelWin"),
 	par.nnodes=parallel::detectCores()-1, 
-        par.pkgs= c("raster", "randomForest", "zoo"), write2disk=TRUE,
+        par.pkgs= c("raster", "randomForest", "zoo"), write2disk=FALSE,
         drty.out, use.pb=TRUE, verbose=TRUE,...)
 
 \method{RFmerge}{zoo}(x, metadata, cov, mask, training, 
@@ -34,7 +34,7 @@ RFmerge(x, ...)
         seed = NULL, ntree = 2000, na.action = stats::na.omit,
         parallel=c("none", "parallel", "parallelWin"),
 	par.nnodes=parallel::detectCores()-1, 
-        par.pkgs= c("raster", "randomForest", "zoo"), write2disk=TRUE,
+        par.pkgs= c("raster", "randomForest", "zoo"), write2disk=FALSE,
         drty.out, use.pb=TRUE, verbose=TRUE, ...)
 
 

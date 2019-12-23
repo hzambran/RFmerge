@@ -68,24 +68,27 @@ covariates <- list(chirps=CHIRPS5km, persianncdr=PERSIANNcdr5km,
 # If this is not the case, please read the vignette 'Tutorial for merging 
 # satellite-based precipitation datasets with ground observations using RFmerge' 
 
+# name of the directory where the output fiules are going to be written 
+# (only when \code{write2disk=TRUE})
+drty.out <- file.path(tempdir(), "Test")
 
 # without using parallelisation
 RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis, cov=covariates, 
         id="Code", lat="lat", lon="lon", 
-        mask=ValparaisoSHP, drty.out = "~/Test", training=1)
+        mask=ValparaisoSHP, drty.out=drty.out, training=1)
 
 
 # using parallelisation in GNU/Linux machines
 RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis, cov=covariates,  
         id="Code", lat="lat", lon="lon", 
-        mask=ValparaisoSHP, drty.out = "~/Test", training=1,
+        mask=ValparaisoSHP, drty.out=drty.out, training=1)
         parallel="parallel")
 
 
 # using parallelisation in Window$ machines
 RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis, cov=covariates,  
         id="Code", lat="lat", lon="lon", 
-        mask=ValparaisoSHP, drty.out = "~/Test", training=1,
+        mask=ValparaisoSHP, drty.out=drty.out, training=1)
         parallel="parallelWin")
 }
 
