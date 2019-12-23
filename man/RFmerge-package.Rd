@@ -77,13 +77,13 @@ par.nnodes <- max(parallel::detectCores()-1, 2)
 
 # using parallelisation in GNU/Linux machines
 RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis, cov=covariates,  
-        id="Code", lat="lat", lon="lon", mask=ValparaisoSHP, training=1)
+        id="Code", lat="lat", lon="lon", mask=ValparaisoSHP, training=1,
         parallel="parallel", par.nnodes=par.nodes)
 
 
 # using parallelisation in Window$ machines
 RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis, cov=covariates,  
-        id="Code", lat="lat", lon="lon", mask=ValparaisoSHP, training=1)
+        id="Code", lat="lat", lon="lon", mask=ValparaisoSHP, training=1,
         parallel="parallelWin", par.nnodes=par.nodes)
 }
 
