@@ -119,16 +119,15 @@ further arguments to be passed to the low level function \kbd{randomForest.defau
 %%\details{
 %%  ~~ If necessary, more details than the description above ~~
 %%}
-%%\value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-%%}
-%%\references{
-%% ~put references to the literature/web site here ~
-%%}
+\value{
+It return a \code{RasterStack} object
+  \item{comp1 }{Description of 'comp1'}
+  \item{comp2 }{Description of 'comp2'}
+ ...
+}
+\references{
+\cite{Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2019). RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements, Remote Sensing of Environment, (accepted)}
+}
 \author{
 Oscar M. Baez-Villanueva, \email{obaezvil@th-koeln.de} \cr
 Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}   \cr

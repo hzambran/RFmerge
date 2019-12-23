@@ -173,19 +173,20 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
   
 
   # Creating output directories, if necessary
-  if ( !file.exists(drty.out) ) dir.create(drty.out)
+  if (write2disk) {
+    if ( !file.exists(drty.out) ) dir.create(drty.out)
   
-  # Creating subfolders in the output directory
-  merged.drty     <- file.path(drty.out, "RF-MEP")
-  grounddata.drty <- file.path(drty.out, "Ground_based_data")
-  training.drty   <- file.path(drty.out, "Ground_based_data", "Training")
-  evaluation.drty <- file.path(drty.out, "Ground_based_data", "Evaluation")
+    # Creating subfolders in the output directory
+    merged.drty     <- file.path(drty.out, "RF-MEP")
+    grounddata.drty <- file.path(drty.out, "Ground_based_data")
+    training.drty   <- file.path(drty.out, "Ground_based_data", "Training")
+    evaluation.drty <- file.path(drty.out, "Ground_based_data", "Evaluation")
 
-  if ( !file.exists(grounddata.drty) ) dir.create(grounddata.drty)  
-  if ( !file.exists(training.drty) )   dir.create(training.drty)  
-  if ( !file.exists(evaluation.drty) ) dir.create(evaluation.drty)  
-  if ( !file.exists(merged.drty) )     dir.create(merged.drty)
-  
+    if ( !file.exists(grounddata.drty) ) dir.create(grounddata.drty)  
+    if ( !file.exists(training.drty) )   dir.create(training.drty)  
+    if ( !file.exists(evaluation.drty) ) dir.create(evaluation.drty)  
+    if ( !file.exists(merged.drty) )     dir.create(merged.drty)
+  } # IF end
   
   # Converting the training metadata into a 'SpatialPointsDataFrame'
   points <- train.metadata
@@ -222,10 +223,12 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
          nnodes.pc <- parallel::detectCores()
          if (verbose) message("[ Number of cores/nodes detected: ", nnodes.pc, " ]")
            
-         if ( (parallel=="parallel") | (parallel=="parallelWin") ) {             
-            logfile.fname <- paste(file.path(drty.out), "/", "parallel_logfile.txt", sep="") 
-            if (file.exists(logfile.fname)) file.remove(logfile.fname)
-         } # IF end
+         if (write2disk) {
+           if ( (parallel=="parallel") | (parallel=="parallelWin") ) {             
+              logfile.fname <- paste(file.path(drty.out), "/", "parallel_logfile.txt", sep="") 
+              if (file.exists(logfile.fname)) file.remove(logfile.fname)
+           } # IF end
+         } else logfile.fname <- ""
              
          if (is.na(par.nnodes)) {
            par.nnodes <- nnodes.pc
