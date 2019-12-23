@@ -33,14 +33,16 @@ Mauricio Zambrano-Bigiarini, Oscar M. Baez-Villanueva \cr
 
 Maintainer: Mauricio Zambrano-Bigiarini <mzb.devel@gmail>
 }
-%%\references{
-%%~~ Literature or other references for background information ~~
-%%}
+\references{
+\cite{Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2019). RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements, Remote Sensing of Environment, (accepted)} \cr
+
+\cite{Hengl, T., Nussbaum, M., Wright, M. N., Heuvelink, G. B., & Gr\"{a}ler, B. (2018). Random forest as a generic framework for predictive modeling of spatial and spatio-temporal variables. PeerJ, 6, e5518}.
+}
 
 \keyword{ package }
 \seealso{
-\url{https://github.com/hzambran/hydroGOF}. \cr
-\url{https://github.com/hzambran/hydroPSO}. \cr
+\url{https://cran.r-project.org/package=hydroGOF}. \cr
+\url{https://cran.r-project.org/package=raster}.
 }
 \examples{
 library(rgdal)

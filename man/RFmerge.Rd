@@ -120,13 +120,12 @@ further arguments to be passed to the low level function \kbd{randomForest.defau
 %%  ~~ If necessary, more details than the description above ~~
 %%}
 \value{
-It return a \code{RasterStack} object
-  \item{comp1 }{Description of 'comp1'}
-  \item{comp2 }{Description of 'comp2'}
- ...
+It return a \code{RasterStack} object with as many layers as time steps were present in \code{x}. Each one of the layers in the output object has the same spatial resolution and spatial extent as te \code{cov} argument.
 }
 \references{
-\cite{Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2019). RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements, Remote Sensing of Environment, (accepted)}
+\cite{Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2019). RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements, Remote Sensing of Environment, (accepted)} \cr
+
+\cite{Hengl, T., Nussbaum, M., Wright, M. N., Heuvelink, G. B., & Gr\"{a}ler, B. (2018). Random forest as a generic framework for predictive modeling of spatial and spatio-temporal variables. PeerJ, 6, e5518}.
 }
 \author{
 Oscar M. Baez-Villanueva, \email{obaezvil@th-koeln.de} \cr
@@ -139,9 +138,9 @@ Juan D. Giraldo-Osorio, \email{j.giraldoo@javeriana.edu.co}
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
-%\seealso{
-%\code{\link{daily2annual}}, \code{\link{subdaily2daily}}, \code{\link{monthlyfunction}}, \code{\link{hydroplot}}, \code{\link{vector2zoo}}, \code{\link{izoo2rzoo}}, \code{\link{as.Date}}
-%}
+\seealso{
+\code{\link[raster]{raster}}, \code{\link[raster]{stack}}, \code{\link[raster]{brick}}, \code{\link[raster]{resample}}, \code{\link[raster]{rotate}}, \code{\link[raster]{crop}}.
+}
 \examples{
 library(rgdal)
 library(raster)
