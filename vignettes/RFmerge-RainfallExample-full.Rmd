@@ -13,6 +13,7 @@ vignette: >
   %\VignetteIndexEntry{Tutorial for merging satellite-based precipitation datasets with ground observations using `RFmerge`}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include = FALSE}
@@ -102,8 +103,8 @@ ValparaisoDEM5km <- raster(dem.fname)
 The two multi-band geotiff files provided in the `RFmerge` package do not store the date of the precipitation estimate as name of the corresponding layer. Therefore, before any exploratory analysis, we would give meaningful names to each band (layer) in `CHIRPS5km` and `PERSIANNcdr5km`:
 
 ```{r GivingMeaninfulNamesToLayers, eval = TRUE}
-ldates                <- hydroTSM::dip("1983-01-01", "1983-08-31")
 #ldates                <- seq(from=as.Date("1983-01-01"), to=as.Date("1983-08-31"), by="days")
+ldates                <- hydroTSM::dip("1983-01-01", "1983-08-31")
 names(CHIRPS5km)      <- ldates
 names(PERSIANNcdr5km) <- ldates  
 ```
@@ -122,8 +123,8 @@ main <- paste("Daily precipitation for the station", ValparaisoPPgis$Code[1])
 ylab <- "Precipitation [mm]"
 x.ts <- ValparaisoPPts[,1]
 
-hydroTSM::hydroplot(x.ts, pfreq="o", main=main, ylab= ylab)
 #plot(x.ts, main=main, ylab= ylab, col="blue")
+hydroTSM::hydroplot(x.ts, pfreq="o", main=main, ylab= ylab)
 grid()
 ```
 
@@ -246,30 +247,30 @@ covariates.utm <- list(chirps=CHIRPS5km.utm, persianncdr=PERSIANNcdr5km.utm,
 
 ## Setup
 
-Finally, before running `RFmerge` we need to define the output directory (`drty.out`) that will store each one of the merged files. Then, we can run the `RFmerge` function as follows:
+Finally, if you want the resulting merged files be written into disk you need to define the output directory (`drty.out`) before running `RFmerge`. Then, you can run the `RFmerge` function as follows:
 
 Without using parallelisation (default option):
 ```{r RFmergeWithoutParallelisation, eval = FALSE}
-drty.out <- "~/Test.nop"
+drty.out <- file.path(tempdir(), "Test.nop")
 rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm,
-                 id="Code", lat="lat", lon="lon", mask=ValparaisoSHP, 
+                 id="ID", lat="lat", lon="lon", mask=ValparaisoSHP.utm, 
                  training=0.8, write2disk=TRUE, drty.out=drty.out)
 ```
 
 Using parallelisation in GNU/Linux machines:
-```{r RFmergeWithLinuxParallelisation, eval = FALSE}
-drty.out <- "~/Test.par"
+```{r RFmergeWithLinuxParallelisation, eval = TRUE}
+drty.out <- file.path(tempdir(), "Test.par")
 rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm,
-                 id="Code", lat="lat", lon="lon", mask=ValparaisoSHP, 
+                 id="ID", lat="lat", lon="lon", mask=ValparaisoSHP.utm, 
                  training=0.8, write2disk=TRUE, drty.out=drty.out, 
                  parallel="parallel")
 ```
 
 Using parallelisation in Window$ machines
 ```{r RFmergeWithWindowsParallelisation, eval = FALSE}
-drty.out <- "~/Test.par"
+drty.out <- file.path(tempdir(), "Test.par")
 rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm, 
-                 id="Code", lat="lat", lon="lon", mask=ValparaisoSHP, 
+                 id="Code", lat="lat", lon="lon", mask=ValparaisoSHP.utm, 
                  training=0.8, write2disk=TRUE, drty.out=drty.out, 
                  parallel="parallelWin")
 ```
@@ -279,7 +280,7 @@ rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.
 
 ## Expected outputs
 
-If `RFmerge` run without problems, the following output files will be stored in your user-defined `drty.out` directory: 
+If `RFmerge` run without problems, and `write2disk=TRUE`, the following output files will be stored in your user-defined `drty.out` directory: 
 
   i) the rain gauge stations used as training and evaluation datasets; and 
  
@@ -399,3 +400,5 @@ Meteorological Society, 96, 69–83, doi:10.1175/BAMS-D-13-00068.1.
 
 3. Funk, C., Peterson, P., Landsfeld, M., Pedreros, D., Verdin, J., Shukla, S., Husak, G., Rowland, J., Harrison, L., Hoell, A., and Michaelsen,
 J. (2015) The climate hazards infrared precipitation with stations-a new environmental record for monitoring extremes, Sci Data, 2, 150 066, doi:10.1038/sdata.2015.66.
+
+4. Hengl, T., Nussbaum, M., Wright, M. N., Heuvelink, G. B., & Gr\"{a}ler, B. (2018). Random forest as a generic framework for predictive modeling of spatial and spatio-temporal variables. PeerJ, 6, e5518.

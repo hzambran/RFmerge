@@ -10,8 +10,9 @@ output:
   pdf_document:
     number_sections: true
 vignette: >
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Tutorial for merging satellite-based precipitation datasets with ground observations using `RFmerge`}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -102,13 +103,12 @@ ValparaisoDEM5km <- raster(dem.fname)
 The two multi-band geotiff files provided in the `RFmerge` package do not store the date of the precipitation estimate as name of the corresponding layer. Therefore, before any exploratory analysis, we would give meaningful names to each band (layer) in `CHIRPS5km` and `PERSIANNcdr5km`:
 
 ```{r GivingMeaninfulNamesToLayers, eval = TRUE}
-#ldates                <- hydroTSM::dip("1983-01-01", "1983-08-31")
-ldates                <- seq(from=as.Date("1983-01-01"), to=as.Date("1983-08-31"), by="days")
+#ldates                <- seq(from=as.Date("1983-01-01"), to=as.Date("1983-08-31"), by="days")
+ldates                <- hydroTSM::dip("1983-01-01", "1983-08-31")
 names(CHIRPS5km)      <- ldates
 names(PERSIANNcdr5km) <- ldates  
 ```
 
-\newpage
 Then, we want to visualise the first six rows of the spatial metadata:
 
 ```{r ExploringMetadata}
@@ -245,39 +245,39 @@ covariates.utm <- list(chirps=CHIRPS5km.utm, persianncdr=PERSIANNcdr5km.utm,
 ```
 
 
-## Set up
+## Setup
 
-Finally, before running `RFmerge` we need to define the output directory (`drty.out`) that will store each one of the merged files. Then, we can run the `RFmerge` function as follows:
+Finally, if you want the resulting merged files be written into disk you need to define the output directory (`drty.out`) before running `RFmerge`. Then, you can run the `RFmerge` function as follows:
 
 Without using parallelisation (default option):
 ```{r RFmergeWithoutParallelisation, eval = FALSE}
-drty.out <- "~/Test.nop"
+drty.out <- file.path(tempdir(), "Test.nop")
 rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm,
-                 id="Code", lat="lat", lon="lon", mask=ValparaisoSHP, 
+                 id="ID", lat="lat", lon="lon", mask=ValparaisoSHP.utm, 
                  training=0.8, write2disk=TRUE, drty.out=drty.out)
 ```
 
 Using parallelisation in GNU/Linux machines:
-```{r RFmergeWithLinuxParallelisation, eval = FALSE}
-drty.out <- "~/Test.par"
+```{r RFmergeWithLinuxParallelisation, eval = TRUE}
+drty.out <- file.path(tempdir(), "Test.par")
 rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm,
-                 id="Code", lat="lat", lon="lon", mask=ValparaisoSHP, 
+                 id="ID", lat="lat", lon="lon", mask=ValparaisoSHP.utm, 
                  training=0.8, write2disk=TRUE, drty.out=drty.out, 
                  parallel="parallel")
 ```
 
 Using parallelisation in Window$ machines
 ```{r RFmergeWithWindowsParallelisation, eval = FALSE}
-drty.out <- "~/Test.par"
+drty.out <- file.path(tempdir(), "Test.par")
 rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm, 
-                 id="Code", lat="lat", lon="lon", mask=ValparaisoSHP, 
+                 id="Code", lat="lat", lon="lon", mask=ValparaisoSHP.utm, 
                  training=0.8, write2disk=TRUE, drty.out=drty.out, 
                  parallel="parallelWin")
 ```
 
 ## Expected outputs
 
-If `RFmerge` run without problems, the following output files will be stored in your user-defined `drty.out` directory: 
+If `RFmerge` run without problems, and `write2disk=TRUE`, the following output files will be stored in your user-defined `drty.out` directory: 
 
   i) the rain gauge stations used as training and evaluation datasets; and 
  
@@ -305,6 +305,9 @@ metadata.path <- paste0(drty.out, "/Ground_based_data/Evaluation/Evaluation_meta
 
 eval.ts  <- read.zoo(ts.path, header = TRUE)
 eval.gis <- read.csv(metadata.path)
+
+# promoting 'eval.gis' into a spatial object (in order to be plotted)
+( eval.gis.utm <- st_as_sf(eval.gis, coords = c('lon', 'lat'), crs = 32719) )
 ```
 
 
@@ -314,6 +317,7 @@ Visualisation of one day of precipitation using RF-MEP, and overlying the bounda
 plot(rfmep[[11]], main = "RF-MEP precipitation for 1983-01-11", 
      xlab = "Longitude", ylab = "Latitude")
 plot(ValparaisoSHP.utm[1], add=TRUE, col="transparent")
+plot(eval.gis.utm, add=TRUE, pch = 16, col="black")
 ```
 
 The total amount of precipitation over Valparaiso for January to August 1983 according to RF-MEP, and overlying the boundaries of the study area (only its first attribute)::
@@ -326,9 +330,9 @@ plot(ValparaisoSHP.utm[1], add=TRUE, col="transparent")
 ```
 
 
-Finally, we will compare RF-MEP (and the two precipitation products used as covariates) with the rain gauge data from the evaluation set. To extract the RF-MEP precipitation values at the gauge locations, we will use the `extract` function from the `raster` package:
+First, we will compare RF-MEP (and the two precipitation products used as covariates) with the rain gauge data from the evaluation set. To extract the RF-MEP precipitation values at the gauge locations, we will use the `extract` function from the `raster` package:
 
-```{r EvaluationComputation, eval= FALSE}
+```{r EvaluationExtraction, eval= FALSE}
 coordinates(eval.gis) <- ~ lon + lat
 
 rfmep.ts    <- t(raster::extract(rfmep, eval.gis))
@@ -336,10 +340,10 @@ chirps.ts   <- t(raster::extract(CHIRPS5km.utm, eval.gis))
 persiann.ts <- t(raster::extract(PERSIANNcdr5km.utm, eval.gis))
 ```
 
-To evaluate the performance of RF-MEP and the products used in its computation, the modified Kling-Gupta Efficiency (KGE') will be used. The optimal value for the KGE' is one. The `KGE` function is included in the `hydroGOF` package. 
+To evaluate the performance of RF-MEP and the products used in its computation, the NAsh-Sutcliffe efficiency (NSE) will be used. The optimal value for the NSE is one. 
 
 
-```{r EvaluationPlotting, fig.width = 7, fig.height = 5, fig.align = "center", eval= FALSE}
+```{r EvaluationComputation, eval= FALSE}
 
 # Defining a function to compute the Nash-Sutcliffe efficiency(NSE)
 NSE <- function(sim, obs) return( 1 - (sum((obs - sim)^2)/ (sum((obs - mean(obs))^2)) ) )
@@ -358,6 +362,12 @@ for (i in 1:nsres) {
   lsim   <- zoo(sres[[i]], ldates)
   nse.table[, (i+1)] = NSE(sim= lsim, obs= eval.ts)
 } # FOR end
+```
+
+
+Finally, a boxplot comparing the performance, in terms of *KGE'*, of the merged product in comparison to the original SREs used as covariates will be produced:
+
+```{r EvaluationPlotting, fig.width=7, fig.height=7, fig.align = "center", eval = FALSE}
 
 # Boxplot with a graphical comparison
 sres.cols <- c("powderblue", "palegoldenrod", "mediumseagreen")
@@ -395,3 +405,5 @@ Meteorological Society, 96, 69–83, doi:10.1175/BAMS-D-13-00068.1.
 
 3. Funk, C., Peterson, P., Landsfeld, M., Pedreros, D., Verdin, J., Shukla, S., Husak, G., Rowland, J., Harrison, L., Hoell, A., and Michaelsen,
 J. (2015) The climate hazards infrared precipitation with stations-a new environmental record for monitoring extremes, Sci Data, 2, 150 066, doi:10.1038/sdata.2015.66.
+
+4. Hengl, T., Nussbaum, M., Wright, M. N., Heuvelink, G. B., & Gr\"{a}ler, B. (2018). Random forest as a generic framework for predictive modeling of spatial and spatio-temporal variables. PeerJ, 6, e5518.
