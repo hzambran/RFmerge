@@ -265,7 +265,7 @@ drty.out <- file.path(tempdir(), "Test.par")
 rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm,
                  id="ID", lat="lat", lon="lon", mask=ValparaisoSHP.utm, 
                  training=0.8, write2disk=TRUE, drty.out=drty.out, 
-                 parallel="parallel")
+                 parallel="parallel", par.nnodes=par.nnodes)
 ```
 
 Using parallelisation in Window$ machines, with a maximum number of nodes/cores to be used equal to 2:
@@ -275,7 +275,7 @@ drty.out <- file.path(tempdir(), "Test.par")
 rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm, 
                  id="Code", lat="lat", lon="lon", mask=ValparaisoSHP.utm, 
                  training=0.8, write2disk=TRUE, drty.out=drty.out, 
-                 parallel="parallelWin")
+                 parallel="parallelWin", par.nnodes=par.nnodes)
 ```
 
 ## Expected outputs
@@ -345,7 +345,7 @@ persiann.ts <- t(raster::extract(PERSIANNcdr5km.utm, eval.gis))
 To evaluate the performance of RF-MEP and the products used in its computation, the NAsh-Sutcliffe efficiency (NSE) will be used. The optimal value for the NSE is one. 
 
 
-```{r EvaluationComputation, eval= TRUE}
+```{r EvaluationComputation, eval= FALSE}
 
 # Defining a function to compute the Nash-Sutcliffe efficiency(NSE)
 NSE <- function(sim, obs) return( 1 - (sum((obs - sim)^2)/ (sum((obs - mean(obs))^2)) ) )
@@ -369,7 +369,7 @@ for (i in 1:nsres) {
 
 Finally, a boxplot comparing the performance, in terms of *KGE'*, of the merged product in comparison to the original SREs used as covariates will be produced:
 
-```{r EvaluationPlotting, fig.width=7, fig.height=7, fig.align = "center", eval = TRUE}
+```{r EvaluationPlotting, fig.width=7, fig.height=7, fig.align = "center", eval = FALSE}
 
 # Boxplot with a graphical comparison
 sres.cols <- c("powderblue", "palegoldenrod", "mediumseagreen")
