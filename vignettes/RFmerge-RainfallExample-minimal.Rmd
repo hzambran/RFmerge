@@ -103,8 +103,8 @@ ValparaisoDEM5km <- raster(dem.fname)
 The two multi-band geotiff files provided in the `RFmerge` package do not store the date of the precipitation estimate as name of the corresponding layer. Therefore, before any exploratory analysis, we would give meaningful names to each band (layer) in `CHIRPS5km` and `PERSIANNcdr5km`:
 
 ```{r GivingMeaninfulNamesToLayers, eval = TRUE}
-#ldates                <- seq(from=as.Date("1983-01-01"), to=as.Date("1983-08-31"), by="days")
-ldates                <- hydroTSM::dip("1983-01-01", "1983-08-31")
+#ldates                <- hydroTSM::dip("1983-01-01", "1983-08-31")
+ldates                <- seq(from=as.Date("1983-01-01"), to=as.Date("1983-08-31"), by="days")
 names(CHIRPS5km)      <- ldates
 names(PERSIANNcdr5km) <- ldates  
 ```
@@ -159,7 +159,7 @@ stations <- ValparaisoPPgis
 
 Now, we can plot the DEM with the locations of the rain gauge stations that will be used in the computation of RF-MEP, and overlying the boundaries of the study area and the stations (only their first attribute):
 ```{r PlottingDEMwithObs, fig.width = 4, fig.height = 4, fig.align = "center"}
-plot(ValparaisoDEM5km, main = "SRTM-v4", xlab = "Longitude", ylab = "Latitude", col = terrain.colors(255))
+plot(ValparaisoDEM5km, main="SRTM-v4", xlab="Longitude", ylab="Latitude", col=terrain.colors(255))
 plot(ValparaisoSHP[1], add=TRUE, col="transparent")
 plot(stations[1], add=TRUE, pch = 16, col="black")
 ```
@@ -241,7 +241,7 @@ Now, we can create the covariates object to be used in the `RFmerge` function. F
 
 ```{r CovariatesCreation}
 covariates.utm <- list(chirps=CHIRPS5km.utm, persianncdr=PERSIANNcdr5km.utm, 
-                   dem=ValparaisoDEM5km.utm)
+                       dem=ValparaisoDEM5km.utm)
 ```
 
 
@@ -257,8 +257,10 @@ rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.
                  training=0.8, write2disk=TRUE, drty.out=drty.out)
 ```
 
-Using parallelisation in GNU/Linux machines:
+
+Using parallelisationin GNU/Linux machines, with a maximum number of nodes/cores to be used equal to 2:
 ```{r RFmergeWithLinuxParallelisation, eval = TRUE}
+par.nnodes <- max(parallel::detectCores()-1, 2)
 drty.out <- file.path(tempdir(), "Test.par")
 rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm,
                  id="ID", lat="lat", lon="lon", mask=ValparaisoSHP.utm, 
@@ -266,8 +268,9 @@ rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.
                  parallel="parallel")
 ```
 
-Using parallelisation in Window$ machines
+Using parallelisation in Window$ machines, with a maximum number of nodes/cores to be used equal to 2:
 ```{r RFmergeWithWindowsParallelisation, eval = FALSE}
+par.nnodes <- max(parallel::detectCores()-1, 2)
 drty.out <- file.path(tempdir(), "Test.par")
 rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm, 
                  id="Code", lat="lat", lon="lon", mask=ValparaisoSHP.utm, 
@@ -314,8 +317,7 @@ eval.gis <- read.csv(metadata.path)
 Visualisation of one day of precipitation using RF-MEP, and overlying the boundaries of the study area (only its first attribute)::
 
 ```{r, fig.width = 4, fig.height = 4, fig.align = "center", eval= FALSE}
-plot(rfmep[[11]], main = "RF-MEP precipitation for 1983-01-11", 
-     xlab = "Longitude", ylab = "Latitude")
+plot(rfmep[[11]], main="RF-MEP precipitation for 1983-01-11", xlab="Longitude", ylab="Latitude")
 plot(ValparaisoSHP.utm[1], add=TRUE, col="transparent")
 plot(eval.gis.utm, add=TRUE, pch = 16, col="black")
 ```
@@ -343,7 +345,7 @@ persiann.ts <- t(raster::extract(PERSIANNcdr5km.utm, eval.gis))
 To evaluate the performance of RF-MEP and the products used in its computation, the NAsh-Sutcliffe efficiency (NSE) will be used. The optimal value for the NSE is one. 
 
 
-```{r EvaluationComputation, eval= FALSE}
+```{r EvaluationComputation, eval= TRUE}
 
 # Defining a function to compute the Nash-Sutcliffe efficiency(NSE)
 NSE <- function(sim, obs) return( 1 - (sum((obs - sim)^2)/ (sum((obs - mean(obs))^2)) ) )
@@ -367,7 +369,7 @@ for (i in 1:nsres) {
 
 Finally, a boxplot comparing the performance, in terms of *KGE'*, of the merged product in comparison to the original SREs used as covariates will be produced:
 
-```{r EvaluationPlotting, fig.width=7, fig.height=7, fig.align = "center", eval = FALSE}
+```{r EvaluationPlotting, fig.width=7, fig.height=7, fig.align = "center", eval = TRUE}
 
 # Boxplot with a graphical comparison
 sres.cols <- c("powderblue", "palegoldenrod", "mediumseagreen")
