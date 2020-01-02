@@ -260,7 +260,7 @@ rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.
 
 Using parallelisationin GNU/Linux machines, with a maximum number of nodes/cores to be used equal to 2:
 ```{r RFmergeWithLinuxParallelisation, eval = TRUE}
-par.nnodes <- max(parallel::detectCores()-1, 2)
+par.nnodes <- min(parallel::detectCores()-1, 2)
 drty.out <- file.path(tempdir(), "Test.par")
 rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm,
                  id="ID", lat="lat", lon="lon", mask=ValparaisoSHP.utm, 
@@ -270,7 +270,7 @@ rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.
 
 Using parallelisation in Window$ machines, with a maximum number of nodes/cores to be used equal to 2:
 ```{r RFmergeWithWindowsParallelisation, eval = FALSE}
-par.nnodes <- max(parallel::detectCores()-1, 2)
+par.nnodes <- min(parallel::detectCores()-1, 2)
 drty.out <- file.path(tempdir(), "Test.par")
 rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm, 
                  id="Code", lat="lat", lon="lon", mask=ValparaisoSHP.utm, 

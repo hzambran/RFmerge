@@ -173,7 +173,7 @@ rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis, cov=covariates,
                 id="Code", lat="lat", lon="lon", mask=ValparaisoSHP, training=1)
 
 # Limiting the maximum number of cores to be used in this toy example to 2
-par.nnodes <- max(parallel::detectCores()-1, 2)
+par.nnodes <- min(parallel::detectCores()-1, 2)
 
 # using parallelisation in GNU/Linux machines
 rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis, cov=covariates,  
