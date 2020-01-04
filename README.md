@@ -123,10 +123,10 @@ citation("RFmerge")
 To cite RFmerge in publications use:
 
 * RSE article:
-> Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2019). RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements, Remote Sensing of Environment, (accepted).
+> Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2020). [RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements](https://authors.elsevier.com/c/1aKrd7qzSnJWL), Remote Sensing of Environment, 239, 111610. doi:10.1016/j.rse.2019.111606. Full article available [here](https://authors.elsevier.com/c/1aKrd7qzSnJWL) until February 21th 2020.
 
 * R package:
-> Zambrano-Bigiarini, M.; Baez-Villanueva, O.M., Giraldo-Osorio, J. RFmerge: Merging of Satellite Datasets with Ground Observations using Random Forests. R package version 0.1-0. URL https://hzambran.github.io/RFmerge/. DOI:10.5281/zenodo.1287350
+> Zambrano-Bigiarini, M.; Baez-Villanueva, O.M., Giraldo-Osorio, J. RFmerge: Merging of Satellite Datasets with Ground Observations using Random Forests. R package version 0.1-0. URL https://hzambran.github.io/RFmerge/. DOI:10.5281/zenodo.1287350.
 
 
 
@@ -135,11 +135,13 @@ BibTeX entries for LaTeX users are:
 
 * RSE article:
 
-> @Article{BaezVillanueva+al2019-RFmerge_article,
+> @Article{BaezVillanueva+al2020-RFmerge_article,
 >     title = {RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements},
 >     journal = {Remote Sensing of Environment},
 >     author = {Baez-Villanueva, O. M. and Zambrano-Bigiarini, M. and Beck, H. and McNamara, I. and Ribbe, L. and Nauditt, A. Birkel, C. and Verbist, K. and Giraldo-Osorio, J.D. and Thinh, N.X.},
->     year = {2019},
+>     year = {2020},
+>     volume = {239},
+>     pages = {111606},
 >   }
 
 

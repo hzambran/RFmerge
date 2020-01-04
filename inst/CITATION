@@ -9,15 +9,15 @@ citEntry(
          title= "RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements",
          journal="Remote Sensing of Environment",
          author="Baez-Villanueva, O. M. and Zambrano-Bigiarini, M. and Beck, H. and McNamara, I. and Ribbe, L. and Nauditt, A. and Birkel, C. and Verbist, K. and Giraldo-Osorio, J.D. and Thinh, N.X.",
-         volume= "",
+         volume= "239",
          number="",
-         pages="",
-         year="2019",
+         pages="111610",
+         year="2020",
          note="",
-         doi="",
-         url="",
+         doi="10.1016/j.rse.2019.111606",
+         url="https://authors.elsevier.com/c/1aKrd7qzSnJWL",
          textVersion="Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2019). RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements, Remote Sensing of Environment, (accepted).",
-         key = "BaezVillanueva+al2019-RFmerge_article"
+         key = "BaezVillanueva+al2020-RFmerge_article"
          )
 
 citEntry(entry	= "Manual",
