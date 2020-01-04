@@ -36,7 +36,7 @@ citEntry(entry	= "Manual",
                        ". URL https://cran.r-project.org/package=RFmerge",
                        ". DOI:10.5281/zenodo.3581515",
                        ".", sep=""),
-         key = "Zambrano-Bigiarini+al2019-RFmerge_pkg"
+         key = "Zambrano-Bigiarini+al2020-RFmerge_pkg"
 	 )
 
 #citFooter("We have invested a lot of time and effort in creating hydroPSO, please cite it if you use it !")
