@@ -2,7 +2,7 @@ NEWS/ChangeLog for RFmerge
 --------------------------
 
 0.1-4   04-Jan-2020
-        o DOI was added to the CITATION file and all the references within the pacakge (the article was available online in January 2nd).
+        o DOI was added to the CITATION file and all the references within the package (the article was available online in January 2nd).
         o A maximum of two cores is used in all examples (fixed, with respect to the previous version).
         o Improved vignettes (minor details).
 
