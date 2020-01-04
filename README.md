@@ -126,7 +126,7 @@ To cite RFmerge in publications use:
 > Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2020). [RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements](https://authors.elsevier.com/c/1aKrd7qzSnJWL), Remote Sensing of Environment, 239, 111610. doi:10.1016/j.rse.2019.111606. Full article available [here](https://authors.elsevier.com/c/1aKrd7qzSnJWL) until February 21th 2020.
 
 * R package:
-> Zambrano-Bigiarini, M.; Baez-Villanueva, O.M., Giraldo-Osorio, J. RFmerge: Merging of Satellite Datasets with Ground Observations using Random Forests. R package version 0.1-4. URL https://hzambran.github.io/RFmerge/. doi:10.5281/zenodo.3581515.
+> Zambrano-Bigiarini, M.; Baez-Villanueva, O.M., Giraldo-Osorio, J. RFmerge: Merging of Satellite Datasets with Ground Observations using Random Forests. R package version 0.1-5. URL https://hzambran.github.io/RFmerge/. doi:10.5281/zenodo.3581515.
 
 
 
@@ -150,7 +150,7 @@ BibTeX entries for LaTeX users are:
 > @Manual{Zambrano-Bigiarini+al2020-RFmerge_pkg,
 >     title = {RFmerge: Merging of Satellite Datasets with Ground Observations using Random Forests},
 >     author = {Zambrano-Bigiarini, M. and Baez-Villanueva, O.M. and Giraldo-Osorio, J.},
->     note = {R package version 0.1-4. doi:10.5281/zenodo.3581515},
+>     note = {R package version 0.1-5. doi:10.5281/zenodo.3581515},
 >     url = {https://CRAN.R-project.org/package=RFmerge},
 >   }
 

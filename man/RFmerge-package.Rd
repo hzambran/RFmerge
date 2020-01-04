@@ -19,11 +19,11 @@ The focus of this package has been put in providing a collection of tools useful
 \tabular{ll}{
 Package: \tab RFmerge\cr
 Type: \tab Package\cr
-Version: \tab 0.1-4\cr
+Version: \tab 0.1-5\cr
 Date: \tab 2020-01-04\cr
 License: \tab GPL >= 3 \cr
 LazyLoad: \tab yes\cr
-Packaged: \tab Sat Jan  4 12:16:40 -03 2020; MZB \cr
+Packaged: \tab Sat Jan  4 13:02:57 -03 2020; MZB \cr
 BuiltUnder: \tab R version 3.6.2 (2019-12-12) -- "Dark and Stormy Night" ; x86_64-pc-linux-gnu (64-bit) \cr
 }
 %%~~ An overview of how to use the package, including the most important functions ~~
@@ -75,7 +75,7 @@ rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis, cov=covariates,
                 id="Code", lat="lat", lon="lon", mask=ValparaisoSHP, training=1)
 
 # Limiting the maximum number of cores to be used in this toy example to 2
-par.nnodes <- max(parallel::detectCores()-1, 2)
+par.nnodes <- min(parallel::detectCores()-1, 2)
 
 # using parallelisation in GNU/Linux machines
 rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis, cov=covariates,  

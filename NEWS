@@ -1,6 +1,9 @@
 NEWS/ChangeLog for RFmerge
 --------------------------
 
+0.1-5   04-Jan-2020
+        o 'RFmerge-package.Rd': now the example correctly uses 2 cores as maximum when package is tested with the "--run-donttest" option
+
 0.1-4   04-Jan-2020
         o DOI was added to the CITATION file and all the references within the package (the article was available online in January 2nd).
         o A maximum of two cores is used in all examples (fixed, with respect to the previous version).
