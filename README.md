@@ -1,7 +1,7 @@
 # RFmerge
 [![CRAN](http://www.r-pkg.org/badges/version/RFmerge)](https://cran.r-project.org/package=RFmerge) [![License](https://img.shields.io/badge/license-GPL%20%28%3E=%203%29-lightgrey.svg?style=flat)](http://www.gnu.org/licenses/gpl-3.0.html) [![monthly](http://cranlogs.r-pkg.org/badges/RFmerge)](https://www.rpackages.io/package/RFmerge) [![total](http://cranlogs.r-pkg.org/badges/grand-total/RFmerge)](https://www.rpackages.io/package/RFmerge) [![Build Status](https://travis-ci.org/hzambran/RFmerge.svg?branch=master)](https://travis-ci.org/hzambran/RFmerge) [![dependencies](https://tinyverse.netlify.com/badge/RFmerge)](https://CRAN.R-project.org/package=RFmerge)
 
-`RFmerge` provides an S3 implementation of the Random Forest MErging Procedure (RF-MEP) developed by Baez-Villanueva et al. (2019) , which combines two or more satellite-based datasets (e.g., precipiation products, topography) with ground observations to produce a new dataset with improved spatio-temporal distribution of the target field. 
+`RFmerge` provides an S3 implementation of the Random Forest MErging Procedure (RF-MEP) developed by Baez-Villanueva et al. (2020) , which combines two or more satellite-based datasets (e.g., precipiation products, topography) with ground observations to produce a new dataset with improved spatio-temporal distribution of the target field. 
 
 In particular, this package was developed to merge different Satellite-based Rainfall Estimates (SREs) with measurements from rain gauges, in order to obtain a new precipitation dataset where the time series in the rain gauges are used to correct different types of errors present in the SREs. However, this package might be used to merge other hydrological/environmental satellite fields with point observations. 
 
@@ -126,7 +126,7 @@ To cite RFmerge in publications use:
 > Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2020). [RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements](https://authors.elsevier.com/c/1aKrd7qzSnJWL), Remote Sensing of Environment, 239, 111610. doi:10.1016/j.rse.2019.111606. Full article available [here](https://authors.elsevier.com/c/1aKrd7qzSnJWL) until February 21th 2020.
 
 * R package:
-> Zambrano-Bigiarini, M.; Baez-Villanueva, O.M., Giraldo-Osorio, J. RFmerge: Merging of Satellite Datasets with Ground Observations using Random Forests. R package version 0.1-0. URL https://hzambran.github.io/RFmerge/. DOI:10.5281/zenodo.1287350.
+> Zambrano-Bigiarini, M.; Baez-Villanueva, O.M., Giraldo-Osorio, J. RFmerge: Merging of Satellite Datasets with Ground Observations using Random Forests. R package version 0.1-4. URL https://hzambran.github.io/RFmerge/. doi:10.5281/zenodo.3581515.
 
 
 
@@ -147,10 +147,10 @@ BibTeX entries for LaTeX users are:
 
 * R package:
 
-> @Manual{Zambrano-Bigiarini+al2019-RFmerge_pkg,
+> @Manual{Zambrano-Bigiarini+al2020-RFmerge_pkg,
 >     title = {RFmerge: Merging of Satellite Datasets with Ground Observations using Random Forests},
 >     author = {Zambrano-Bigiarini, M. and Baez-Villanueva, O.M. and Giraldo-Osorio, J.},
->     note = {R package version 0.1-3. doi:10.5281/zenodo.3583369},
+>     note = {R package version 0.1-4. doi:10.5281/zenodo.3581515},
 >     url = {https://CRAN.R-project.org/package=RFmerge},
 >   }
 
