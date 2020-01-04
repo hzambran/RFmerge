@@ -1,7 +1,7 @@
 %% File RFmerge-package.Rd
 %% Part of the RFmerge R package, https://github.com/hzambran/RFmerge ; 
-%%                                http://cran.r-project.org/web/packages/RFmerge/
-%% Copyright 2019-2019 Mauricio Zambrano-Bigiarini
+%%                                https://cran.r-project.org/package=RFmerge
+%% Copyright 2019-2020 Mauricio Zambrano-Bigiarini, Oscar M. Baez-Villanueva
 %% Distributed under GPL 3 or later
 
 \name{RFmerge-package}
@@ -19,11 +19,11 @@ The focus of this package has been put in providing a collection of tools useful
 \tabular{ll}{
 Package: \tab RFmerge\cr
 Type: \tab Package\cr
-Version: \tab 0.1-3\cr
-Date: \tab 2019-12-23\cr
+Version: \tab 0.1-4\cr
+Date: \tab 2020-01-04\cr
 License: \tab GPL >= 3 \cr
 LazyLoad: \tab yes\cr
-Packaged: \tab Mon Dec 23 15:45:24 -03 2019; MZB \cr
+Packaged: \tab Sat Jan  4 12:16:40 -03 2020; MZB \cr
 BuiltUnder: \tab R version 3.6.2 (2019-12-12) -- "Dark and Stormy Night" ; x86_64-pc-linux-gnu (64-bit) \cr
 }
 %%~~ An overview of how to use the package, including the most important functions ~~

@@ -1,7 +1,7 @@
 %%File ValparaisoPPts.Rd
 %% Part of the RFmerge R package, https://github.com/hzambran/RFmerge ; 
-%%                                http://cran.r-project.org/web/packages/RFmerge/
-%% Copyright 2019-2019 Mauricio Zambrano-Bigiarini, Oscar M. Baez-Villanueva
+%%                                https://cran.r-project.org/package=RFmerge
+%% Copyright 2019-2020 Mauricio Zambrano-Bigiarini, Oscar M. Baez-Villanueva
 %% Distributed under GPL 3 or later
 
 \name{ValparaisoSHP}

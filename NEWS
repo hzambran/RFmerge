@@ -1,20 +1,27 @@
-NEWS/ChangeLog for hydroTSM
+NEWS/ChangeLog for RFmerge
 --------------------------
+
+0.1-4   04-Jan-2020
+        o DOI was added to the CITATION file and all the references within the pacakge (the article was available online in January 2nd).
+        o A maximum of two cores is used in all examples (fixed, with respect to the previous version).
+        o Improved vignettes (minor details).
+
+0.1-3   20-Dec-2019
+        o 'RFmerge.R': new argument 'write2disk' to allow the user to choose whether the output merged layers should be written to disk or not. Default value is 'FALSE'. 
+        o 'RFmerge.R': 'installed.packages()' was replaced by 'find.package', for increasing efficiency to find out if a named package is installed or not.
+        o Examples are now run within a 'donttest{}' piece of code instead of a '\dontrun{}' one.
+        o A maximum of two cores is used in all examples, even if the number of cores available is much larger than that (required by CRAN)
+        o RFmerge.Rd: '\value' tag was added, explaining the returning object of the function.
+        o Hengl et al. (2018) was added as a reference' did not match any file(s) known to git.
+
+0.1-2   18-Dec-2019
+        o The package was built using the "--compact-vignettes="gs+qpdf"  to avoid the following WARNIG from CRAN: "'gs+qpdf' made some significant size reductions".
+
+0.1-1   18-Dec-2019
+        o Full PDF vignette was replaced by a  minimal RMarkdown version to avoid dependencies from rgdal, hydroTSM, and hydroGOF.
+
 0.1-0   15-Dec-2019
         o First release
         o It depends on R >= 3.5.0 because serialized objects (.rds data files) in serialize/load version 3 cannot be read in older versions
         o RMarkdown vignette was replaced by a sttic PDF  one to avoid dependencies from rgdal, hydroTSM, and hydroGOF.
 
-0.1-1   18-Dec-2019
-        o Full PDF vignette was replaced by a  minimal RMarkdown version to avoid dependencies from rgdal, hydroTSM, and hydroGOF.
-
-0.1-2   18-Dec-2019
-        o The package was built using the "--compact-vignettes="gs+qpdf"  to avoid the following WARNIG from CRAN: "'gs+qpdf' made some significant size reductions".
-
-0.1-3   20-Dec-2019
-        o 'RFmerge.R': new argument 'write2disk' to allow the user to choose whether the output merged layers should be written to disk or not. Default value is 'FALSE'. 
-        o 'RFmerge.R': 'installed.packages()' was replaced by 'find.package', for increasing efficiency to find out if a named package is installed or not.
-        o examples are now run within a 'donttest{}' piece of code instead of a '\dontrun{}' one.
-        o a maximum of two cores is used in all examples, even if the number of cores available is much larger than that (required by CRAN)
-        o RFmerge.Rd: '\value' tag was added, explaining the returning object of the function
-        o Hengl et al. (2018) was added as a reference' did not match any file(s) known to git
