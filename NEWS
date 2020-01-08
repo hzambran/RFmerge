@@ -3,7 +3,7 @@ NEWS/ChangeLog for RFmerge
 
 0.1-6   07-Jan-2020
         o 'rmarkdown' was added to 'Suggests' after failing a new CRAN test.
-        o the minimal vignette was modified to automatically set the 'parallel' argumento to 'paralell' or 'parallelWin' depending whether the OS is based on GNU/Linux or Windows, repesectively.
+        o the minimal vignette was modified to automatically set the 'parallel' argumento to 'paralell' or 'parallelWin' depending whether the OS is based on GNU/Linux or Windows, respectively.
 
 0.1-5   04-Jan-2020
         o 'RFmerge-package.Rd': now the example correctly uses 2 cores as maximum when package is tested with the "--run-donttest" option
