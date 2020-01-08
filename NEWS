@@ -1,6 +1,10 @@
 NEWS/ChangeLog for RFmerge
 --------------------------
 
+0.1-6   07-Jan-2020
+        o 'rmarkdown' was added to 'Suggests' after failing a new CRAN test.
+        o the minimal vignette was modified to automatically set the 'parallel' argumento to 'paralell' or 'parallelWin' depending whether the OS is based on GNU/Linux or Windows, repesectively.
+
 0.1-5   04-Jan-2020
         o 'RFmerge-package.Rd': now the example correctly uses 2 cores as maximum when package is tested with the "--run-donttest" option
 
@@ -18,7 +22,7 @@ NEWS/ChangeLog for RFmerge
         o Hengl et al. (2018) was added as a reference' did not match any file(s) known to git.
 
 0.1-2   18-Dec-2019
-        o The package was built using the "--compact-vignettes="gs+qpdf"  to avoid the following WARNIG from CRAN: "'gs+qpdf' made some significant size reductions".
+        o The package was built using the '--compact-vignettes="gs+qpdf"'  to avoid the following WARNIG from CRAN: "'gs+qpdf' made some significant size reductions".
 
 0.1-1   18-Dec-2019
         o Full PDF vignette was replaced by a  minimal RMarkdown version to avoid dependencies from rgdal, hydroTSM, and hydroGOF.
