@@ -16,7 +16,7 @@ citEntry(
          note="",
          doi="10.1016/j.rse.2019.111606",
          url="https://authors.elsevier.com/c/1aKrd7qzSnJWL",
-         textVersion="Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2019). RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements, Remote Sensing of Environment, (accepted).",
+         textVersion="Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2020). RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements, Remote Sensing of Environment, 239, 111610. doi10.1016/j.rse.2019.111606.",
          key = "BaezVillanueva+al2020-RFmerge_article"
          )
 
