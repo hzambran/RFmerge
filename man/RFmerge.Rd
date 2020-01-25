@@ -1,7 +1,7 @@
 %%File RFmerge.Rd
 %% Part of the RFmerge R package, https://github.com/hzambran/RFmerge ; 
-%%                                http://cran.r-project.org/web/packages/RFmerge/
-%% Copyright 2019-2019 Mauricio Zambrano-Bigiarini, Oscar M. Baez-Villanueva
+%%                                https://cran.r-project.org/package=RFmerge
+%% Copyright 2019-2020 Mauricio Zambrano-Bigiarini, Oscar M. Baez-Villanueva
 %% Distributed under GPL 3 or later
 
 \name{RFmerge}
@@ -25,7 +25,7 @@ RFmerge(x, ...)
         id="id", lat = "lat", lon = "lon", ED = TRUE, 
         seed = NULL, ntree = 2000, na.action = stats::na.omit,
         parallel=c("none", "parallel", "parallelWin"),
-	par.nnodes=parallel::detectCores()-1, 
+        par.nnodes=parallel::detectCores()-1, 
         par.pkgs= c("raster", "randomForest", "zoo"), write2disk=FALSE,
         drty.out, use.pb=TRUE, verbose=TRUE,...)
 
@@ -33,7 +33,7 @@ RFmerge(x, ...)
         id="id", lat = "lat", lon = "lon", ED = TRUE, 
         seed = NULL, ntree = 2000, na.action = stats::na.omit,
         parallel=c("none", "parallel", "parallelWin"),
-	par.nnodes=parallel::detectCores()-1, 
+        par.nnodes=parallel::detectCores()-1, 
         par.pkgs= c("raster", "randomForest", "zoo"), write2disk=FALSE,
         drty.out, use.pb=TRUE, verbose=TRUE, ...)
 
@@ -47,9 +47,9 @@ Every column must represent one ground-based station and the codes of the statio
 }  
     \item{metadata}{
 data.frame with the metadata of the ground-based stations.  At least, it MUST have the following 3 columns: \cr
--) \kbd{ID}: This column stores the ID of each ground-based observation. \cr
--) \kbd{lat}: This column stores the latitude of ech ground observation. Default values is \kbd{lat}.  \cr
--) \kbd{lon}: This column stores the longitude of ech ground observation. Default values is \kbd{lon}.
+-) \kbd{id}: This column stores the unique identifier (ID) of each ground-based observation. Default value is \kbd{"id"}. \cr
+-) \kbd{lat}: This column stores the latitude of ech ground observation. Default value is \kbd{"lat"}. \cr
+-) \kbd{lon}: This column stores the longitude of ech ground observation. Default value is \kbd{"lon"}.
 }
     \item{cov}{
 List with all the covariates used as independent variables in the Random Forest model. The individual covariates can be a \kbd{RasterStack} or \kbd{RasterBrick} object when they vary in time, or they can be a single \kbd{RasterLayer} object when they do not change in time (e.g., a digital elevation model). \cr
@@ -79,7 +79,7 @@ logical, should the Euclidean distances be computed an used as covariates in the
 Numeric, indicating  a single value, interpreted as an integer, or null.
 }
   \item{parallel}{
-character, indicates how to parallelise \sQuote{hydroPSO} (to be precise, only the evaluation of the objective function \code{fn} is parallelised). Valid values are: \cr
+character, indicates how to parallelise \sQuote{RFmerge} (to be precise, only the evaluation of the objective function \code{fn} is parallelised). Valid values are: \cr
 -)\kbd{none}: no parallelisation is made (this is the default value)\cr
 -)\kbd{parallel}: parallel computations for network clusters or machines with multiple cores or CPUs. A \sQuote{FORK} cluster is created with the \code{\link[parallel]{makeForkCluster}} function.  When \code{fn.name="hydromod"} the evaluation of the objective function \code{fn} is done with the \code{\link[parallel]{clusterApply}} function of the \pkg{parallel} package. When \code{fn.name!="hydromod"} the evaluation of the objective function \code{fn} is done with the \code{\link[parallel]{parRapply}} function of the \pkg{parallel} package.\cr
 -)\kbd{parallelWin}: parallel computations for network clusters or machines with multiple cores or CPUs (this is the only parallel implementation that works on Windows machines). A \sQuote{PSOCK} cluster is created with the \code{\link[parallel]{makeCluster}} function. When \code{fn.name="hydromod"} the evaluation of the objective function \code{fn} is done with the \code{\link[parallel]{clusterApply}} function of the \pkg{parallel} package. When \code{fn.name!="hydromod"} the evaluation of the objective function \code{fn} is done with the \code{\link[parallel]{parRapply}} function of the \pkg{parallel} package. 
@@ -120,10 +120,10 @@ further arguments to be passed to the low level function \kbd{randomForest.defau
 %%  ~~ If necessary, more details than the description above ~~
 %%}
 \value{
-It return a \code{RasterStack} object with as many layers as time steps were present in \code{x}. Each one of the layers in the output object has the same spatial resolution and spatial extent as te \code{cov} argument.
+It returns a \code{RasterStack} object with as many layers as time steps are present in \code{x}. Each one of the layers in the output object has the same spatial resolution and spatial extent as the \code{cov} argument.
 }
 \references{
-\cite{Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2019). RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements, Remote Sensing of Environment, (accepted)} \cr
+\cite{Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2020). RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements, Remote Sensing of Environment, 239, 111610. \doi{10.1016/j.rse.2019.111606}. <https://authors.elsevier.com/c/1aKrd7qzSnJWL>}. \cr
 
 \cite{Hengl, T., Nussbaum, M., Wright, M. N., Heuvelink, G. B., & Gr\"{a}ler, B. (2018). Random forest as a generic framework for predictive modeling of spatial and spatio-temporal variables. PeerJ, 6, e5518}.
 }
@@ -173,7 +173,7 @@ rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis, cov=covariates,
                 id="Code", lat="lat", lon="lon", mask=ValparaisoSHP, training=1)
 
 # Limiting the maximum number of cores to be used in this toy example to 2
-par.nnodes <- max(parallel::detectCores()-1, 2)
+par.nnodes <- min(parallel::detectCores()-1, 2)
 
 # using parallelisation in GNU/Linux machines
 rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis, cov=covariates,  

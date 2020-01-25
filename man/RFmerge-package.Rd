@@ -1,7 +1,7 @@
 %% File RFmerge-package.Rd
 %% Part of the RFmerge R package, https://github.com/hzambran/RFmerge ; 
-%%                                http://cran.r-project.org/web/packages/RFmerge/
-%% Copyright 2019-2019 Mauricio Zambrano-Bigiarini
+%%                                https://cran.r-project.org/package=RFmerge
+%% Copyright 2019-2020 Mauricio Zambrano-Bigiarini, Oscar M. Baez-Villanueva
 %% Distributed under GPL 3 or later
 
 \name{RFmerge-package}
@@ -9,21 +9,20 @@
 \alias{RFmerge-package}
 \docType{package}
 \title{
-Management, analysis, interpolation and plot of hydrological time series, with focus on hydrological modelling
+Merging of Satellite Datasets with Ground Observations using Random Forests
 }
 \description{
-S3 functions for management, analysis, interpolation and plotting of time series used in hydrology and related environmental sciences. In particular, this package is highly oriented to hydrological modelling tasks. 
-The focus of this package has been put in providing a collection of tools useful for the daily work of hydrologists (although an effort was made to optimise each function as much as possible, functionality has had priority over speed). Bugs / comments / questions / collaboration of any kind are very welcomed, and in particular, datasets that can be included in this package for academic purposes.
+S3 implementation of the Random Forest MErging Procedure (RF-MEP), which combines two or more satellite-based datasets (e.g., precipitation products, topography) with ground observations to produce a new dataset with improved spatio-temporal distribution of the target field. In particular, this package was developed to merge different Satellite-based Rainfall Estimates (SREs) with measurements from rain gauges, in order to obtain a new precipitation dataset where the time series in the rain gauges are used to correct different types of errors present in the SREs. However, this package might be used to merge other hydrological/environmental satellite fields with point observations. For details, see Baez-Villanueva et al. (2020) <doi:10.1016/j.rse.2019.111606>. Bugs / comments / questions / collaboration of any kind are very welcomed.
 }
 \details{
 \tabular{ll}{
 Package: \tab RFmerge\cr
 Type: \tab Package\cr
-Version: \tab 0.1-3\cr
-Date: \tab 2019-12-23\cr
+Version: \tab 0.1-5\cr
+Date: \tab 2020-01-07\cr
 License: \tab GPL >= 3 \cr
 LazyLoad: \tab yes\cr
-Packaged: \tab Mon Dec 23 15:45:24 -03 2019; MZB \cr
+Packaged: \tab Tue Jan  7 21:17:04 -03 2020; MZB \cr
 BuiltUnder: \tab R version 3.6.2 (2019-12-12) -- "Dark and Stormy Night" ; x86_64-pc-linux-gnu (64-bit) \cr
 }
 %%~~ An overview of how to use the package, including the most important functions ~~
@@ -34,15 +33,15 @@ Mauricio Zambrano-Bigiarini, Oscar M. Baez-Villanueva \cr
 Maintainer: Mauricio Zambrano-Bigiarini <mzb.devel@gmail>
 }
 \references{
-\cite{Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2019). RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements, Remote Sensing of Environment, (accepted)} \cr
+\cite{Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2020). RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements, Remote Sensing of Environment, 239, 111610. \doi{10.1016/j.rse.2019.111606}. <https://authors.elsevier.com/c/1aKrd7qzSnJWL>}. \cr
 
 \cite{Hengl, T., Nussbaum, M., Wright, M. N., Heuvelink, G. B., & Gr\"{a}ler, B. (2018). Random forest as a generic framework for predictive modeling of spatial and spatio-temporal variables. PeerJ, 6, e5518}.
 }
 
 \keyword{ package }
 \seealso{
-\url{https://cran.r-project.org/package=hydroGOF}. \cr
-\url{https://cran.r-project.org/package=raster}.
+\url{https://cran.r-project.org/package=raster}. \cr
+\url{https://cran.r-project.org/package=hydroGOF}.
 }
 \examples{
 library(rgdal)
@@ -75,7 +74,7 @@ rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis, cov=covariates,
                 id="Code", lat="lat", lon="lon", mask=ValparaisoSHP, training=1)
 
 # Limiting the maximum number of cores to be used in this toy example to 2
-par.nnodes <- max(parallel::detectCores()-1, 2)
+par.nnodes <- min(parallel::detectCores()-1, 2)
 
 # using parallelisation in GNU/Linux machines
 rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis, cov=covariates,  

@@ -159,7 +159,7 @@ stations <- ValparaisoPPgis
 
 Now, we can plot the DEM with the locations of the rain gauge stations that will be used in the computation of RF-MEP, and overlying the boundaries of the study area and the stations (only their first attribute):
 ```{r PlottingDEMwithObs, fig.width = 4, fig.height = 4, fig.align = "center"}
-plot(ValparaisoDEM5km, main = "SRTM-v4", xlab = "Longitude", ylab = "Latitude", col = terrain.colors(255))
+plot(ValparaisoDEM5km, main="SRTM-v4", xlab="Longitude", ylab="Latitude", col=terrain.colors(255))
 plot(ValparaisoSHP[1], add=TRUE, col="transparent")
 plot(stations[1], add=TRUE, pch = 16, col="black")
 ```
@@ -241,7 +241,7 @@ Now, we can create the covariates object to be used in the `RFmerge` function. F
 
 ```{r CovariatesCreation}
 covariates.utm <- list(chirps=CHIRPS5km.utm, persianncdr=PERSIANNcdr5km.utm, 
-                   dem=ValparaisoDEM5km.utm)
+                       dem=ValparaisoDEM5km.utm)
 ```
 
 
@@ -257,22 +257,24 @@ rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.
                  training=0.8, write2disk=TRUE, drty.out=drty.out)
 ```
 
-Using parallelisation in GNU/Linux machines:
+Using parallelisationin GNU/Linux machines, with a maximum number of nodes/cores to be used equal to 4:
 ```{r RFmergeWithLinuxParallelisation, eval = TRUE}
+par.nnodes <- min(parallel::detectCores()-1, 4)
 drty.out <- file.path(tempdir(), "Test.par")
 rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm,
                  id="ID", lat="lat", lon="lon", mask=ValparaisoSHP.utm, 
                  training=0.8, write2disk=TRUE, drty.out=drty.out, 
-                 parallel="parallel")
+                 parallel="parallel", par.nnodes=par.nnodes)
 ```
 
-Using parallelisation in Window$ machines
+Using parallelisation in Window$ machines, with a maximum number of nodes/cores to be used equal to 4:
 ```{r RFmergeWithWindowsParallelisation, eval = FALSE}
+par.nnodes <- min(parallel::detectCores()-1, 4)
 drty.out <- file.path(tempdir(), "Test.par")
 rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm, 
                  id="Code", lat="lat", lon="lon", mask=ValparaisoSHP.utm, 
                  training=0.8, write2disk=TRUE, drty.out=drty.out, 
-                 parallel="parallelWin")
+                 parallel="parallelWin", par.nnodes=par.nnodes)
 ```
 
 
@@ -317,8 +319,7 @@ eval.gis <- read.csv(metadata.path)
 Visualisation of one day of precipitation using RF-MEP, and overlying the boundaries of the study area (only its first attribute) and the gauging stations included in the independent evaluation dataset:
 
 ```{r, fig.width = 4, fig.height = 4, fig.align = "center", eval = TRUE}
-plot(rfmep[[11]], main = "RF-MEP precipitation for 1983-01-11", 
-     xlab = "Longitude", ylab = "Latitude")
+plot(rfmep[[11]], main = "RF-MEP precipitation for 1983-01-11", xlab="Longitude", ylab="Latitude")
 plot(ValparaisoSHP.utm[1], add=TRUE, col="transparent")
 plot(eval.gis.utm, add=TRUE, pch = 16, col="black")
 ```
@@ -396,7 +397,7 @@ paste("RFmerge", sessionInfo()$otherPkgs$RFmerge$Version)
 Daily Precipitation Climate Data Record from Multisatellite Observations for Hydrological and Climate Studies, Bulletin of the American
 Meteorological Society, 96, 69–83, doi:10.1175/BAMS-D-13-00068.1.
 
-2. Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2019). RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements, Remote Sensing of Environment (*accepted*).
+2. Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2020). RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements, Remote Sensing of Environment, 239, 111610. doi:10.1016/j.rse.2019.111606.
 
 3. Funk, C., Peterson, P., Landsfeld, M., Pedreros, D., Verdin, J., Shukla, S., Husak, G., Rowland, J., Harrison, L., Hoell, A., and Michaelsen,
 J. (2015) The climate hazards infrared precipitation with stations-a new environmental record for monitoring extremes, Sci Data, 2, 150 066, doi:10.1038/sdata.2015.66.
