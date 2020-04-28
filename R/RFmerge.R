@@ -34,7 +34,7 @@
 #              as a stack file (in the case of the dynamic covariates) or as a raster file (in the case of static covariates
 #             , e.g., a digital elevation model). Every covariate must be stored in a different object in the list.
 #
-# 'mask'     : spatial vector object of the study area. class(mask) must be SpatialPolygonsDataFrame  or \kbd{sf} with "POLYGON" or "MULTIPOLYGON" geometry.
+# 'mask'     : spatial vector object of the study area. class(mask) must be a  \kbd{sf} object with "POLYGON" or "MULTIPOLYGON" geometry.
 #
 # 'drty.out' : path to the directory where the final product and the training and evaluation sets will be exported
 #
@@ -117,12 +117,6 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
   # Checking the mask
   mask.crs <- NULL
   if (!missing(mask)) {
-    if ( class(mask) %in% c("SpatialPolygons", "SpatialPolygonsDataFrame") ) 
-      mask <- sf::st_as_sf(mask)
-
-    if ( length(mask) > 1 )
-      mask <- sf::st_combine(mask)
-    
     if ( !sf::st_is(mask, c("POLYGON", "MULTIPOLYGON")) ) {
       stop("Invalid argument: 'mask' must be a 'sf' (multi)polygon object !!")
     } else mask.crs <- sf::st_crs(mask)$proj4string
