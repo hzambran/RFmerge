@@ -18,11 +18,11 @@ S3 implementation of the Random Forest MErging Procedure (RF-MEP), which combine
 \tabular{ll}{
 Package: \tab RFmerge\cr
 Type: \tab Package\cr
-Version: \tab 0.1-7\cr
-Date: \tab 2020-04-27\cr
+Version: \tab 0.1-8\cr
+Date: \tab 2020-04-28\cr
 License: \tab GPL >= 3 \cr
 LazyLoad: \tab yes\cr
-Packaged: \tab Tue Apr 28 02:04:43 -04 2020; MZB \cr
+Packaged: \tab Tue Apr 28 17:09:10 -04 2020; MZB \cr
 BuiltUnder: \tab R version 3.6.3 (2020-02-29) -- "Holding the Windsock" ; x86_64-pc-linux-gnu (64-bit) \cr
 }
 %%~~ An overview of how to use the package, including the most important functions ~~

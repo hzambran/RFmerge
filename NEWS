@@ -1,6 +1,9 @@
 NEWS/ChangeLog for RFmerge
 --------------------------
 
+0.1-8   28-Apr-2020
+        o Update version after CRAN reported a problem with the vignette when tested agains in R-devel.
+
 0.1-7   27-Apr-2020
         o 'rfmerge': sf::st_crs(x])[["epsg"]] was changed to 'sf::st_crs(x)$proj4string' for identifying the projection of a vectorial or raster object. This was due to a report from Edzer Pebema mentioning that the old call used a legacy 'crc' structure, which was changed in the new verison of the 'sf' package.
        
