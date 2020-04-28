@@ -19,11 +19,7 @@
 # Started: 07-Nov-2019 (the package)                                           #
 # Updates: 16-Nov-2019 ; 10-Dec-2019 ; 11-Dec-2019 ; 12-Dec-2019 ; 13-Dec-2019 #
 #          14-Dec-2019 ; 17-Dec-2019 ; 20-Dec-2019 ; 23-Dec-2019               #
-<<<<<<< HEAD
-#          27-Apr-2020                                                         #
-=======
-#          30-Jan-2020                                                         #
->>>>>>> b4fa20a9e8e582efcefae5691906ca4d2d2cbb6b
+#          30-Jan-2020 ; 27-Apr-2020                                           #
 ################################################################################
 
 # 'x'        : zoo object with ground-based values that will be used as the dependent variable to train the RF model.
@@ -38,7 +34,7 @@
 #              as a stack file (in the case of the dynamic covariates) or as a raster file (in the case of static covariates
 #             , e.g., a digital elevation model). Every covariate must be stored in a different object in the list.
 #
-# 'mask'     : spatial vector object of the study area. class(mask) must be SpatialPolygonsDataFrame.
+# 'mask'     : spatial vector object of the study area. class(mask) must be SpatialPolygonsDataFrame  or \kbd{sf} with "POLYGON" or "MULTIPOLYGON" geometry.
 #
 # 'drty.out' : path to the directory where the final product and the training and evaluation sets will be exported
 #
