@@ -100,7 +100,7 @@ Numeric indicating the maximum number trees to grow in the Random Forest algorit
 A function to specify the action to be taken if NAs are found.  (NOTE: If given, this argument must be named.)
 }   
   \item{write2disk}{
-logical, indicates if the output merged raster layers and the training and avaluation datasets (two files each, one with time series and other with metadata) will be written to the disk. By default \code{write2disk=TRUE}
+logical, indicates if the output merged raster layers and the training and avaluation datasets (two files each, one with time series and other with metadata) will be written to the disk. By default \code{write2disk=FALSE}
 }
    \item{drty.out}{
 Character with the full path to the directory where the final merged product will be exported as well as the training and evaluation datasets. Only used when \code{write2disk=TRUE}

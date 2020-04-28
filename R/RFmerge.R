@@ -19,7 +19,11 @@
 # Started: 07-Nov-2019 (the package)                                           #
 # Updates: 16-Nov-2019 ; 10-Dec-2019 ; 11-Dec-2019 ; 12-Dec-2019 ; 13-Dec-2019 #
 #          14-Dec-2019 ; 17-Dec-2019 ; 20-Dec-2019 ; 23-Dec-2019               #
+<<<<<<< HEAD
 #          27-Apr-2020                                                         #
+=======
+#          30-Jan-2020                                                         #
+>>>>>>> b4fa20a9e8e582efcefae5691906ca4d2d2cbb6b
 ################################################################################
 
 # 'x'        : zoo object with ground-based values that will be used as the dependent variable to train the RF model.
@@ -114,10 +118,16 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
   } else if ( ( !(id %in% colnames(metadata) ) ) | ( !(lat %in% colnames(metadata) ) ) | ( !(lon %in% colnames(metadata) ) ) )
       stop("Invalid argument: 'metadata' must have 'id' (identifier), 'lon' (longitude) and 'lat' (latitude) fields !")
 
-  # Cheking the mask
+  # Checking the mask
   mask.crs <- NULL
   if (!missing(mask)) {
-    if ( !sf::st_is(mask, c("POLYGON", "MULIPOLYGON")) ) {
+    if ( class(mask) %in% c("SpatialPolygons", "SpatialPolygonsDataFrame") ) 
+      mask <- sf::st_as_sf(mask)
+
+    if ( length(mask) > 1 )
+      mask <- sf::st_combine(mask)
+    
+    if ( !sf::st_is(mask, c("POLYGON", "MULTIPOLYGON")) ) {
       stop("Invalid argument: 'mask' must be a 'sf' (multi)polygon object !!")
     } else mask.crs <- sf::st_crs(mask)$proj4string
   } # IF end
