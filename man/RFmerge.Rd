@@ -57,7 +57,7 @@ All time-varying covariates in \code{cov} MUST have the same number of layers (b
 }
     \item{mask}{
 OPTIONAL. If provided, the final merged product maks out all values in \code{cov} outside \code{mask}. \cr
-Spatial object (vectorial) with the spatial borders of the study area (e.g., catchment, administrative borders). \code{class(mask)} must be \kbd{SpatialPolygonsDataFrame} or \kbd{sf} with "POLYGON" or "MULTIPOLYGON" geometry.
+Spatial object (vectorial) with the spatial borders of the study area (e.g., catchment, administrative borders). \code{class(mask)} must be a \kbd{sf} object with "POLYGON" or "MULTIPOLYGON" geometry.
 }
    \item{training}{
 Numeric indicating the percentage of stations that will be used in the training set. \cr

@@ -19,7 +19,7 @@
 # Started: 07-Nov-2019 (the package)                                           #
 # Updates: 16-Nov-2019 ; 10-Dec-2019 ; 11-Dec-2019 ; 12-Dec-2019 ; 13-Dec-2019 #
 #          14-Dec-2019 ; 17-Dec-2019 ; 20-Dec-2019 ; 23-Dec-2019               #
-#          30-Jan-2020                                                         #
+#          30-Jan-2020 ; 27-Apr-2020                                           #
 ################################################################################
 
 # 'x'        : zoo object with ground-based values that will be used as the dependent variable to train the RF model.
@@ -34,7 +34,7 @@
 #              as a stack file (in the case of the dynamic covariates) or as a raster file (in the case of static covariates
 #             , e.g., a digital elevation model). Every covariate must be stored in a different object in the list.
 #
-# 'mask'     : spatial vector object of the study area. class(mask) must be SpatialPolygonsDataFrame.
+# 'mask'     : spatial vector object of the study area. class(mask) must be a  \kbd{sf} object with "POLYGON" or "MULTIPOLYGON" geometry.
 #
 # 'drty.out' : path to the directory where the final product and the training and evaluation sets will be exported
 #
@@ -117,15 +117,9 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
   # Checking the mask
   mask.crs <- NULL
   if (!missing(mask)) {
-    if ( class(mask) %in% c("SpatialPolygons", "SpatialPolygonsDataFrame") ) 
-      mask <- sf::st_as_sf(mask)
-
-    if ( length(mask) > 1 )
-      mask <- sf::st_combine(mask)
-    
     if ( !sf::st_is(mask, c("POLYGON", "MULTIPOLYGON")) ) {
       stop("Invalid argument: 'mask' must be a 'sf' (multi)polygon object !!")
-    } else mask.crs <- sf::st_crs(mask)[["epsg"]]
+    } else mask.crs <- sf::st_crs(mask)$proj4string
   } # IF end
   
   # Cheking if the user specified the seed
@@ -145,7 +139,7 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
       } else
           if (!raster::compareRaster(cov)) {
             stop("Invalid argument: All the elements in 'cov' must have the same spatial extent, CRS, rotation and geometry !!")
-          } else cov.crs <- sf::st_crs(cov[[1]])[["epsg"]]
+          } else cov.crs <- sf::st_crs(cov[[1]])$proj4string
 
 
   # Checking that the CRS of 'mask' and 'cov' are the same, if 'mask' is provided
