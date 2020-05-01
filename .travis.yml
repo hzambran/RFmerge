@@ -28,5 +28,5 @@ notifications:
 
 script:
   - R CMD build . --compact-vignettes=gs+qpdf
-  - R CMD check *tar.gz --as-cran travis_wait 30 r install
+  - travis_wait 30 R CMD check *tar.gz --as-cran
 
