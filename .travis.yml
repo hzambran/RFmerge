@@ -2,8 +2,6 @@ language: r
 sudo: false
 cache: packages
 
-install: travis_wait 30 r install
-
 r:
  - oldrel
  - release
@@ -27,4 +25,8 @@ notifications:
   email:
     on_success: change
     on_failure: change
+
+script:
+  - R CMD build . --compact-vignettes=gs+qpdf
+  - R CMD check *tar.gz --as-cran travis_wait 30 r install
 
