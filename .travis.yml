@@ -12,6 +12,9 @@ branches:
     - example-data
     - gh-pages
 
+before_install:
+    - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable --yes
+
 apt_packages: 
     - gdal-bin
     - libgdal-dev
