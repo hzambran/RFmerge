@@ -1,4 +1,4 @@
-importFrom("raster", brick, stack, mask, extract, nlayers, raster, distance, rasterize, writeRaster, compareRaster)
+importFrom("raster", brick, stack, mask, extract, nlayers, raster, distance, rasterize, writeRaster, compareRaster, compareCRS, extent, proj4string)
 #importFrom("velox", velox)
 importFrom("sp", "coordinates<-", areaSpatialGrid)
 importFrom("sf", st_is, st_crs, st_as_sf, st_combine)
