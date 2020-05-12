@@ -19,7 +19,7 @@
 # Started: 07-Nov-2019 (the package)                                           #
 # Updates: 16-Nov-2019 ; 10-Dec-2019 ; 11-Dec-2019 ; 12-Dec-2019 ; 13-Dec-2019 #
 #          14-Dec-2019 ; 17-Dec-2019 ; 20-Dec-2019 ; 23-Dec-2019               #
-#          30-Jan-2020 ; 27-Apr-2020                                           #
+#          30-Jan-2020 ; 27-Apr-2020 ; 12-May-2020                             #
 ################################################################################
 
 # 'x'        : zoo object with ground-based values that will be used as the dependent variable to train the RF model.
@@ -139,13 +139,18 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
       } else
           if (!raster::compareRaster(cov)) {
             stop("Invalid argument: All the elements in 'cov' must have the same spatial extent, CRS, rotation and geometry !!")
-          } else cov.crs <- sf::st_crs(cov[[1]])$proj4string
+          } else cov.crs <- raster::proj4string(cov[[1]])
 
 
   # Checking that the CRS of 'mask' and 'cov' are the same, if 'mask' is provided
   if (!missing(mask)) {
-    if (mask.crs != cov.crs)
-      stop("Invalid argument: 'cov' and 'mask' have different CRS !!")
+    if (raster::compareCRS(mask.crs,cov.crs))
+      warning("Invalid argument: 'cov' and 'mask' have different CRS. Please ensure they actually have the same CRS !!.")
+  } # IF end
+
+  e <- intersect(raster::extent(mask), raster::extent(cov[[1]]))
+  if (is.null(e)) {
+    stop("Invalid argument: the spatial extents of 'cov' and 'mask' do not overlap !!")
   } # IF end
 
   # Cheking that all the time-varying covariates have the same length or they have 1 layer only
