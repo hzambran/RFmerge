@@ -197,20 +197,20 @@ If you would like to test the use of Euclidean distances as covariates in `RFmer
 Because `ValparaisoPPgis`, `CHIRPS5km`, and `PERSIANNcdr5km` all use geographical coordinates, we need first to project their values into a [projected coordinate reference system (CRS)](https://www.earthdatascience.org/courses/earth-analytics-python/spatial-data-vector-shapefiles/geographic-vs-projected-coordinate-reference-systems-python/), i.e., one defined on a flat, two-dimensional surface.
 
 
-First, we reproject the satellite products from geographic coordinates into WGS 84 / UTM zone 19S (EPSG:32719):
+First, we reproject the rainfall observations from geographic coordinates into WGS 84 / UTM zone 19S (EPSG:32719):
+
+```{r ReprojectingMetadata}
+stations.utm <- sf::st_transform(stations, crs=32719) # for 'sf' objects
+```
+
+Second, we reproject the satellite products from geographic coordinates into WGS 84 / UTM zone 19S (EPSG:32719):
 ```{r ReprojectingRasters}
-utmz19s.p4s <- CRS("+init=epsg:32719") # WGS 84 / UTM zone 19S
+#utmz19s.p4s <- CRS("+init=epsg:32719") # WGS 84 / UTM zone 19S
+utmz19s.p4s <- sf::st_crs(stations.utm)$proj4string # WGS 84 / UTM zone 19S
 
 CHIRPS5km.utm        <- projectRaster(from=CHIRPS5km, crs=utmz19s.p4s)
 PERSIANNcdr5km.utm   <- projectRaster(from=PERSIANNcdr5km, crs=utmz19s.p4s)
 ValparaisoDEM5km.utm <- projectRaster(from=ValparaisoDEM5km, crs=utmz19s.p4s)
-```
-
-
-Second, we reproject the rainfall observations from geographic coordinates into WGS 84 / UTM zone 19S (EPSG:32719):
-
-```{r ReprojectingMetadata}
-stations.utm <- sf::st_transform(stations, crs=32719) # for 'sf' objects
 ```
 
 
@@ -263,8 +263,8 @@ onWin <- ( (R.version$os=="mingw32") | (R.version$os=="mingw64") )
 ifelse(onWin, parallel <- "parallelWin", parallel <- "parallel")
 ```
 
-Using parallelisationin GNU/Linux machines, with a maximum number of nodes/cores to be used equal to 2:
-```{r RFmergeWithLinuxParallelisation, eval = TRUE}
+Using parallelisation, with a maximum number of nodes/cores to be used equal to 2:
+```{r RFmergeWithParallelisation, eval = TRUE}
 par.nnodes <- min(parallel::detectCores()-1, 2)
 drty.out <- file.path(tempdir(), "Test.par")
 rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm,
@@ -273,15 +273,6 @@ rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.
                  parallel=parallel, par.nnodes=par.nnodes)
 ```
 
-Using parallelisation in Window$ machines, with a maximum number of nodes/cores to be used equal to 2:
-```{r RFmergeWithWindowsParallelisation, eval = FALSE}
-par.nnodes <- min(parallel::detectCores()-1, 2)
-drty.out <- file.path(tempdir(), "Test.par")
-rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm, 
-                 id="Code", lat="lat", lon="lon", mask=ValparaisoSHP.utm, 
-                 training=0.8, write2disk=TRUE, drty.out=drty.out, 
-                 parallel=parallelWin, par.nnodes=par.nnodes)
-```
 
 ## Expected outputs
 
