@@ -139,7 +139,7 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
       } else
           if (!raster::compareRaster(cov)) {
             stop("Invalid argument: All the elements in 'cov' must have the same spatial extent, CRS, rotation and geometry !!")
-          } else cov.crs <- raster::proj4string(cov[[1]])
+          } else cov.crs <- raster::crs(cov[[1]])
 
 
   # Checking that the CRS of 'mask' and 'cov' are the same, if 'mask' is provided
