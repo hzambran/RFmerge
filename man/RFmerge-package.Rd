@@ -18,12 +18,12 @@ S3 implementation of the Random Forest MErging Procedure (RF-MEP), which combine
 \tabular{ll}{
 Package: \tab RFmerge\cr
 Type: \tab Package\cr
-Version: \tab 0.1-8\cr
-Date: \tab 2020-04-28\cr
+Version: \tab 0.1-9\cr
+Date: \tab 2020-05-12\cr
 License: \tab GPL >= 3 \cr
 LazyLoad: \tab yes\cr
-Packaged: \tab Tue Apr 28 17:09:10 -04 2020; MZB \cr
-BuiltUnder: \tab R version 3.6.3 (2020-02-29) -- "Holding the Windsock" ; x86_64-pc-linux-gnu (64-bit) \cr
+Packaged: \tab Tue May 12 00:30:37 -04 2020; MZB \cr
+BuiltUnder: \tab R version 4.0.0 (2020-04-24) -- "Arbor Day" ; x86_64-pc-linux-gnu (64-bit) \cr
 }
 %%~~ An overview of how to use the package, including the most important functions ~~
 }
@@ -73,19 +73,16 @@ covariates <- list(chirps=CHIRPS5km, persianncdr=PERSIANNcdr5km,
 rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis, cov=covariates, 
                 id="Code", lat="lat", lon="lon", mask=ValparaisoSHP, training=1)
 
-# Limiting the maximum number of cores to be used in this toy example to 2
+# Detecting if your OS is Windows or GNU/Linux, 
+# and setting the 'parallel' argument accordingly:
+onWin <- ( (R.version$os=="mingw32") | (R.version$os=="mingw64") )
+ifelse(onWin, parallel <- "parallelWin", parallel <- "parallel")
+
+#Using parallelisation, with a maximum number of nodes/cores to be used equal to 2:
 par.nnodes <- min(parallel::detectCores()-1, 2)
-
-# using parallelisation in GNU/Linux machines
-rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis, cov=covariates,  
-                id="Code", lat="lat", lon="lon", mask=ValparaisoSHP, training=1,
-                parallel="parallel", par.nnodes=par.nnodes)
-
-
-# using parallelisation in Window$ machines
-rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis, cov=covariates,  
-                id="Code", lat="lat", lon="lon", mask=ValparaisoSHP, training=1,
-                parallel="parallelWin", par.nnodes=par.nnodes)
+rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis, cov=covariates,
+                 id="Code", lat="lat", lon="lon", mask=ValparaisoSHP, 
+                 training=0.8, parallel=parallel, par.nnodes=par.nnodes)
 }
 
 }

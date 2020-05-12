@@ -172,19 +172,17 @@ covariates <- list(chirps=CHIRPS5km, persianncdr=PERSIANNcdr5km,
 rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis, cov=covariates, 
                 id="Code", lat="lat", lon="lon", mask=ValparaisoSHP, training=1)
 
-# Limiting the maximum number of cores to be used in this toy example to 2
+
+# Detecting if your OS is Windows or GNU/Linux, 
+# and setting the 'parallel' argument accordingly:
+onWin <- ( (R.version$os=="mingw32") | (R.version$os=="mingw64") )
+ifelse(onWin, parallel <- "parallelWin", parallel <- "parallel")
+
+#Using parallelisation, with a maximum number of nodes/cores to be used equal to 2:
 par.nnodes <- min(parallel::detectCores()-1, 2)
-
-# using parallelisation in GNU/Linux machines
-rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis, cov=covariates,  
-                id="Code", lat="lat", lon="lon", mask=ValparaisoSHP, training=1,
-                parallel="parallel", par.nnodes=par.nnodes)
-
-
-# using parallelisation in Window$ machines
-rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis, cov=covariates,  
-                id="Code", lat="lat", lon="lon", mask=ValparaisoSHP, training=1,
-                parallel="parallelWin", par.nnodes=par.nnodes)
+rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis, cov=covariates,
+                 id="Code", lat="lat", lon="lon", mask=ValparaisoSHP, 
+                 training=0.8, parallel=parallel, par.nnodes=par.nnodes)
 }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

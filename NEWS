@@ -1,10 +1,13 @@
 NEWS/ChangeLog for RFmerge
 --------------------------
 
-0.1-8   28-Apr-2020
+0.1-9   12-May-2020
+        o Updated version after CRAN reported an error in the vignette ("Invalid argument: 'cov' and 'mask' have different CRS !!"). this error ws previously undetected because the pacakge was tested with R-devel in combination with GEOS 3.5.1, GDAL 2.2.2, PROJ 4.9.2, while CRAN uses GEOS 3.8.1, GDAL 3.0.4, PROJ 7.0.0.
+
+0.1-8   28-Apr-2020 (not public)
         o Updated version after CRAN reported a problem with the vignette when tested against R-devel.
 
-0.1-7   27-Apr-2020
+0.1-7   27-Apr-2020 (not public)
         o 'rfmerge': sf::st_crs(x])[["epsg"]] was changed to 'sf::st_crs(x)$proj4string' for identifying the projection of a vectorial or raster object. This was due to a report from Edzer Pebema mentioning that the old call used a legacy 'crc' structure, which was changed in the new verison of the 'sf' package.
        
 0.1-6   07-Jan-2020
