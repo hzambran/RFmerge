@@ -129,7 +129,7 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
   if ( (training < 0) | (training > 1) )
     stop("Invalid argument: 'training' must be in [0, 1]")
 
-  # Cheking 'cov'
+  # Checking 'cov'
   cov.crs <- NULL
   if( !is.list(cov) ) { # is it a list object?
     stop("Invalid argument: 'cov' must be a list with all the covariates !")
