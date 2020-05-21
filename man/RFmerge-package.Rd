@@ -18,8 +18,8 @@ S3 implementation of the Random Forest MErging Procedure (RF-MEP), which combine
 \tabular{ll}{
 Package: \tab RFmerge\cr
 Type: \tab Package\cr
-Version: \tab 0.1-9\cr
-Date: \tab 2020-05-12\cr
+Version: \tab 0.1-10\cr
+Date: \tab 2020-05-21\cr
 License: \tab GPL >= 3 \cr
 LazyLoad: \tab yes\cr
 Packaged: \tab Thu May 21 12:28:07 -04 2020; MZB \cr
