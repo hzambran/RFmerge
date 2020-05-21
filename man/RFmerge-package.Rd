@@ -22,7 +22,7 @@ Version: \tab 0.1-9\cr
 Date: \tab 2020-05-12\cr
 License: \tab GPL >= 3 \cr
 LazyLoad: \tab yes\cr
-Packaged: \tab Tue May 12 00:30:37 -04 2020; MZB \cr
+Packaged: \tab Thu May 21 12:28:07 -04 2020; MZB \cr
 BuiltUnder: \tab R version 4.0.0 (2020-04-24) -- "Arbor Day" ; x86_64-pc-linux-gnu (64-bit) \cr
 }
 %%~~ An overview of how to use the package, including the most important functions ~~

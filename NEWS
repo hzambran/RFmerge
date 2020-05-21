@@ -1,5 +1,7 @@
 NEWS/ChangeLog for RFmerge
 --------------------------
+0.1-10  21-May-2020
+        o Updated version after CRAN reported an unnecessary 'RFmerge-internal.Rd' file, which was removed for this release.
 
 0.1-9   12-May-2020
         o Updated version after CRAN reported an error in the vignette ("Invalid argument: 'cov' and 'mask' have different CRS !!"). this error was previously undetected because the package was tested with R-devel in combination with GEOS 3.5.1, GDAL 2.2.2, PROJ 4.9.2, while CRAN uses GEOS 3.8.1, GDAL 3.0.4, PROJ 7.0.0.
