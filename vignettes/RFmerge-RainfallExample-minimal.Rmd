@@ -1,11 +1,11 @@
 ---
-title: <center>Tutorial for merging satellite-based precipitation datasets with ground observations using `RFmerge`</center>
+title: Tutorial for merging satellite-based precipitation datasets with ground observations using `RFmerge`
 author: 
 - Oscar M. Baez-Villanueva^[obaezvil@th-koeln.de]
 - Mauricio Zambrano-Bigiarini^[mauricio.zambrano@ufrontera.cl]
 - Juan Diego Giraldo-Osorio
 - Ian McNamara
-date: <center>`r format(Sys.time(), '%d %B %Y')`</center>
+date: "`r format(Sys.time(), '%d %B %Y')`"
 output: 
   pdf_document:
     number_sections: true
