@@ -20,6 +20,7 @@
 # Updates: 16-Nov-2019 ; 10-Dec-2019 ; 11-Dec-2019 ; 12-Dec-2019 ; 13-Dec-2019 #
 #          14-Dec-2019 ; 17-Dec-2019 ; 20-Dec-2019 ; 23-Dec-2019               #
 #          30-Jan-2020 ; 27-Apr-2020 ; 12-May-2020                             #
+#          10-Jun-2023                                                         #
 ################################################################################
 
 # 'x'        : zoo object with ground-based values that will be used as the dependent variable to train the RF model.
@@ -74,8 +75,8 @@ RFmerge.default <- function(x, metadata, cov, mask, training,
                             id="id", lat = "lat", lon = "lon", ED = TRUE, 
                             seed = NULL, ntree = 2000, na.action = stats::na.omit,
                             parallel=c("none", "parallel", "parallelWin"),
-	                    par.nnodes=parallel::detectCores()-1, 
-                            par.pkgs= c("raster", "randomForest", "zoo"), 
+	                          par.nnodes=parallel::detectCores()-1, 
+                            par.pkgs= c("terra", "randomForest", "zoo"), 
                             write2disk=FALSE, drty.out, use.pb=TRUE, verbose=TRUE,
                             ...) {
 
@@ -97,8 +98,8 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
                         id="id", lat = "lat", lon = "lon", ED = TRUE, 
                         seed = NULL, ntree = 2000, na.action = stats::na.omit,
                         parallel=c("none", "parallel", "parallelWin"),
-	                par.nnodes=parallel::detectCores()-1, 
-                        par.pkgs= c("raster", "randomForest", "zoo"), 
+	                      par.nnodes=parallel::detectCores()-1, 
+                        par.pkgs= c("terra", "randomForest", "zoo"), 
                         write2disk=FALSE, drty.out, use.pb=TRUE, verbose=TRUE,
                         ...) {
 
@@ -117,9 +118,9 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
   # Checking the mask
   mask.crs <- NULL
   if (!missing(mask)) {
-    if ( !sf::st_is(mask, c("POLYGON", "MULTIPOLYGON")) ) {
-      stop("Invalid argument: 'mask' must be a 'sf' (multi)polygon object !!")
-    } else mask.crs <- sf::st_crs(mask)$proj4string
+    if ( !inherits(mask, "SpatVector") ) {
+      stop("Invalid argument: 'mask' must be a 'SpatVector' !!")
+    } else mask.crs <- terra::crs(mask)
   } # IF end
   
   # Cheking if the user specified the seed
@@ -136,36 +137,42 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
   } else # does it have names?
       if ( is.null(names(cov)) ) {
         stop("Invalid argument: Please provide names for all the elements in 'cov' !!")
-      } else
-          if (!raster::compareRaster(cov)) {
-            stop("Invalid argument: All the elements in 'cov' must have the same spatial extent, CRS, rotation and geometry !!")
-          } else cov.crs <- raster::crs(cov[[1]])
+      } else {
+          #if (!terra::same.crs(cov)) {
+          #  stop("Invalid argument: All the elements in 'cov' must have the same spatial extent, CRS, rotation and geometry !!")
+
+          cov1 <- cov[[1]]
+          n    <- length(covariates.utm)
+          if ( !(all(sapply(2:n, FUN=function(i) terra::compareGeom(cov1, cov[[i]]) ))) ) {
+             stop("Invalid argument: All the elements in 'cov' must have the same spatial extent, CRS, rotation and geometry !!")            
+          } else cov.crs <- terra::crs(cov1)
+       } # ELSE end
 
 
   # Checking that the CRS of 'mask' and 'cov' are the same, if 'mask' is provided
   if (!missing(mask)) {
-    if (raster::compareCRS(mask.crs,cov.crs))
+    if (!terra::same.crs(mask.crs,cov.crs))
       warning("Invalid argument: 'cov' and 'mask' have different CRS. Please ensure they actually have the same CRS !!.")
   } # IF end
 
-  e <- intersect(raster::extent(mask), raster::extent(cov[[1]]))
+  e <- intersect(terra::ext(mask), terra::ext(cov[[1]]))
   if (is.null(e)) {
     stop("Invalid argument: the spatial extents of 'cov' and 'mask' do not overlap !!")
   } # IF end
 
   # Cheking that all the time-varying covariates have the same length or they have 1 layer only
-  cov.layers <- as.numeric( sapply(cov, raster::nlayers) )
+  cov.layers <- as.numeric( sapply(1:n, FUN=function(i) terra::nlyr(cov[[i]])) )
   if ( length( unique(cov.layers) ) > 2 )
     stop("Invalid argument: Check that all the time-varying covariates in 'cov' have the same number of layers !!")
   
-  # Create covariates of the same length  
-  temp <- which(cov.layers == 1)
+  # Identify covariates with a single layer  
+  index <- which(cov.layers == 1)
   
-  set.covariates <- function(cov, temp, cov.layers){
-    raster::stack( replicate( max(cov.layers), cov[[temp]] ) )
+  set.covariates <- function(cov, index, cov.layers){
+    terra::rast( replicate( max(cov.layers), cov[[index]] ) )
   }
   
-  cov[temp] <- sapply(temp, set.covariates, cov=cov, cov.layers=cov.layers)
+  cov[index] <- sapply(index, set.covariates, cov=cov, cov.layers=cov.layers)
   
   # Dividing the Ground-based observations in 'training' and 'validation' samples
   if (verbose) message("[ Creating the training (", round(training*100,2), "%) and evaluation (", round((1-training)*100,2), "%) datasets ... ]" )
@@ -207,7 +214,7 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
   if (ED) {
     buff.dist <- as(lsample, "SpatialPixelsDataFrame")
     buff.dist <- .buffer_dist(points, buff.dist, as.factor(1:nrow(data.frame(points))))
-    buff.dist <- as(buff.dist, "RasterStack")
+    buff.dist <- as(buff.dist, "SpatRast")
   } # IF end
 
   ########################################################################
@@ -270,7 +277,7 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
   ########################################################################
 
   # number of time steps used in the RF procedure
-  ntsteps <- raster::nlayers(cov[[1]])
+  ntsteps <- terra::nlyr(cov[[1]])
   ldates  <- zoo::index(x)
   
   if (use.pb) pbapply::pboptions(char = "=")
@@ -338,13 +345,13 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
     for(i in 1:ncovs)
       cov.day[[i]] <- cov[[i]][[day]]    
     
-    cov.day <- raster::stack(cov.day)
+    cov.day <- terra::rast(cov.day)
 
-    if (ED) cov.day <- raster::stack(cov.day, buff.dist)
+    if (ED) cov.day <- terra::rast(cov.day, buff.dist)
     #cov.day <- velox::velox(cov.day)
     
     # Extraction of covariates at the ground-station locations
-    extraction     <- data.frame(raster::extract(cov.day, points))
+    extraction     <- data.frame(terra::extract(cov.day, points))
     #extraction     <- data.frame(cov.day$extract(points))
     names(cov.day) <- names(extraction)
      
@@ -362,18 +369,18 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
       rf.model <- randomForest::randomForest(obs.values ~ ., data = table.cov, na.action = na.action, ntree = ntree, ... )
       
       # rf.model <- randomForest::randomForest(obs.values ~ ., data = table.cov, ntree = 2000, na.action = na.omit)
-      result   <- raster::predict(cov.day, rf.model)
+      result   <- terra::predict(cov.day, rf.model)
     }
     
     # Masking the raster layer using the mask of the study area
     if ( !missing(mask) ) 
-      result <- raster::mask(result, mask)
+      result <- terra::mask(result, mask)
 
     # Exporting the RF-MEP product for each day
     if ( write2disk ) {
       ldate <- paste0("RF-MEP_", ldates[day], ".tif") 
       fname <- file.path(merged.drty, ldate)
-      raster::writeRaster(result, fname, format = "GTiff", overwrite = TRUE)
+      terra::writeRaster(result, fname, overwrite = TRUE)
     } # IF end
 
     return(result)
