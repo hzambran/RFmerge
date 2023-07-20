@@ -205,7 +205,7 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
   
   # Converting the training metadata into a 'SpatialPointsDataFrame'
   points <- train.metadata
-  sp::coordinates(points) <- c(lon, lat)
+  points <- terra::vect(points, geom=c("lon", "lat"))
   
   # If required, computing the euclidean distances
   if (verbose) message("[ Computing the Euclidean distances to each observation of the training set ...]")
