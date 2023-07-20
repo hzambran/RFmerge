@@ -204,18 +204,26 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
   } else merged.drty <- ""
   
   # Converting the training metadata into a 'SpatialPointsDataFrame'
-  points <- train.metadata
-  points <- terra::vect(points, geom=c("lon", "lat"))
-  
+  points  <- train.metadata
+  points  <- terra::vect(points, geom=c("lon", "lat"))
+  npoints <- length(points)
+  #crs(points) <- crs(lsample)
+
+
   # If required, computing the euclidean distances
   if (verbose) message("[ Computing the Euclidean distances to each observation of the training set ...]")
   
-  lsample <- cov[[1]][[1]]
-  if (ED) {
-    buff.dist <- as(lsample, "SpatialPixelsDataFrame")
-    buff.dist <- .buffer_dist(points, buff.dist, as.factor(1:nrow(data.frame(points))))
-    buff.dist <- as(buff.dist, "SpatRast")
-  } # IF end
+  # lsample <- cov[[1]][[1]]
+  # if (ED) {
+  #   buff.dist <- as(lsample, "SpatialPixelsDataFrame")
+  #   buff.dist <- .buffer_dist(points, buff.dist, as.factor(1:nrow(data.frame(points))))
+  #   buff.dist <- as(buff.dist, "SpatRast")
+  # } # IF end
+
+  buff.dist <- vector("list", npoints)
+  for(i in 1:npoints)
+    buff.dist[[i]] <- terra::distance(lsample, points[i], rasterize=FALSE)
+  
 
   ########################################################################
   ##                        parallel: start (ini)                        #

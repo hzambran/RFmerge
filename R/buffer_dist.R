@@ -49,6 +49,8 @@
     s2[[i]] <- terra::distance(cov1, obs.t[i], rasterize=TRUE)
   }
 
+  return(s2)
+
 } # '.buffer_dist' END
 
 #s[[1]] - raster::raster(s2[[1]])
