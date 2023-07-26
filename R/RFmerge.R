@@ -20,7 +20,7 @@
 # Updates: 16-Nov-2019 ; 10-Dec-2019 ; 11-Dec-2019 ; 12-Dec-2019 ; 13-Dec-2019 #
 #          14-Dec-2019 ; 17-Dec-2019 ; 20-Dec-2019 ; 23-Dec-2019               #
 #          30-Jan-2020 ; 27-Apr-2020 ; 12-May-2020                             #
-#          10-Jun-2023 ; 20-Jul-2023 ; 23-Jul-2023                             #                                                        #
+#          10-Jun-2023 ; 20-Jul-2023 ; 23-Jul-2023 ; 26-Jul-2023               #
 ################################################################################
 
 # 'x'        : zoo object with ground-based values that will be used as the dependent variable to train the RF model.
@@ -210,10 +210,6 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
   points  <- terra::vect(points, geom=c("lon", "lat"))
   npoints <- length(points)
   terra::crs(points) <- terra::crs(lsample)
-
-
-  # If required, computing the euclidean distances
-  if (verbose) message("[ Computing the Euclidean distances to each observation of the training set ...]")
   
   # if (ED) {
   #   buff.dist <- as(lsample, "SpatialPixelsDataFrame")
@@ -223,6 +219,8 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
 
   # Computation of Eucliden distances, if required by the user
   if (ED) {
+    if (verbose) message("[ Computing the Euclidean distances to each observation of the training set ...]")
+  
     terra::rast( replicate( max(cov.layers), cov[[index]] ) )
     buff.dist <- vector("list", npoints)
     for(i in 1:npoints)
