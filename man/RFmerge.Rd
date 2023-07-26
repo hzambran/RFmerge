@@ -26,7 +26,7 @@ RFmerge(x, ...)
         seed = NULL, ntree = 2000, na.action = stats::na.omit,
         parallel=c("none", "parallel", "parallelWin"),
         par.nnodes=parallel::detectCores()-1, 
-        par.pkgs= c("raster", "randomForest", "zoo"), write2disk=FALSE,
+        par.pkgs= c("terra", "randomForest", "zoo"), write2disk=FALSE,
         drty.out, use.pb=TRUE, verbose=TRUE,...)
 
 \method{RFmerge}{zoo}(x, metadata, cov, mask, training, 
@@ -34,7 +34,7 @@ RFmerge(x, ...)
         seed = NULL, ntree = 2000, na.action = stats::na.omit,
         parallel=c("none", "parallel", "parallelWin"),
         par.nnodes=parallel::detectCores()-1, 
-        par.pkgs= c("raster", "randomForest", "zoo"), write2disk=FALSE,
+        par.pkgs= c("terra", "randomForest", "zoo"), write2disk=FALSE,
         drty.out, use.pb=TRUE, verbose=TRUE, ...)
 
 
@@ -42,21 +42,21 @@ RFmerge(x, ...)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
    \item{x}{
-data.frame witht the ground-based values that will be used as the dependent variable to train the RF model. \cr
+data.frame with the ground-based values that will be used as the dependent variable to train the RF model. \cr
 Every column must represent one ground-based station and the codes of the stations must be provided as colnames. class(data) must be zoo.
 }  
     \item{metadata}{
 data.frame with the metadata of the ground-based stations.  At least, it MUST have the following 3 columns: \cr
 -) \kbd{id}: This column stores the unique identifier (ID) of each ground-based observation. Default value is \kbd{"id"}. \cr
--) \kbd{lat}: This column stores the latitude of ech ground observation. Default value is \kbd{"lat"}. \cr
--) \kbd{lon}: This column stores the longitude of ech ground observation. Default value is \kbd{"lon"}.
+-) \kbd{lat}: This column stores the latitude of each ground observation. Default value is \kbd{"lat"}. \cr
+-) \kbd{lon}: This column stores the longitude of each ground observation. Default value is \kbd{"lon"}.
 }
     \item{cov}{
 List with all the covariates used as independent variables in the Random Forest model. The individual covariates can be a \kbd{RasterStack} or \kbd{RasterBrick} object when they vary in time, or they can be a single \kbd{RasterLayer} object when they do not change in time (e.g., a digital elevation model). \cr
-All time-varying covariates in \code{cov} MUST have the same number of layers (bands). Covariates that do not change in time (e.g., a DEM) are internally trasnformed into \kbd{RasterStack} or \kbd{RasterBrick} objects with the same number of layers as the other time-varying elements in \code{cov}
+All time-varying covariates in \code{cov} MUST have the same number of layers (bands). Covariates that do not change in time (e.g., a DEM) are internally transformed into \kbd{RasterStack} or \kbd{RasterBrick} objects with the same number of layers as the other time-varying elements in \code{cov}
 }
     \item{mask}{
-OPTIONAL. If provided, the final merged product maks out all values in \code{cov} outside \code{mask}. \cr
+OPTIONAL. If provided, the final merged product mask out all values in \code{cov} outside \code{mask}. \cr
 Spatial object (vectorial) with the spatial borders of the study area (e.g., catchment, administrative borders). \code{class(mask)} must be a \kbd{sf} object with "POLYGON" or "MULTIPOLYGON" geometry.
 }
    \item{training}{
@@ -73,7 +73,7 @@ Character, with the name of the column in \code{metadata} where the latitude of 
 Character, with the name of the column in \code{metadata} where the longitude of the stations is stored.
 }
    \item{ED}{
-logical, should the Euclidean distances be computed an used as covariates in the random fores model?. The default value is \code{TRUE}.
+logical, should the Euclidean distances be computed an used as covariates in the random forest model?. The default value is \code{TRUE}.
 }
    \item{seed}{
 Numeric, indicating  a single value, interpreted as an integer, or null.
@@ -100,7 +100,7 @@ Numeric indicating the maximum number trees to grow in the Random Forest algorit
 A function to specify the action to be taken if NAs are found.  (NOTE: If given, this argument must be named.)
 }   
   \item{write2disk}{
-logical, indicates if the output merged raster layers and the training and avaluation datasets (two files each, one with time series and other with metadata) will be written to the disk. By default \code{write2disk=FALSE}
+logical, indicates if the output merged raster layers and the training and evaluation datasets (two files each, one with time series and other with metadata) will be written to the disk. By default \code{write2disk=FALSE}
 }
    \item{drty.out}{
 Character with the full path to the directory where the final merged product will be exported as well as the training and evaluation datasets. Only used when \code{write2disk=TRUE}
@@ -139,23 +139,24 @@ Juan D. Giraldo-Osorio, \email{j.giraldoo@javeriana.edu.co}
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link[raster]{raster}}, \code{\link[raster]{stack}}, \code{\link[raster]{brick}}, \code{\link[raster]{resample}}, \code{\link[raster]{rotate}}, \code{\link[raster]{crop}}.
+\code{\link[terra]{terra}}, \code{\link[terra]{rast}}, \code{\link[terra]{resample}}, \code{\link[terra]{rotate}}, \code{\link[raster]{crop}}.
 }
 \examples{
-library(rgdal)
-library(raster)
+library(terra)
 
 data(ValparaisoPPts)    
 data(ValparaisoPPgis) 
-data(ValparaisoSHP)   
+   
+ValparaisoSHP.fname <- system.file("extdata/ValparaisoSHP.shp",package="RFmerge")
+ValparaisoSHP       <- terra::vect(ValparaisoSHP.fname)
 
 chirps.fname   <- system.file("extdata/CHIRPS5km.tif",package="RFmerge")
 prsnncdr.fname <- system.file("extdata/PERSIANNcdr5km.tif",package="RFmerge")
 dem.fname      <- system.file("extdata/ValparaisoDEM5km.tif",package="RFmerge")
 
-CHIRPS5km        <- brick(chirps.fname)
-PERSIANNcdr5km   <- brick(prsnncdr.fname)
-ValparaisoDEM5km <- raster(dem.fname)
+CHIRPS5km        <- rast(chirps.fname)
+PERSIANNcdr5km   <- rast(prsnncdr.fname)
+ValparaisoDEM5km <- rast(dem.fname)
 
 covariates <- list(chirps=CHIRPS5km, persianncdr=PERSIANNcdr5km, 
                    dem=ValparaisoDEM5km)

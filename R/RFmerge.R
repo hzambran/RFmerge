@@ -20,7 +20,7 @@
 # Updates: 16-Nov-2019 ; 10-Dec-2019 ; 11-Dec-2019 ; 12-Dec-2019 ; 13-Dec-2019 #
 #          14-Dec-2019 ; 17-Dec-2019 ; 20-Dec-2019 ; 23-Dec-2019               #
 #          30-Jan-2020 ; 27-Apr-2020 ; 12-May-2020                             #
-#          10-Jun-2023                                                         #
+#          10-Jun-2023 ; 20-Jul-2023 ; 23-Jul-2023                             #                                                        #
 ################################################################################
 
 # 'x'        : zoo object with ground-based values that will be used as the dependent variable to train the RF model.
@@ -142,7 +142,7 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
           #  stop("Invalid argument: All the elements in 'cov' must have the same spatial extent, CRS, rotation and geometry !!")
 
           cov1 <- cov[[1]]
-          n    <- length(covariates.utm)
+          n    <- length(cov)
           if ( !(all(sapply(2:n, FUN=function(i) terra::compareGeom(cov1, cov[[i]]) ))) ) {
              stop("Invalid argument: All the elements in 'cov' must have the same spatial extent, CRS, rotation and geometry !!")            
           } else cov.crs <- terra::crs(cov1)
@@ -173,6 +173,8 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
   }
   
   cov[index] <- sapply(index, set.covariates, cov=cov, cov.layers=cov.layers)
+
+  lsample <- cov[[1]][[1]]
   
   # Dividing the Ground-based observations in 'training' and 'validation' samples
   if (verbose) message("[ Creating the training (", round(training*100,2), "%) and evaluation (", round((1-training)*100,2), "%) datasets ... ]" )
@@ -207,24 +209,29 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
   points  <- train.metadata
   points  <- terra::vect(points, geom=c("lon", "lat"))
   npoints <- length(points)
-  #crs(points) <- crs(lsample)
+  terra::crs(points) <- terra::crs(lsample)
 
 
   # If required, computing the euclidean distances
   if (verbose) message("[ Computing the Euclidean distances to each observation of the training set ...]")
   
-  # lsample <- cov[[1]][[1]]
   # if (ED) {
   #   buff.dist <- as(lsample, "SpatialPixelsDataFrame")
   #   buff.dist <- .buffer_dist(points, buff.dist, as.factor(1:nrow(data.frame(points))))
   #   buff.dist <- as(buff.dist, "SpatRast")
   # } # IF end
 
-  buff.dist <- vector("list", npoints)
-  for(i in 1:npoints)
-    buff.dist[[i]] <- terra::distance(lsample, points[i], rasterize=FALSE)
+  # Computation of Eucliden distances, if required by the user
+  if (ED) {
+    terra::rast( replicate( max(cov.layers), cov[[index]] ) )
+    buff.dist <- vector("list", npoints)
+    for(i in 1:npoints)
+      buff.dist[[i]] <- terra::distance(lsample, points[i], rasterize=FALSE)
   
-
+    # list -> SpatRaster
+    buff.dist         <- terra::rast(buff.dist)
+    names(buff.dist ) <- paste0("dist", 1:npoints)
+  } # IF end
   ########################################################################
   ##                        parallel: start (ini)                        #
   ########################################################################
@@ -295,12 +302,12 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
     if (use.pb) {
       out <- pbapply::pbsapply(X=1:ntsteps, FUN=.lrf, ldates, metadata, id, points, cov, mask, merged.drty, na.action, ntree, ED, train.ts, train.metadata, buff.dist, lsample, write2disk)
     } else out <- sapply(X=1:ntsteps, FUN=.lrf, ldates, metadata, id, points, cov, mask, merged.drty, na.action, ntree, ED, train.ts, train.metadata, buff.dist, lsample, write2disk)
-    out <- stack(out)
+    out <- terra::rast(out)
   } else {
       if (use.pb) {
         out <- pbapply::pbsapply(X=1:ntsteps, FUN=.lrf, ldates, metadata, id, points, cov, mask, merged.drty, na.action, ntree, ED, train.ts, train.metadata, buff.dist, lsample, write2disk, cl=cl, ...)
       } else  out <- parallel::clusterApply(cl= cl, 1:ntsteps, fun=.lrf, ldates, metadata, id, points, cov, mask, merged.drty, na.action, ntree, ED, train.ts, train.metadata, buff.dist, lsample, write2disk, ...)
-      out <- stack(out)
+      out <- terra::rast(out)
       parallel::stopCluster(cl)
       if (verbose) message("[ Parallelisation finished ! ]")
    } # ELSE end    
@@ -334,7 +341,7 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
 
 
 .lrf <- function(day, ldates, metadata, id, points, cov, mask, merged.drty, na.action, ntree, ED, train.ts, train.metadata, buff.dist, lsample, write2disk, ...) {
-      
+
     # Obtaining the ground-based measurements for each day
     nr         <- nrow(train.metadata)
     codes      <- vector("numeric", length= nr)
@@ -355,11 +362,11 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
     
     cov.day <- terra::rast(cov.day)
 
-    if (ED) cov.day <- terra::rast(cov.day, buff.dist)
-    #cov.day <- velox::velox(cov.day)
+    # Adding the Euclidean distances, if required by the user
+    if (ED) cov.day <- c(cov.day, buff.dist)
     
     # Extraction of covariates at the ground-station locations
-    extraction     <- data.frame(terra::extract(cov.day, points))
+    extraction     <- data.frame(terra::extract(cov.day, points, ID=FALSE))
     #extraction     <- data.frame(cov.day$extract(points))
     names(cov.day) <- names(extraction)
      
@@ -374,7 +381,13 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
     if ( sum(table$obs.values, na.rm = TRUE) > 0) {
       
       # Training of the RF model and generation of the spatial prediction
-      rf.model <- randomForest::randomForest(obs.values ~ ., data = table.cov, na.action = na.action, ntree = ntree, ... )
+      suppressWarnings(
+        rf.model <- randomForest::randomForest(obs.values ~ ., data = table.cov, na.action = na.action, ntree = ntree, ... ) 
+      )
+      #suppressWarnings is used to avoid the following message in some very local scale cases:
+      #In randomForest.default(m, y, ...) :
+      #  The response has five or fewer unique values.  
+      #  Are you sure you want to do regression?
       
       # rf.model <- randomForest::randomForest(obs.values ~ ., data = table.cov, ntree = 2000, na.action = na.omit)
       result   <- terra::predict(cov.day, rf.model)

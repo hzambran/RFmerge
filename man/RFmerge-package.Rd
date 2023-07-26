@@ -40,24 +40,25 @@ Maintainer: Mauricio Zambrano-Bigiarini <mzb.devel@gmail>
 
 \keyword{ package }
 \seealso{
-\url{https://cran.r-project.org/package=raster}. \cr
+\url{https://cran.r-project.org/package=terra}. \cr
 \url{https://cran.r-project.org/package=hydroGOF}.
 }
 \examples{
-library(rgdal)
-library(raster)
+library(terra)
 
 data(ValparaisoPPts)    
 data(ValparaisoPPgis) 
-data(ValparaisoSHP)    
+
+ValparaisoSHP.fname <- system.file("extdata/ValparaisoSHP.shp",package="RFmerge")
+ValparaisoSHP       <- terra::vect(ValparaisoSHP.fname)  
 
 chirps.fname   <- system.file("extdata/CHIRPS5km.tif",package="RFmerge")
 prsnncdr.fname <- system.file("extdata/PERSIANNcdr5km.tif",package="RFmerge")
 dem.fname      <- system.file("extdata/ValparaisoDEM5km.tif",package="RFmerge")
 
-CHIRPS5km        <- brick(chirps.fname)
-PERSIANNcdr5km   <- brick(prsnncdr.fname)
-ValparaisoDEM5km <- raster(dem.fname)
+CHIRPS5km        <- rast(chirps.fname)
+PERSIANNcdr5km   <- rast(prsnncdr.fname)
+ValparaisoDEM5km <- rast(dem.fname)
 
 covariates <- list(chirps=CHIRPS5km, persianncdr=PERSIANNcdr5km, 
                    dem=ValparaisoDEM5km)
