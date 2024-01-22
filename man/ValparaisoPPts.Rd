@@ -26,7 +26,7 @@ The 34 stations in this dataset wer selected because they had less than 10\% of 
 A zoo object with 34 columns (one for each rain gauge) and 365 rows (one for each day in 1983). \code{colnames(ValparaisoPPts)} must coincide with the \var{ID} column in \var{ValparaisoPPgis}.
 }
 \source{
-The \href{http://www.cr2.cl/datos-de-precipitacion/}{CR2 dataset} unifies individual datasets provided by Direcci\'{o}n General de Aguas (DGA) and Direcci\'{o}n Meteorol\'{o}gica de Chile (DMC), the Chilean water and meteorological agencies, respectively. \cr
+The \href{https://www.cr2.cl/datos-de-precipitacion/)}{CR2 dataset} unifies individual datasets provided by Direcci\'{o}n General de Aguas (DGA) and Direcci\'{o}n Meteorol\'{o}gica de Chile (DMC), the Chilean water and meteorological agencies, respectively. \cr
 These data are intended to be used for research purposes only, being distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY.
 }
 
