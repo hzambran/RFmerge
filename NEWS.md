@@ -1,5 +1,8 @@
 NEWS/ChangeLog for RFmerge
 --------------------------
+0.2-0   01-May-2026
+        o The package was complete checked in order to make it work with the 'terra' pacakge instead of the superseeded 'raster' one. 
+
 0.1-10  21-May-2020
         o Updated version after CRAN reported an unnecessary 'RFmerge-internal.Rd' file, which was removed for this release.
 
