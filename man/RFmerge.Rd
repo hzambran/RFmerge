@@ -9,6 +9,7 @@
 \alias{RFmerge}
 \alias{RFmerge.default}
 \alias{RFmerge.zoo}
+\encoding{UTF-8}
 
 
 %- Also NEED an '\alias' for EACH other topic documented here.
@@ -91,7 +92,7 @@ By default \code{par.nnodes} is set to the amount of cores detected by the funct
 } 
   \item{par.pkgs}{
 OPTIONAL. Used only when \code{parallel='parallelWin'} \cr
-list of package names (as characters) that need to be loaded on each node for allowing the objective function \code{fn} to be evaluated. By default \code{c("raster", "randomForest", "zoo")}.
+list of package names (as characters) that need to be loaded on each node for allowing the objective function \code{fn} to be evaluated. By default \code{c("terra", "randomForest", "zoo")}.
 } 
    \item{ntree}{
 Numeric indicating the maximum number trees to grow in the Random Forest algorithm. The default value is set to 2000. This should not be set to too small a number, to ensure that every input row gets predicted at least a few times. If this value is too low, the prediction may be biased.
@@ -100,7 +101,7 @@ Numeric indicating the maximum number trees to grow in the Random Forest algorit
 A function to specify the action to be taken if NAs are found.  (NOTE: If given, this argument must be named.)
 }   
   \item{write2disk}{
-logical, indicates if the output merged raster layers and the training and evaluation datasets (two files each, one with time series and other with metadata) will be written to the disk. By default \code{write2disk=FALSE}
+logical, indicates if the output merged SpatRaster layers and the training and evaluation datasets (two files each, one with time series and other with metadata) will be written to the disk. By default \code{write2disk=FALSE}
 }
    \item{drty.out}{
 Character with the full path to the directory where the final merged product will be exported as well as the training and evaluation datasets. Only used when \code{write2disk=TRUE}
@@ -123,9 +124,9 @@ further arguments to be passed to the low level function \kbd{randomForest.defau
 It returns a \code{RasterStack} object with as many layers as time steps are present in \code{x}. Each one of the layers in the output object has the same spatial resolution and spatial extent as the \code{cov} argument.
 }
 \references{
-\cite{Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2020). RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements, Remote Sensing of Environment, 239, 111610. \doi{10.1016/j.rse.2019.111606}. <https://authors.elsevier.com/c/1aKrd7qzSnJWL>}. \cr
+\cite{Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2020). RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements, Remote Sensing of Environment, 239, 111610. \doi{10.1016/j.rse.2019.111606}. <https://doi.org/10.1016/j.rse.2019.111606>}. \cr
 
-\cite{Hengl, T., Nussbaum, M., Wright, M. N., Heuvelink, G. B., & Gr\"{a}ler, B. (2018). Random forest as a generic framework for predictive modeling of spatial and spatio-temporal variables. PeerJ, 6, e5518}.
+\cite{Hengl, T., Nussbaum, M., Wright, M. N., Heuvelink, G. B., & Gräler, B. (2018). Random forest as a generic framework for predictive modeling of spatial and spatio-temporal variables. PeerJ, 6, e5518}.
 }
 \author{
 Oscar M. Baez-Villanueva, \email{obaezvil@th-koeln.de} \cr
@@ -139,7 +140,7 @@ Juan D. Giraldo-Osorio, \email{j.giraldoo@javeriana.edu.co}
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link[terra]{terra}}, \code{\link[terra]{rast}}, \code{\link[terra]{resample}}, \code{\link[terra]{rotate}}, \code{\link[raster]{crop}}.
+\code{\link[terra]{terra}}, \code{\link[terra]{rast}}, \code{\link[terra]{resample}}, \code{\link[terra]{rotate}}, \code{\link[terra]{crop}}.
 }
 \examples{
 library(terra)

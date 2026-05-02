@@ -1,12 +1,13 @@
 %% File RFmerge-package.Rd
 %% Part of the RFmerge R package, https://github.com/hzambran/RFmerge ; 
 %%                                https://cran.r-project.org/package=RFmerge
-%% Copyright 2019-2020 Mauricio Zambrano-Bigiarini, Oscar M. Baez-Villanueva
+%% Copyright 2019-2026 Mauricio Zambrano-Bigiarini, Oscar M. Baez-Villanueva
 %% Distributed under GPL 3 or later
 
 \name{RFmerge-package}
 \Rdversion{1.1}
 \alias{RFmerge-package}
+\encoding{UTF-8}
 \docType{package}
 \title{
 Merging of Satellite Datasets with Ground Observations using Random Forests
@@ -18,12 +19,12 @@ S3 implementation of the Random Forest MErging Procedure (RF-MEP), which combine
 \tabular{ll}{
 Package: \tab RFmerge\cr
 Type: \tab Package\cr
-Version: \tab 0.1-10\cr
-Date: \tab 2020-05-21\cr
+Version: \tab 0.3-0\cr
+Date: \tab 2026-05-02\cr
 License: \tab GPL >= 3 \cr
 LazyLoad: \tab yes\cr
-Packaged: \tab Thu May 21 12:28:07 -04 2020; MZB \cr
-BuiltUnder: \tab R version 4.0.0 (2020-04-24) -- "Arbor Day" ; x86_64-pc-linux-gnu (64-bit) \cr
+Packaged: \tab Sat May  2 12:44:33 -04 2026; MZB \cr
+BuiltUnder: \tab R version 4.6.0 (2026-04-24) -- "Because it was There" ; aarch64-apple-darwin23 \cr
 }
 %%~~ An overview of how to use the package, including the most important functions ~~
 }
@@ -33,10 +34,11 @@ Mauricio Zambrano-Bigiarini, Oscar M. Baez-Villanueva \cr
 Maintainer: Mauricio Zambrano-Bigiarini <mzb.devel@gmail>
 }
 \references{
-\cite{Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2020). RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements, Remote Sensing of Environment, 239, 111610. \doi{10.1016/j.rse.2019.111606}. <https://authors.elsevier.com/c/1aKrd7qzSnJWL>}. \cr
+\cite{Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2020). RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements, Remote Sensing of Environment, 239, 111610. \doi{10.1016/j.rse.2019.111606}. <https://doi.org/10.1016/j.rse.2019.111606>}. \cr
 
-\cite{Hengl, T., Nussbaum, M., Wright, M. N., Heuvelink, G. B., & Gr\"{a}ler, B. (2018). Random forest as a generic framework for predictive modeling of spatial and spatio-temporal variables. PeerJ, 6, e5518}.
+\cite{Hengl, T., Nussbaum, M., Wright, M. N., Heuvelink, G. B., & Gräler, B. (2018). Random forest as a generic framework for predictive modeling of spatial and spatio-temporal variables. PeerJ, 6, e5518}.
 }
+
 
 \keyword{ package }
 \seealso{
