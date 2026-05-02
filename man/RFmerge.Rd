@@ -124,9 +124,17 @@ further arguments to be passed to the low level function \kbd{randomForest.defau
 It returns a \code{RasterStack} object with as many layers as time steps are present in \code{x}. Each one of the layers in the output object has the same spatial resolution and spatial extent as the \code{cov} argument.
 }
 \references{
-\cite{Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2020). RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements, Remote Sensing of Environment, 239, 111610. \doi{10.1016/j.rse.2019.111606}. <https://doi.org/10.1016/j.rse.2019.111606>}. \cr
+Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2020).
+RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements.
+\emph{Remote Sensing of Environment}, 239, 111610.
+\doi{10.1016/j.rse.2019.111606}.
+\url{https://doi.org/10.1016/j.rse.2019.111606}. \cr
 
-\cite{Hengl, T., Nussbaum, M., Wright, M. N., Heuvelink, G. B., & Gräler, B. (2018). Random forest as a generic framework for predictive modeling of spatial and spatio-temporal variables. PeerJ, 6, e5518. doi:10.7717/peerj.5518. <https://doi.org/10.7717/peerj.5518>.
+Hengl, T.; Nussbaum, M.; Wright, M. N.; Heuvelink, G. B.; Gräler, B. (2018).
+Random forest as a generic framework for predictive modeling of spatial and spatio-temporal variables.
+\emph{PeerJ}, 6, e5518.
+\doi{10.7717/peerj.5518}.
+\url{https://doi.org/10.7717/peerj.5518}.
 }
 \author{
 Oscar M. Baez-Villanueva, \email{obaezvil@th-koeln.de} \cr
