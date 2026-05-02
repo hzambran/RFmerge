@@ -11,10 +11,11 @@ Depends: R (>= 3.5.0)
 Imports: terra, randomForest, zoo, parallel, methods, stats, utils, pbapply
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
-URL: https://github.com/hzambran/RFmerge
+URL: http://mzb.cl/RFmerge/, https://github.com/hzambran/RFmerge
 MailingList: https://stat.ethz.ch/mailman/listinfo/r-sig-ecology
 BugReports: https://github.com/hzambran/RFmerge/issues
 LazyLoad: yes
 NeedsCompilation: no
 Repository: CRAN
-Packaged: Fri May  1 21:49:18 -04 2026; hzambran
+Packaged: Sat May  2 12:44:33 -04 2026 ; hzambran
+Config/Needs/website: rmarkdown
