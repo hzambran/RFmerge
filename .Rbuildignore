@@ -4,3 +4,9 @@ README.md
 _config.yml
 vignettes/RFmerge-RainfallExample-full.Rmd
 vignettes/RFmerge-RainfallExample-full.pdf
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$
+^articles$
+^vignettes/articles$
