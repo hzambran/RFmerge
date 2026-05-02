@@ -1,0 +1,25 @@
+---
+title: "Tutorial for merging satellite-based precipitation datasets with ground observations
+  using RFmerge"
+author:
+- "Oscar M. Baez-Villanueva^[obaezvil@th-koeln.de]"
+- "Mauricio Zambrano-Bigiarini^[mauricio.zambrano@ufrontera.cl]"
+- "Juan Diego Giraldo-Osorio"
+- Ian McNamara
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+output:
+  html_document:
+    df_print: paged
+  pdf_document:
+    number_sections: true
+vignette: |
+  %\VignetteIndexEntry{Tutorial for merging satellite-based precipitation datasets with ground observations using `RFmerge`} 
+  %\VignetteKeyword{hydrology}
+  %\VignetteKeyword{hydrological modelling}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown} 
+---
+
+A tutorial for using `RFmerge`  to create an improved precipitation dataset by combining two different satellite-based precipitation products with ground-based observations and user-selected covariates (i.e., digital elevation model and Euclidean distances to rain gauge stations) can be found in the package website:
+
+[*RFmerge-RainfallExample-full**](https://mzb.cl/RFmerge/articles/RFmerge-RainfallExample-full)
