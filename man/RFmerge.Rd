@@ -50,17 +50,18 @@ Every column must represent one ground-based station and the codes of the statio
 }  
     \item{metadata}{
 data.frame with the metadata of the ground-based stations.  At least, it MUST have the following 3 columns: \cr
+
 -) \kbd{id}: This column stores the unique identifier (ID) of each ground-based observation. Default value is \kbd{"id"}. \cr
 -) \kbd{lat}: This column stores the latitude of each ground observation. Default value is \kbd{"lat"}. \cr
 -) \kbd{lon}: This column stores the longitude of each ground observation. Default value is \kbd{"lon"}.
 }
     \item{cov}{
-List with all the covariates used as independent variables in the Random Forest model. The individual covariates can be a \kbd{RasterStack} or \kbd{RasterBrick} object when they vary in time, or they can be a single \kbd{RasterLayer} object when they do not change in time (e.g., a digital elevation model). \cr
-All time-varying covariates in \code{cov} MUST have the same number of layers (bands). Covariates that do not change in time (e.g., a DEM) are internally transformed into \kbd{RasterStack} or \kbd{RasterBrick} objects with the same number of layers as the other time-varying elements in \code{cov}
+List with all the covariates used as independent variables in the Random Forest model. The individual covariates must be \kbd{SpatRaster} objects, either when they vary in time (e.g., individual gridded precipitation datasets) or does not vary in time (e.g., a digital elevation model). \cr
+All time-varying covariates in \code{cov} MUST have the same number of layers (bands), which is internally checked using the , \code{\link[terra]{nlyr}} function. Covariates that do not change in time (e.g., a DEM) are internally transformed into \kbd{SpatRaster} objects with the same number of layers as the other time-varying elements in \code{cov}.
 }
     \item{mask}{
 OPTIONAL. If provided, the final merged product mask out all values in \code{cov} outside \code{mask}. \cr
-Spatial object (vectorial) with the spatial borders of the study area (e.g., catchment, administrative borders). \code{class(mask)} must be a \kbd{sf} object with "POLYGON" or "MULTIPOLYGON" geometry.
+Spatial object (vectorial) with the spatial borders of the study area (e.g., catchment, administrative borders). \code{class(mask)} must be a \kbd{SpatVect} object with "POLYGON" or "MULTIPOLYGON" geometry.
 }
    \item{training}{
 Numeric indicating the percentage of stations that will be used in the training set. \cr
@@ -86,17 +87,23 @@ Numeric, indicating  a single value, interpreted as an integer, or null.
 }
   \item{parallel}{
 character, indicates how to parallelise \sQuote{RFmerge} (to be precise, only the evaluation of the objective function \code{fn} is parallelised). Valid values are: \cr
+
 -)\kbd{none}: no parallelisation is made (this is the default value)\cr
--)\kbd{parallel}: parallel computations for network clusters or machines with multiple cores or CPUs. A \sQuote{FORK} cluster is created with the \code{\link[parallel]{makeForkCluster}} function.  When \code{fn.name="hydromod"} the evaluation of the objective function \code{fn} is done with the \code{\link[parallel]{clusterApply}} function of the \pkg{parallel} package. When \code{fn.name!="hydromod"} the evaluation of the objective function \code{fn} is done with the \code{\link[parallel]{parRapply}} function of the \pkg{parallel} package.\cr
--)\kbd{parallelWin}: parallel computations for network clusters or machines with multiple cores or CPUs (this is the only parallel implementation that works on Windows machines). A \sQuote{PSOCK} cluster is created with the \code{\link[parallel]{makeCluster}} function. When \code{fn.name="hydromod"} the evaluation of the objective function \code{fn} is done with the \code{\link[parallel]{clusterApply}} function of the \pkg{parallel} package. When \code{fn.name!="hydromod"} the evaluation of the objective function \code{fn} is done with the \code{\link[parallel]{parRapply}} function of the \pkg{parallel} package. 
+
+-)\kbd{parallel}: parallel computations for network clusters or machines with multiple cores or CPUs. A \sQuote{FORK} cluster is created with the \code{\link[parallel]{makeForkCluster}} function.\cr
+
+-)\kbd{parallelWin}: parallel computations for network clusters or machines with multiple cores or CPUs (this is the only parallel implementation that works on Windows machines). A \sQuote{PSOCK} cluster is created with the \code{\link[parallel]{makeCluster}} function. 
 } 
   \item{par.nnodes}{
 OPTIONAL. Used only when \code{parallel!='none'} \cr
+
 numeric, indicates the number of cores/CPUs to be used in the local multi-core machine, or the number of nodes to be used in the network cluster. \cr
+
 By default \code{par.nnodes} is set to the amount of cores detected by the function \code{detectCores()} (\pkg{parallel} package)
 } 
   \item{par.pkgs}{
 OPTIONAL. Used only when \code{parallel='parallelWin'} \cr
+
 list of package names (as characters) that need to be loaded on each node for allowing the objective function \code{fn} to be evaluated. By default \code{c("terra", "randomForest", "zoo")}.
 } 
    \item{ntree}{
@@ -126,7 +133,7 @@ further arguments to be passed to the low level function \kbd{randomForest.defau
 %%  ~~ If necessary, more details than the description above ~~
 %%}
 \value{
-It returns a \code{RasterStack} object with as many layers as time steps are present in \code{x}. Each one of the layers in the output object has the same spatial resolution and spatial extent as the \code{cov} argument.
+It returns a \code{SpatRaster} object with as many layers as time steps are present in \code{x}. Each one of the layers in the output object has the same spatial resolution and spatial extent as the \code{cov} argument.
 }
 \references{
 Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2020). RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements. \emph{Remote Sensing of Environment}, 239, 111610. \doi{10.1016/j.rse.2019.111606}. \cr
@@ -145,7 +152,7 @@ Juan D. Giraldo-Osorio, \email{j.giraldoo@javeriana.edu.co}
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link[terra]{terra}}, \code{\link[terra]{rast}}, \code{\link[terra]{resample}}, \code{\link[terra]{rotate}}, \code{\link[terra]{crop}}.
+\code{\link[terra]{terra}}, \code{\link[terra]{rast}}, \code{\link[terra]{nlyr}}, \code{\link[terra]{resample}}, \code{\link[terra]{rotate}}, \code{\link[terra]{crop}}.
 }
 \examples{
 library(terra)

@@ -20,7 +20,7 @@ data(ValparaisoPPts)
 }
 
 \details{
-Daily time series of ground-based daily precipitation for 1900-2018 were downloaded from a dataset of 816 rain gauges from the Center of Climate and Resilience Research (CR2; \url{http://www.cr2.cl/datos-de-precipitacion/}). \cr
+Daily time series of ground-based daily precipitation for 1900-2018 were downloaded from a dataset of 816 rain gauges from the Center of Climate and Resilience Research (CR2; \url{https://www.cr2.cl/datos-de-precipitacion/}). \cr
 The 34 stations in this dataset wer selected because they had less than 10% of missing values in year 1983.
 }
 \format{

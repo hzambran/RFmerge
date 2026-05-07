@@ -1,16 +1,16 @@
 ---
-title: "Tutorial for merging satellite-based precipitation datasets with ground observations using RFmerge (>=0.3-0) - link"
+title: "Merging satellite-based precipitation datasets with ground observations using RFmerge (>=0.3-0) - link"
 author:
 - "Mauricio Zambrano-Bigiarini^[mauricio.zambrano@ufrontera.cl]"
 - "Oscar M. Baez-Villanueva^[oscar.baezvillanueva@ugent.be]"
 - "Juan Diego Giraldo-Osorio"
 - Ian McNamara
-date: "`r format(Sys.Date(), '%d %B %Y')`"
+date: "v0.3.1 ; `r format(Sys.Date(), '%d %B %Y')`"
 output:
-  html_document:
-    df_print: paged
   pdf_document:
     number_sections: true
+  html_document:
+    df_print: paged
 vignette: |
   %\VignetteIndexEntry{Tutorial for merging satellite-based precipitation datasets with ground observations using `RFmerge`} 
   %\VignetteKeyword{hydrology}
@@ -19,6 +19,4 @@ vignette: |
   %\VignetteEngine{knitr::rmarkdown} 
 ---
 
-A tutorial for using `RFmerge`  to create an improved precipitation dataset by combining two different satellite-based precipitation products with ground-based observations and user-selected covariates (i.e., digital elevation model and Euclidean distances to rain gauge stations) can be found in the package website:
-
-[*RFmerge-RainfallExample-full**](https://doi.org/10.5281/zenodo.20061104)
+A tutorial for using `RFmerge`  to create an improved precipitation dataset by combining two different satellite-based precipitation products with ground-based observations and user-selected covariates (i.e., digital elevation model and Euclidean distances to rain gauge stations) can be found in the package website: [https://doi.org/10.5281/zenodo.20061103](https://doi.org/10.5281/zenodo.20061103)

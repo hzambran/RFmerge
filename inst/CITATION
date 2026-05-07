@@ -23,7 +23,7 @@ bibentry(
 bibentry(bibtype = "Manual",
     title = "RFmerge: Merging of Satellite Datasets with Ground Observations using Random Forests",
     author = c(person("Mauricio Zambrano-Bigiarini", email = "mzb.devel@gmail.com", role=c("aut", "cre", "cph")), 
-                    person("Oscar M. Baez-Villanueva", email = "obaezvil@th-koeln.de", role=c("aut", "cph")), 
+                    person("Oscar M. Baez-Villanueva", email = "oscar.baezvillanueva@ugent.be", role=c("aut", "cph")), 
                     person("Juan Giraldo-Osorio", email = "j.giraldoo@javeriana.edu.co", role=c("ctb")) 
                    ),
     year = year,
