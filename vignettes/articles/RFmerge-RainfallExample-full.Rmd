@@ -1,9 +1,8 @@
 ---
-title: "Tutorial for merging satellite-based precipitation datasets with ground observations
-  using RFmerge"
+title: "Tutorial for merging satellite-based precipitation datasets with ground observations using RFmerge (>=0.3-0)"
 author:
-- "Oscar M. Baez-Villanueva^[obaezvil@th-koeln.de]"
 - "Mauricio Zambrano-Bigiarini^[mauricio.zambrano@ufrontera.cl]"
+- "Oscar M. Baez-Villanueva^[oscar.baezvillanueva@ugent.be]"
 - "Juan Diego Giraldo-Osorio"
 - Ian McNamara
 date: "`r format(Sys.Date(), '%d %B %Y')`"
@@ -13,7 +12,7 @@ output:
   pdf_document:
     number_sections: true
 vignette: |
-  %\VignetteIndexEntry{Tutorial for merging satellite-based precipitation datasets with ground observations using `RFmerge`} 
+  %\VignetteIndexEntry{Tutorial for merging satellite-based precipitation datasets with ground observations using RFmerge (>=0.3-0)} 
   %\VignetteKeyword{hydrology}
   %\VignetteKeyword{hydrological modelling}
   %\VignetteEncoding{UTF-8}
@@ -28,13 +27,15 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 # About
-This vignette describes a basic application of the `RFmerge` function to create an improved precipitation dataset by combining two different satellite-based precipitation products with ground-based observations and user-selected covariates (i.e., digital elevation model and Euclidean distances to rain gauge stations).
+This vignette is its based in a similar vignette, developed for `RFmerge` version 0.1-6 or earlier, which worked only with the superseded `raster` package. 
+
+This vignette, based on the `terra` package, describes a basic application of the `RFmerge` function to create an improved precipitation dataset by combining two different satellite-based precipitation products with ground-based observations and user-selected covariates (i.e., digital elevation model and Euclidean distances to rain gauge stations).
 
 We use as case study Valparaiso (Chile), as an example of how to generate this product at daily temporal scale and at $0.05^\circ$ spatial resolution, from January to August 1983. This example requires the following data from the user: 
 
   i) time series of rainfall observations, 
     
-  ii) metadata describinf the spatial coordiantes of the rain gauges,
+  ii) metadata describing the spatial coordinates of the rain gauges,
     
   iii) the Climate Hazards Group InfraRed Precipitation with Station data version 2.0 (CHIRPSv2), 
     
@@ -42,7 +43,34 @@ We use as case study Valparaiso (Chile), as an example of how to generate this p
     
   v) the Shuttle Radar Topography Mission (SRTM-v4) digital elevation model (DEM). 
   
-In addition, Euclidean distances are also used as covariates, but they are automatically computed within `RFmerge` as the Eucalidean distances from each rain gauge station to every grid-cell within the study area.
+In addition, Euclidean distances are also used as covariates. They are automatically computed within `RFmerge` as the Euclidean distances from each rain gauge station to every grid-cell within the study area.
+
+
+
+# Citation
+
+If you find this tutorial useful, please cite it as Zambrano-Bigiarini et al. (2026):
+
+> Zambrano-Bigiarini, M.; Baez-Villanueva, O.M.; Giraldo-Osorio, J.D. (2026). Tutorial for merging satellite-based precipitation datasets with ground observations using RFmerge (>=0.3-0). doi:10.5281/zenodo.20061104.
+
+The theoretical description of the merging algorithm is described in the following RSE article:
+
+> Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2020). [RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements](https://doi.org/10.1016/j.rse.2019.111606), Remote Sensing of Environment, 239, 111610. doi:10.1016/j.rse.2019.111606.
+
+Last, but not least, you should cite the `RFmerge` R package as follows:
+
+> Zambrano-Bigiarini, M.; Baez-Villanueva, O.M., Giraldo-Osorio, J. (2026). RFmerge: Merging of Satellite Datasets with Ground Observations using Random Forests. R package version 0.3-0. URL: https://hzambran.github.io/RFmerge/. doi:10.32614/CRAN.package.RFmerge.
+
+
+
+# Required `RFmerge` version
+
+This tutorial was developed for `RFmerge >= 0.3-0`, which is the minimum version where `RFmerge` is based on the [terra](https://cran.r-project.org/package=terra) package.
+
+All the previous `RFmerge` versions until 0.1-6 were based on the superseded [raster](https://cran.r-project.org/package=raster) package. `RFmerge`  0.1-6 was removed from CRAN in 2023-02-25, because issues related to old spatial packages (e.g., rgdal) were not solved in time. 
+
+
+
 
 # Installation
 
@@ -160,23 +188,22 @@ plot(persiann.total, main = "PERSIANN-CDR [Jan - Aug]",
 
 ## Spatial metadata
 
-In order to use the spatial information stored in `ValparaisoPPgis`, we first need to convert it into a `SpatialPointsDataFrame`, using the latitude and longitude fields, stored in the `lat` and `lon` columns: 
+In order to easily plot the spatial information about the in situ gauging stations stored in `ValparaisoPPgis`, we first need to convert it into a `SpatVector`, using the latitude and longitude fields stored in the `lat` and `lon` columns of the `ValparaisoPPgis` data.frame object:
 
 ```{r SpatialMetadata}
-stations <- ValparaisoPPgis
-stations <- terra::vect(stations, geom=c("lon", "lat"), crs="epsg:4326")
+ValparaisoPPgis.vec <- terra::vect(ValparaisoPPgis, geom=c("lon", "lat"), crs="epsg:4326")
 ```
 
 
-Now, we can plot the DEM with the locations of the rain gauge stations that will be used in the computation of RF-MEP, and overlying the boundaries of the study area and the stations (only their first attribute):
+Now, we can plot the DEM along with the locations of the rain gauge stations that will be used in the computation of RF-MEP, and overlying the boundaries of the study area and the stations (only their first attribute):
 
 ```{r PlottingDEMwithObs, fig.width = 4, fig.height = 4, fig.align = "center"}
-plot(ValparaisoDEM5km, main="SRTM-v4", 
-     xlab="Longitude", ylab="Latitude", 
+plot(ValparaisoDEM5km, main="SRTM-v4", xlab="Longitude", ylab="Latitude", 
      col=terrain.colors(255),
      fun=function() {lines(ValparaisoSHP) ; 
-                     points(stations, pch=16, col="black") 
-                    })
+                     points(ValparaisoPPgis.vec, pch=16, col="black") 
+                    }
+    )
 ```
 
 ## Verification of covariates
@@ -189,30 +216,75 @@ terra::nlyr(CHIRPS5km)
 ( terra::nlyr(CHIRPS5km) == nrow(ValparaisoPPts) )
 ```
 
-Now, we have to verify that the precipitation products and the DEM have the **same spatial extent**:
+Now, we have to verify that the precipitation products and the DEM have the same extent, number of rows and columns, projection, resolution, and origin:
 
-```{r SpatialExtentVerification}
-terra::ext(CHIRPS5km)
-( terra::ext(CHIRPS5km) == terra::ext(PERSIANNcdr5km) )
-( terra::ext(CHIRPS5km) == terra::ext(ValparaisoDEM5km) )
+```{r SGeometryVerification}
+terra::compareGeom(CHIRPS5km, PERSIANNcdr5km, ValparaisoDEM5km)
 ```
 
-and the **same spatial resolution**:
-
-```{r SpatialResolutionVerification}
-terra::res(CHIRPS5km)
-( terra::res(CHIRPS5km) == terra::res(PERSIANNcdr5km) )
-( terra::res(CHIRPS5km) == terra::res(ValparaisoDEM5km) )
-```
 
 ### Optional: Reprojection into another CRS
 
-If you would like to test the use of Euclidean distances as covariates in `RFmerge` you need to be sure that Euclidean distances will be correctly computed from your datasets.
-
-Because `ValparaisoPPgis`, `CHIRPS5km`, and `PERSIANNcdr5km` all use geographical coordinates, we need first to project their values into a [projected coordinate reference system (CRS)](https://earthdatascience.org/courses/earth-analytics-python/spatial-data-vector-shapefiles/geographic-vs-projected-coordinate-reference-systems-python/), i.e., one defined on a flat, two-dimensional surface.
+If you would like to test the use of Euclidean distances as covariates in `RFmerge` (using the argument `ED=TRUE`) you might want to re-project your covariates and in situ stations from geographical coordinates into a projected coordinate system. However, for the computation of distances in `terra`, this package uses the `distance` function, which explicitly mentions: 
 
 
-First, we reproject the satellite products from geographic coordinates into WGS 84 / UTM zone 19S (EPSG:32719):
+> *The distance is always expressed in meter if the coordinate reference system is longitude/latitude, and in map units otherwise. Map units are typically meter, but inspect crs(x) if in doubt*.
+
+> *Results are more precise, sometimes much more precise, when using longitude/latitude rather than a planar coordinate reference system, as these distort distance*. 
+
+Therefore, in contrast to the recommendation given by the previous version of this package (the one based on the raster package), **we are not going to re-project any input dataset**.
+
+
+
+
+
+# Running `RFmerge` using geographical coordinates
+
+## Covariates
+
+To run `RFmerge` we first need to create the covariates object required by this function. For doing this, we will create a list object with the different covariates. 
+
+```{r CovariatesCreation}
+covariates<- list(chirps=CHIRPS5km, persianncdr=PERSIANNcdr5km, 
+                  dem=ValparaisoDEM5km)
+```
+
+> Please note that **the order and name of the covariates in the list is not important**.
+
+
+## Setup
+
+Now, you need to decide how much of you in situ observations are going to be used for training the random forest model and how much of them are going to be left for validation. 
+
+In this example, we are going to use 80% of the in situ gauging stations for training and the remaining 20% for validation:
+
+```{r RFmergeWithoutParallelisationGEO, eval = TRUE}
+geoNoPar.drty.out <- file.path(tempdir(), "RFmergeResults_geographical_noparallel")
+system.time(rfmep.NoPar.geo <- RFmerge(x=ValparaisoPPts, 
+                                      cov=covariates,
+                                      metadata=ValparaisoPPgis, 
+                                      id="Code", lat="lat", lon="lon", 
+                                      mask=ValparaisoSHP, 
+                                      training=0.8, 
+                                      seed=1000,
+                                      write2disk=TRUE, 
+                                      drty.out=geoNoPar.drty.out
+                                      ) 
+            )
+```
+
+In the previous example, we used the argument `seed=1000` to be able to obtain reproducible results with random forest.
+
+If you want the resulting merged files to be written into disk for further inspection, you need to set the argument `write2disk=TRUE` and define the output directory (`drty.out`) before running `RFmerge`.
+
+
+# Running `RFmerge` using a projected reference system
+
+## Re-projection
+
+To evaluate how large are the differences between the results obtained with input datasets in geographical coordinates vs  results obtained with input datasets in projected coordinates, we are going to create input datasets in projected coordinates, using WGS 84 / UTM zone 19S (EPSG:32719) as reference system:
+
+First, we re-project all the gridded covariates:
 
 ```{r ReprojectingRasters}
 utmz19s.p4s <- "epsg:32719" # WGS 84 / UTM zone 19S
@@ -222,100 +294,111 @@ PERSIANNcdr5km.utm   <- terra::project(x=PERSIANNcdr5km  , y=utmz19s.p4s)
 ValparaisoDEM5km.utm <- terra::project(x=ValparaisoDEM5km, y=utmz19s.p4s)
 ```
 
-
-Second, we reproject the rainfall observations from geographic coordinates into WGS 84 / UTM zone 19S (EPSG:32719):
+Second, we re-project the in situ gauging stations:
 
 ```{r ReprojectingMetadata}
-stations.utm <- terra::project(x=stations, y=utmz19s.p4s)
+ValparaisoPPgis.vec.utm <- terra::project(x=ValparaisoPPgis.vec, y=utmz19s.p4s)
 ```
 
 
-Third, we reproject the polygon with the boundaries used to define the study area from geographic coordinates into WGS 84 / UTM zone 19S (EPSG:32719):
+
+Third, we re-project the polygon with the boundaries used to define the study area:
 
 ```{r ReprojectingSHP}
 ValparaisoSHP.utm <- terra::project(ValparaisoSHP, y=utmz19s.p4s)
 ```
 
 
-Fourth, we create a new data.frame with the expected metadata, i.e., at least, ID, lat, lon:
+Fourth, we create a new data.frame with the expected metadata( i.e., at least, ID, lat, lon) in the re-projected coordinates:
 
-```{r FinalMEtadata}
-id        <- stations.utm[["Code"]][,1]
-
-st.coords <- terra::crds(stations.utm)
+```{r FinalMetadata}
+id        <- ValparaisoPPgis.vec.utm[["Code"]][,1]
+st.coords <- terra::crds(ValparaisoPPgis.vec.utm)
 lon       <- st.coords[, "x"]
 lat       <- st.coords[, "y"]
 
-ValparaisoPPgis.utm <- data.frame(ID=id, lon=lon, lat=lat)
+ValparaisoPPgis.utm <- data.frame(Code=id, lon=lon, lat=lat)
 ```
-
-You might want to skip (**at your own risk**) this reprojection step when the study area is small enough to neglect the impact of using geographic coordinates in the computation of Euclidean distances.
-
-# Running `RFmerge`
 
 ## Covariates
 
-Now, we can create the covariates object to be used in the `RFmerge` function. For doing this, we will create a list object with the different covariates. Please note that **the order and name of the covariates in the list is not important**.
+Now, we are going to create the covariates object to be used in the `RFmerge` function. For doing this, we will create a list object with the different covariates. 
 
-```{r CovariatesCreation}
+```{r CovariatesCreationUTM}
 covariates.utm <- list(chirps=CHIRPS5km.utm, persianncdr=PERSIANNcdr5km.utm, 
                        dem=ValparaisoDEM5km.utm)
 ```
 
+> Please note that **the order and name of the covariates in the list is not important**.
+
 
 ## Setup
 
-Finally, if you want the resulting merged files be written into disk you need to define the output directory (`drty.out`) before running `RFmerge`. Then, you can run the `RFmerge` function as follows:
+To obtain results comparable to the ones obtained in the example run with input variables in geographical coordinates, we are going to use the same 80% of the in situ gauging stations for training and the same remaining 20% for validation:
 
-Without using parallelisation (default option):
-
-```{r RFmergeWithoutParallelisation, eval = TRUE}
-drty.out <- file.path(tempdir(), "Test.nop")
-system.time(rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm,
-                 id="ID", lat="lat", lon="lon", mask=ValparaisoSHP.utm, 
-                 training=0.8, write2disk=TRUE, drty.out=drty.out) )
+```{r RFmergeWithoutParallelisationUTM, eval = TRUE}
+utmNoPar.drty.out <- file.path(tempdir(), "RFmergeResults_utm_noparallel")
+system.time(rfmep.NoPar.utm <- RFmerge(x=ValparaisoPPts, 
+                                      cov=covariates.utm,
+                                      metadata=ValparaisoPPgis.utm, 
+                                      id="Code", lat="lat", lon="lon", 
+                                      mask=ValparaisoSHP.utm, 
+                                      training=0.8, 
+                                      seed=1000,
+                                      write2disk=TRUE, 
+                                      drty.out=utmNoPar.drty.out
+                                     ) 
+            )
 ```
 
-Detecting if your OS is Windows or GNU/Linux, and setting the 'parallel' argument accordingly:
+
+# Running `RFmerge` using the `parallel` argument
+
+first of all, it is necessary to mention that one of the main advantages of moving `RFmerge` from the superseded `raster` package to its newest version `terra`, is an enormous gain of speed in the computations. 
+
+However, if for your particular application you want to take advantage of your multi-core machine or from a existing network cluster, you can do it using the `parallel` argument included in the `RFmerge` function.
+
+First, we are going to define the desired number of cores/nodes to be used in the parallel computations:
+
+```{r NcoresUserDefined, eval = TRUE}
+ncores.nmax <- 10 # maximum amount of cores the user wants to use
+```
+
+Now, we are going to detect if your OS is Windows or GNU/Linux, and setting the 'parallel' argument accordingly:
 
 ```{r OnWindows, eval = TRUE}
 onWin <- ( (R.version$os=="mingw32") | (R.version$os=="mingw64") )
 ifelse(onWin, parallel <- "parallelWin", parallel <- "parallel")
 ```
 
-Safe detection of the number of cores to be used, to avoid an invalid number of nodes when `detectCores()` returns NA or 1:
+Then, we proceed to make a safe selection of the number of cores to be used in the computations, by comparing the user-defined number (`ncores.nmax`) with the maximum number of cores/nodes available in you environment (`parallel::detectCores()`), and avoiding an invalid number of nodes when `detectCores()` returns NA or 1:
 
 ```{r NcoresDetection, eval = TRUE}
-ncores.nmax <- 12 # maximum amount of cores the user wants to use
-
-( ncores <- parallel::detectCores() )
-if (is.na(ncores)) ncores <- 2
-( par.nnodes <- max(1, min(ncores - 1, ncores.nmax) ) )
+( ncores.available <- parallel::detectCores() )
+if (is.na(ncores.available)) ncores.available <- 2
+( par.nnodes <- max(1, min(ncores.available - 1, ncores.nmax) ) )
 ```
 
-Using parallelisation in GNU/Linux machines, with a maximum number of nodes/cores to be used equal to `ncores.nmax`:
+Now we are ready to use `RFmerge` using parallelisation in a GNU/Linux or macOS machine, with a maximum number of nodes/cores to be used equal to `ncores.nmax`:
 
-```{r RFmergeWithLinuxParallelisation, eval = FALSE}
-drty.out <- file.path(tempdir(), "Test.par")
-system.time(rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm,
-                 id="ID", lat="lat", lon="lon", mask=ValparaisoSHP.utm, 
-                 training=0.8, write2disk=TRUE, drty.out=drty.out, 
-                 parallel=parallel, par.nnodes=par.nnodes)
-)
+```{r RFmergeWithLinuxParallelisation, eval = TRUE}
+geoPar.drty.out <- file.path(tempdir(), "RFmergeResults_geographical_parallel")
+system.time(rfmep.Par.geo <- RFmerge(x=ValparaisoPPts, 
+                                    cov=covariates,
+                                    metadata=ValparaisoPPgis, 
+                                    id="Code", lat="lat", lon="lon", 
+                                    mask=ValparaisoSHP, 
+                                    training=0.8, 
+                                    seed=1000,
+                                    write2disk=TRUE,  
+                                    drty.out=geoPar.drty.out, 
+                                    parallel=parallel, par.nnodes=par.nnodes
+                                   )
+            )
 ```
 
-Using parallelisation in Window$ machines, with a maximum number of nodes/cores to be used equal to `ncores.nmax`:
 
-```{r RFmergeWithWindowsParallelisation, eval = FALSE}
-par.nnodes <- min(parallel::detectCores()-1, 2)
-drty.out <- file.path(tempdir(), "Test.par")
-rfmep <- RFmerge(x=ValparaisoPPts, metadata=ValparaisoPPgis.utm, cov=covariates.utm, 
-                 id="Code", lat="lat", lon="lon", mask=ValparaisoSHP.utm, 
-                 training=0.8, write2disk=TRUE, drty.out=drty.out, 
-                 parallel=parallelWin, par.nnodes=par.nnodes)
-```
-
-## Expected outputs
+# `RFmerge` outputs
 
 If `RFmerge` run without problems, and `write2disk=TRUE`, the following output files will be stored in your user-defined `drty.out` directory: 
 
@@ -324,112 +407,348 @@ If `RFmerge` run without problems, and `write2disk=TRUE`, the following output f
   ii) the final merged product (individual *GeoTiff* files).
   
   
-The aforementioned resulting objects will be stored within `drty.out` as follows:
+The aforementioned output objects will be stored within `drty.out` as follows:
 
 
 - `Ground_based_data/Training/`: In this directory, time series and metadata used to train RF-MEP will be stored as a `zoo` file (`Training_ts.txt`), and a `text` file (`Training_metadata.txt`), respectively. 
 
 - `Ground_based_data/Evaluation/`: This directory will store time series and metadata not used in training the Random Forest model, but that are available for evaluating the performance of the results in an independent evaluation dataset. The `Evaluation_ts.txt` and `Evaluation_metadata.tx` files are stored as `zoo` and  `CSV` files, respectively)
 
-- `RF-MEP/`: This directory will store the individual *GeoTiff* files produced by the RF-MEP algorithmn, using the same spatial resolution as the selected covariates.
+- `RF-MEP/`: This directory will store the individual *GeoTiff* files produced by the RF-MEP algorithm, using the same spatial resolution as the selected covariates.
 
 
-## Evaluation
+# Evaluation of `RFmerge` using geographical coordinates
 
-After running `RFmerge` we will use the evaluation dataset of rain gauge observations to evaluate the performance of RF-MEP at observations not used in the merging procedure. For this purpose, we will create a stack with the obtained merged product and will import the time series and metadata from the evaluation set:
+## Reading `RFmerge` outputs
+
+To evaluate the outputs obtained with `RFmerge` in **geographical coordinates** we will use the evaluation dataset of rain gauge observations not used in the merging procedure. 
+
+For this purpose, we will create a SpatRaster object from the obtained merged product and also import the time series and metadata from the evaluation set of gauging stations:
 
 
-```{r Evaluation, eval= FALSE}
-ts.path       <- file.path(drty.out, "Ground_based_data/Evaluation/Evaluation_ts.txt")
-metadata.path <- file.path(drty.out, "Ground_based_data/Evaluation/Evaluation_metadata.txt")
+```{r Evaluation_geoNoPar.drty.out, eval= TRUE}
+ts.path       <- file.path(geoNoPar.drty.out, "Ground_based_data/Evaluation/Evaluation_ts.txt")
+metadata.path <- file.path(geoNoPar.drty.out, "Ground_based_data/Evaluation/Evaluation_metadata.txt")
 
 eval.ts  <- read.zoo(ts.path, header = TRUE)
 eval.gis <- read.csv(metadata.path)
 
 # promoting 'eval.gis' into a spatial object (in order to be plotted)
-( eval.gis.utm <- terra::vect(eval.gis, geom=c("lon", "lat"), crs=utmz19s.p4s) )
+( eval.gis.vec <- terra::vect(eval.gis, geom=c("lon", "lat")) )
+```
+## Basic plotting of `RFmerge` outputs for a single day
+
+First, we define the colours and categories used for the subsequent plots of the output merged dataset:
+
+```{r BreaksAndColoursDefinition, eval= TRUE}
+minmax(rfmep.NoPar.geo[[11]])                       # range of values to be plotted
+
+breaks <- c(0, 2, 4, 6, 8, 10, 12, 15, 20)         # 8 categories for the precipitation values
+colors <- RColorBrewer::brewer.pal(n=8, "YlGnBu")  # 8 colours
 ```
 
+Basic visualisation of one day of precipitation obtained with RF-MEP (in this case, 1983-01-11), and overlying the boundaries of the study area and the gauging stations used for evaluation:
 
-Visualisation of one day of precipitation using RF-MEP, and overlying the boundaries of the study area (only its first attribute)::
-
-```{r, fig.width = 4, fig.height = 4, fig.align = "center", eval= TRUE}
-plot(rfmep[[11]], main="RF-MEP precipitation for 1983-01-11", xlab="Longitude", ylab="Latitude")
-lines(ValparaisoSHP.utm, col="black")
-points(eval.gis.utm, pch = 18, col="yellow")
-
-# 2. Add labels from a specific column in the SpatVector
-#    -) labels: The name of the column in your SpatVector containing the text 
-#               you want to display.
-#    -) halo  : Set to TRUE to add a buffer around the text, making it more 
-#               readable against complex raster backgrounds.
-#   -)  pos   : Determines the position relative to the point 
-#               (1=below, 2=left, 3=above, 4=right).
-text(eval.gis.utm, labels="ID", halo=TRUE, pos=4, cex=0.4)
+```{r BasicOutputVis, fig.width=4, fig.height=4, fig.align="center", eval=TRUE}
+plot(rfmep.NoPar.geo[[11]],
+     main="RF-MEP precipitation for 1983-01-11", 
+     xlab="Longitude", ylab="Latitude", 
+     breaks=breaks, col=colors
+     )
+lines(ValparaisoSHP, col="black")
+points(eval.gis.vec, pch = 18)
 ```
+
+## Advanced plotting of `RFmerge` outputs for a single day
+
+
+Now, we are going to use a more advanced visualization of one day of precipitation obtained with RF-MEP (in this case, 1983-01-11). In order to do that, we first map the precipitation values at the evaluation gauging stations with the previously defined colour palette:
+
+```{r AdvancedOutputVisColours, fig.width=4, fig.height=4, fig.align="center", eval=TRUE}
+stations.vals   <- as.numeric(eval.ts[11,])
+stations.colors <- cut(stations.vals, breaks=breaks, 
+                       labels=colors, include.lowest=TRUE)
+stations.colors <- as.character(stations.colors) # Convert factors to colour strings
+```
+
+Now, we overly the boundaries of the study area, and colouring the gauging stations used for evaluation with the same colours used for the output merged dataset, in order to quickly asses how far or how close is the output merged dataset to the gauging stations used for evaluation only.
+
+```{r AdvancedOutputVisPlotting, fig.width=5.2, fig.height=5.2, fig.align="center", eval=TRUE}
+plot(rfmep.NoPar.geo[[11]], 
+     main="RF-MEP precipitation for 1983-01-11", 
+     xlab="Longitude", ylab="Latitude", 
+     breaks=breaks, col=colors,
+     plg = list(title = "P, [mm]")
+     )
+lines(ValparaisoSHP, col="black")
+
+# Adding labels from a specific column in the SpatVector
+# -) labels: The name of the column in your SpatVector containing the text 
+#            you want to display.
+# -) halo  : Set to TRUE to add a buffer around the text, making it more 
+#            readable against complex raster backgrounds.
+# -) pos   : Determines the position relative to the point 
+#            (1=below, 2=left, 3=above, 4=right).
+points(eval.gis.vec, pch = 23, # Diamond with fill and border
+       bg = stations.colors,      # Fill colour
+       col = "black",             # Border (outline) colour
+       cex=0.9)
+text(eval.gis.vec, labels="Code", halo=TRUE, pos=3, cex=0.4, col="black")
+text(eval.gis.vec, label=paste(stations.vals, "mm"), 
+     halo=TRUE, pos=1, cex=0.4, col="black")
+```
+
+## Plotting the total amount of precipitation
 
 The total amount of precipitation over Valparaiso for January to August 1983 according to RF-MEP, and overlying the boundaries of the study area (only its first attribute)::
 
-```{r, fig.width = 4, fig.height = 4, fig.align = "center", eval= FALSE}
-rfmep.total <- sum(rfmep, na.rm= FALSE)
+```{r TotalP, fig.width = 4, fig.height = 4, fig.align = "center", eval= TRUE}
+rfmep.total <- sum(rfmep.NoPar.geo, na.rm= FALSE)
 
-plot(rfmep.total, main = "RF-MEP [Jan - Aug]", xlab = "Longitude", ylab = "Latitude")
-lines(ValparaisoSHP.utm)
+plot(rfmep.total, main = "RF-MEP [Jan - Aug]", 
+     xlab = "Longitude", ylab = "Latitude")
+lines(ValparaisoSHP, lwd=1.5)
 ```
 
 
-First, we will compare RF-MEP (and the two precipitation products used as covariates) with the rain gauge data from the evaluation set. To extract the RF-MEP precipitation values at the gauge locations, we will use the `extract` function from the `raster` package:
+## Numeric assessment of `RFmerge' effectiveness
 
-```{r EvaluationExtraction, eval= FALSE}
-eval.gis.vec <- vect(eval.gis, geom = c("lon", "lat"), crs = utmz19s.p4s)
+We will evaluate the effectiveness of the merged product obtained with `RFmerge` in **geographical coordinates**, hereafter RF-MEP,  and the two precipitation products used as covariates, against the in situ rain gauge data from the evaluation set. 
 
-rfmep.ts     <- t(terra::extract(rfmep             , eval.gis.vec))
-chirps.ts    <- t(terra::extract(CHIRPS5km.utm     , eval.gis.vec))
-persiann.ts  <- t(terra::extract(PERSIANNcdr5km.utm, eval.gis.vec))
+To extract the gridded precipitation values at the rain gauge locations, we will use the `extract` function from the `terra` package:
+
+```{r EvaluationExtraction, eval= TRUE}
+eval.gis.vec <- vect(eval.gis, geom = c("lon", "lat"))
+
+rfmep.NoPar.geo.ts <- t(terra::extract(rfmep.NoPar.geo, eval.gis.vec))
+chirps.ts         <- t(terra::extract(CHIRPS5km     , eval.gis.vec))
+persiann.ts       <- t(terra::extract(PERSIANNcdr5km, eval.gis.vec))
 ```
 
-To evaluate the performance of RF-MEP and the products used in its computation, the Nash-Sutcliffe efficiency (NSE) will be used. The optimal value for the NSE is one. 
+The output of the `extract` function adds a first row with the ID of the points used during the extraction. This additional row must be removed before using those time series for comparison with any of the gridded precipitation datasets:
+
+```{r RemovalOfUnnecessaryRow, eval= TRUE}
+rfmep.NoPar.geo.ts <- rfmep.NoPar.geo.ts[-1, ]
+chirps.ts         <- chirps.ts[-1, ]
+persiann.ts       <- persiann.ts[-1, ]
+```
+
+To evaluate the performance of RF-MEP product obtained with `RFmerge` and the products used in its computation, considering the original geographical coordinates, we are going to use the Nash-Sutcliffe efficiency (NSE), as provided by the [hydroGOF](https://mzb.cl/hydroGOF/) R package. NSE ranges from negative infinity to one, with an optimal value of 1.
 
 
-```{r EvaluationComputation, eval= FALSE}
-
-# Defining a function to compute the Nash-Sutcliffe efficiency(NSE)
-NSE <- function(sim, obs) return( 1 - (sum((obs - sim)^2)/ (sum((obs - mean(obs))^2)) ) )
-
-sres       <- list(chirps.ts, persiann.ts, rfmep.ts)
+```{r EvaluationComputation, eval= TRUE}
+sres       <- list(chirps.ts, persiann.ts, rfmep.NoPar.geo.ts)
 nsres      <- length(sres)
 nstations  <- ncol(eval.ts)
 tmp        <- rep(NA, nstations)
-nse.table  <- data.frame(ID=eval.gis[["ID"]], CHIRPS=tmp, PERSIANN_CDR=tmp, RF_MEP=tmp)
+nse.table.NoPar.geo <- data.frame(ID=eval.gis[["Code"]], 
+                                 CHIRPS=tmp, 
+                                 PERSIANN_CDR=tmp, 
+                                 RF_MEP=tmp)
 
-# Computing the NSE between the observed rainfall measured in each one of the rain gauges 
-# of the training dataset and CHIRPSv2, PERSIANN-CDR, the merged product `rfmep`:
-
+# Computing the NSE between the observed rainfall measured in each one of the 
+# rain gauges of the training dataset and CHIRPSv2, PERSIANN-CDR, 
+# the merged product `rfmep.NoPar.geo.ts`:
 for (i in 1:nsres) {
   ldates <- time(eval.ts)
   lsim   <- zoo(sres[[i]], ldates)
-  nse.table[, (i+1)] = hydroGOF::NSE(sim= lsim, obs= eval.ts, na.rm=TRUE)
+  nse.table.NoPar.geo[, (i+1)] <- round( hydroGOF::NSE(sim= lsim, obs= eval.ts, 
+                                                     na.rm=TRUE), 3 )
 } # FOR end
+
+# Showing the final table with the performance of all products
+nse.table.NoPar.geo
 ```
 
+## Graphical assessment of `RFmerge' effectiveness
 
-Finally, a boxplot comparing the performance, in terms of *KGE'*, of the merged product in comparison to the original SREs used as covariates will be produced:
+Finally, we create a boxplot comparing the performance, in terms of *NSE*, of the merged product in comparison to the original SREs used as covariates:
 
-```{r EvaluationPlotting, fig.width=7, fig.height=7, fig.align = "center", eval = FALSE}
+```{r EvaluationPlotting, fig.width=5, fig.height=5, fig.align="center", eval=TRUE}
 
 # Boxplot with a graphical comparison
 sres.cols <- c("powderblue", "palegoldenrod", "mediumseagreen")
-boxplot(nse.table[,2:4], main = "NSE evaluation for Jan - Aug 1983",
-        xlab = "P products", ylab = "NSE'", ylim = c(0, 1), # horizontal=TRUE,
+boxplot(nse.table.NoPar.geo[,2:4], 
+        main = "Daily NSE evaluation for Jan - Aug 1983 \n using geographical coordinates",
+        xlab = "P products", ylab = "NSE'", ylim = c(-0.5, 1), # horizontal=TRUE,
         col=sres.cols)
-legend("topleft", legend=c("CHIRPS", "PERSIANN-CDR", "RF-MEP"), col=sres.cols, pch=15, cex=1.5, bty="n")
+legend("topleft", legend=c("CHIRPS", "PERSIANN-CDR", "RF-MEP"), 
+       col=sres.cols, pch=15, cex=1.5, bty="n")
 grid()
 ```
 
 
 
 
+# Evaluation of `RFmerge` using projected coordinates
+
+## Reading `RFmerge` outputs
+
+To evaluate the outputs obtained with `RFmerge` in **projected (UTM) coordinates** we will use the evaluation dataset of rain gauge observations not used in the merging procedure. 
+
+For this purpose, we will create a SpatRaster object from the obtained merged product and also import the time series and metadata from the evaluation set of gauging stations:
+
+
+```{r Evaluation_geoNoPar.drty.out_UTM, eval= TRUE}
+ts.path       <- file.path(utmNoPar.drty.out, "Ground_based_data/Evaluation/Evaluation_ts.txt")
+metadata.path <- file.path(utmNoPar.drty.out, "Ground_based_data/Evaluation/Evaluation_metadata.txt")
+
+eval.ts      <- read.zoo(ts.path, header = TRUE)
+eval.gis.utm <- read.csv(metadata.path)
+
+# promoting 'eval.gis' into a spatial object (in order to be plotted)
+( eval.gis.vec.utm <- terra::vect(eval.gis.utm, geom=c("lon", "lat"), crs=utmz19s.p4s ) )
+```
+
+## Basic plotting of `RFmerge` outputs for a single day
+
+First, we define the colours and categories used for the subsequent plots of the output merged dataset:
+
+```{r BreaksAndColoursDefinition_UTM, eval= TRUE}
+minmax(rfmep.NoPar.utm[[11]])                       # range of values to be plotted
+
+breaks <- c(0, 2, 4, 6, 8, 10, 12, 15, 20)         # 8 categories for the precipitation values
+colors <- RColorBrewer::brewer.pal(n=8, "YlGnBu")  # 8 colours
+```
+
+Basic visualisation of one day of precipitation obtained with RF-MEP (in this case, 1983-01-11), and overlying the boundaries of the study area and the gauging stations used for evaluation:
+
+```{r BasicOutputVis_UTM, fig.width=4, fig.height=4, fig.align="center", eval=TRUE}
+plot(rfmep.NoPar.utm[[11]],
+     main="RF-MEP precipitation for 1983-01-11", 
+     xlab="Longitude", ylab="Latitude", 
+     breaks=breaks, col=colors
+     )
+lines(ValparaisoSHP.utm, col="black")
+points(eval.gis.vec.utm, pch = 18)
+```
+
+
+## Advanced plotting of `RFmerge` outputs for a single day
+
+Now, we are going to use a more advanced visualization of one day of precipitation obtained with RF-MEP (in this case, 1983-01-11). In order to do that, we first map the precipitation values at the evaluation gauging stations with the previously defined colour palette:
+
+```{r AdvancedOutputVisColours_UTM, fig.width=4, fig.height=4, fig.align="center", eval=TRUE}
+stations.vals   <- as.numeric(eval.ts[11,])
+stations.colors <- cut(stations.vals, breaks=breaks, 
+                       labels=colors, include.lowest=TRUE)
+stations.colors <- as.character(stations.colors) # Convert factors to colour strings
+```
+
+Now, we overly the boundaries of the study area, and colouring the gauging stations used for evaluation with the same colours used for the output merged dataset, in order to quickly asses how far or how close is the output merged dataset to the gauging stations used for evaluation only.
+
+```{r AdvancedOutputVisPlotting_UTM, fig.width=5.2, fig.height=5.2, fig.align="center", eval=TRUE}
+plot(rfmep.NoPar.utm[[11]], 
+     main="RF-MEP precipitation for 1983-01-11", 
+     xlab="Longitude", ylab="Latitude", 
+     breaks=breaks, col=colors,
+     plg = list(title = "P, [mm]")
+     )
+lines(ValparaisoSHP.utm, col="black")
+
+# Adding labels from a specific column in the SpatVector
+# -) labels: The name of the column in your SpatVector containing the text 
+#            you want to display.
+# -) halo  : Set to TRUE to add a buffer around the text, making it more 
+#            readable against complex raster backgrounds.
+# -) pos   : Determines the position relative to the point 
+#            (1=below, 2=left, 3=above, 4=right).
+points(eval.gis.vec.utm, pch = 23, # Diamond with fill and border
+       bg = stations.colors,      # Fill colour
+       col = "black",             # Border (outline) colour
+       cex=0.9)
+text(eval.gis.vec.utm, labels="Code", halo=TRUE, pos=3, cex=0.4, col="black")
+text(eval.gis.vec.utm, label=paste(stations.vals, "mm"), 
+     halo=TRUE, pos=1, cex=0.4, col="black")
+```
+
+## Plotting the total amount of precipitation
+
+The total amount of precipitation over Valparaiso for January to August 1983 according to RF-MEP, and overlying the boundaries of the study area (only its first attribute)::
+
+```{r TotalP_UTM, fig.width = 4, fig.height = 4, fig.align = "center", eval= TRUE}
+rfmep.total.utm <- sum(rfmep.NoPar.utm, na.rm= FALSE)
+
+plot(rfmep.total.utm, main = "RF-MEP [Jan - Aug]", 
+     xlab = "Longitude", ylab = "Latitude")
+lines(ValparaisoSHP.utm, lwd=1.5)
+```
+
+
+## Numeric assessment of `RFmerge' effectiveness
+
+We will evaluate the effectiveness of the merged product obtained with `RFmerge` in **geographical coordinates**, hereafter RF-MEP,  and the two precipitation products used as covariates, against the in situ rain gauge data from the evaluation set. 
+
+To extract the gridded precipitation values at the rain gauge locations, we will use the `extract` function from the `terra` package:
+
+```{r EvaluationExtraction_UTM, eval= TRUE}
+rfmep.NoPar.utm.ts <- t(terra::extract(rfmep.NoPar.utm   , eval.gis.vec.utm))
+chirps.ts.utm      <- t(terra::extract(CHIRPS5km.utm     , eval.gis.vec.utm))
+persiann.ts.utm    <- t(terra::extract(PERSIANNcdr5km.utm, eval.gis.vec.utm))
+```
+
+The output of the `extract` function adds a first row with the ID of the points used during the extraction. This additional row must be removed before using those time series for comparison with any of the gridded precipitation datasets:
+
+```{r RemovalOfUnnecessaryRow_UTM, eval= TRUE}
+rfmep.NoPar.utm.ts <- rfmep.NoPar.utm.ts[-1, ]
+chirps.ts.utm     <- chirps.ts.utm[-1, ]
+persiann.ts.utm   <- persiann.ts.utm[-1, ]
+```
+
+To evaluate the performance of RF-MEP product obtained with `RFmerge` and the products used in its computation, considering the original geographical coordinates, we are going to use the Nash-Sutcliffe efficiency (NSE), as provided by the [hydroGOF](https://mzb.cl/hydroGOF/) R package. NSE ranges from negative infinity to one, with an optimal value of 1.
+
+
+```{r EvaluationComputation_UTM, eval= TRUE}
+sres       <- list(chirps.ts.utm, persiann.ts.utm, rfmep.NoPar.utm.ts)
+nsres      <- length(sres)
+nstations  <- ncol(eval.ts)
+tmp        <- rep(NA, nstations)
+nse.table.NoPar.utm <- data.frame(ID=eval.gis.utm[["Code"]], 
+                                 CHIRPS=tmp, 
+                                 PERSIANN_CDR=tmp, 
+                                 RF_MEP=tmp)
+
+# Computing the NSE between the observed rainfall measured in each one of the 
+# rain gauges of the training dataset and CHIRPSv2, PERSIANN-CDR, the merged 
+# product `rfmep.NoPar.utm.ts`:
+for (i in 1:nsres) {
+  ldates <- time(eval.ts)
+  lsim   <- zoo(sres[[i]], ldates)
+  nse.table.NoPar.utm[, (i+1)] <- round( hydroGOF::NSE(sim= lsim, obs= eval.ts, 
+                                                     na.rm=TRUE), 3 )
+} # FOR end
+
+# Showing the final table with the performance of all products
+nse.table.NoPar.utm
+```
+
+## Graphical assessment of `RFmerge' effectiveness
+
+Finally, we create a boxplot comparing the performance, in terms of *NSE*, of the merged product in comparison to the original SREs used as covariates:
+
+```{r EvaluationPlotting_UTM, fig.width=5, fig.height=5, fig.align="center", eval=TRUE}
+
+# Boxplot with a graphical comparison
+sres.cols <- c("powderblue", "palegoldenrod", "mediumseagreen")
+boxplot(nse.table.NoPar.utm[,2:4], 
+        main = "Daily NSE evaluation for Jan - Aug 1983 \n using geographical coordinates",
+        xlab = "P products", ylab = "NSE'", ylim = c(-0.5, 1), # horizontal=TRUE,
+        col=sres.cols)
+legend("topleft", legend=c("CHIRPS", "PERSIANN-CDR", "RF-MEP"), 
+       col=sres.cols, pch=15, cex=1.5, bty="n")
+grid()
+```
+
+
+
+
+
 # Software details
+
+```{r hydroGOF_RColorBrewer, eval = TRUE, include = FALSE}
+library(hydroGOF)
+library(RColorBrewer)
+```
 
 This tutorial was built under: 
 
@@ -437,6 +756,9 @@ This tutorial was built under:
 sessionInfo()$platform
 sessionInfo()$R.version$version.string 
 paste("RFmerge", sessionInfo()$otherPkgs$RFmerge$Version)
+paste("terra", sessionInfo()$otherPkgs$terra$Version)
+paste("hydroGOF", sessionInfo()$otherPkgs$hydroGOF$Version)
+paste("RColorBrewer", sessionInfo()$otherPkgs$RColorBrewer$Version)
 ```
 
 \newpage

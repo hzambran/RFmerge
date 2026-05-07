@@ -11,8 +11,8 @@
 # This function creates an improved satellite product by combining one or more #
 # satellite datsets with ground-based observations                             #
 ################################################################################
-# Authors : Oscar M. Baez-Villanueva                                           #
-#           Mauricio Zambrano-Bigiarini                                        #
+# Authors : Mauricio Zambrano-Bigiarini                                        #
+#           Oscar M. Baez-Villanueva                                           #
 #           Juan Diego Giraldo-Osorio                                          #
 ################################################################################
 # Started: Jan 2019 (the individual function)                                  #
@@ -21,7 +21,7 @@
 #          14-Dec-2019 ; 17-Dec-2019 ; 20-Dec-2019 ; 23-Dec-2019               #
 #          30-Jan-2020 ; 27-Apr-2020 ; 12-May-2020                             #
 #          10-Jun-2023 ; 20-Jul-2023 ; 23-Jul-2023 ; 26-Jul-2023               #
-#          01-May-2026                                                         #
+#          01-May-2026 ; 05-May-2026 ; 06-May-2026                             #
 ################################################################################
 
 # 'x'        : zoo object with ground-based values that will be used as the dependent variable to train the RF model.
@@ -73,7 +73,8 @@ RFmerge <- function(x, ...) UseMethod("RFmerge")
 
 
 RFmerge.default <- function(x, metadata, cov, mask, training,
-                            id="id", lat = "lat", lon = "lon", ED = TRUE,
+                            id="id", lat = "lat", lon = "lon", 
+                            ED = TRUE, rasterizedED=FALSE,
                             seed = NULL, ntree = 2000, na.action = stats::na.omit,
                             parallel=c("none", "parallel", "parallelWin"),
 	                          par.nnodes=parallel::detectCores()-1,
@@ -85,7 +86,8 @@ RFmerge.default <- function(x, metadata, cov, mask, training,
      if ( !zoo::is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo' !!")
 
      RFmerge.zoo(x=x, metadata=metadata, cov=cov, mask=mask,
-                 training=training, id=id, lon=lon, lat=lat, ED=ED,
+                 training=training, id=id, lat=lat, lon=lon, 
+                 ED=ED, rasterizedED=rasterizedED,
                  seed=seed, ntree=ntree, na.action=na.action,
                  parallel=parallel, par.nnodes=par.nnodes, par.pkgs=par.pkgs,
                  write2disk=write2disk, drty.out=drty.out, use.pb=use.pb,
@@ -96,7 +98,8 @@ RFmerge.default <- function(x, metadata, cov, mask, training,
 
 
 RFmerge.zoo <- function(x, metadata, cov, mask, training,
-                        id="id", lat = "lat", lon = "lon", ED = TRUE,
+                        id="id", lat = "lat", lon = "lon", 
+                        ED = TRUE, rasterizedED=FALSE,
                         seed = NULL, ntree = 2000, na.action = stats::na.omit,
                         parallel=c("none", "parallel", "parallelWin"),
 	                      par.nnodes=parallel::detectCores()-1,
@@ -128,7 +131,7 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
     } else mask.crs <- terra::crs(mask)
   } # IF end
 
-  # Cheking if the user specified the seed
+  # Checking if the user specified the seed
   if ( !is.null(seed) ) set.seed(seed)
 
   # Cheking if the value of the 'training' object is within the limits
@@ -216,22 +219,16 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
   npoints <- length(points)
   terra::crs(points) <- terra::crs(lsample)
 
-  # if (ED) {
-  #   buff.dist <- as(lsample, "SpatialPixelsDataFrame")
-  #   buff.dist <- .buffer_dist(points, buff.dist, as.factor(1:nrow(data.frame(points))))
-  #   buff.dist <- as(buff.dist, "SpatRast")
-  # } # IF end
-
   # Computation of Eucliden distances, if required by the user
   buff.dist <- NULL
 
   if (ED) {
     if (verbose) message("[ Computing the Euclidean distances to each observation of the training set ...]")
 
-    terra::rast( replicate( max(cov.layers), cov[[index]] ) )
+    #terra::rast( replicate( max(cov.layers), cov[[index]] ) )
     buff.dist <- vector("list", npoints)
     for(i in 1:npoints)
-      buff.dist[[i]] <- terra::distance(lsample, points[i], rasterize=FALSE)
+      buff.dist[[i]] <- terra::distance(lsample, points[i], rasterize=rasterizedED)
 
     # list -> SpatRaster
     buff.dist         <- terra::rast(buff.dist)
@@ -323,29 +320,20 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
   if (use.pb) pbapply::pboptions(char = "=")
 
   run_lrf_serial <- function(day) {
-    do.call(
-      .lrf,
-      c(
-        list(
-          day = day,
-          ldates = ldates,
-          metadata = metadata,
-          id = id,
-          points = points,
-          cov = cov,
-          mask = mask,
-          merged.drty = merged.drty,
-          na.action = na.action,
-          ntree = ntree,
-          ED = ED,
-          train.ts = train.ts,
-          train.metadata = train.metadata,
-          buff.dist = buff.dist,
-          lsample = lsample,
-          write2disk = write2disk
-        ),
-        dots
-      )
+    do.call( .lrf,
+            c(
+              list(
+                day = day, ldates = ldates,
+                metadata = metadata, id = id,
+                points = points, cov = cov, mask = mask,
+                merged.drty = merged.drty, na.action = na.action,
+                ntree = ntree, ED = ED, train.ts = train.ts, 
+                train.metadata = train.metadata,
+                buff.dist = buff.dist, lsample = lsample,
+                write2disk = write2disk
+              ),
+              dots
+            )
     ) # do.call END
   } # 'run_lrf_serial' END
 
@@ -498,30 +486,21 @@ RFmerge.zoo <- function(x, metadata, cov, mask, training,
     buff.dist <- if (is.null(buff.dist)) NULL else terra::unwrap(buff.dist)
     lsample   <- terra::unwrap(lsample)
 
-    result <- do.call(
-      .lrf,
-      c(
-        list(
-          day = day,
-          ldates = ldates,
-          metadata = metadata,
-          id = id,
-          points = points,
-          cov = cov,
-          mask = mask,
-          merged.drty = merged.drty,
-          na.action = na.action,
-          ntree = ntree,
-          ED = ED,
-          train.ts = train.ts,
-          train.metadata = train.metadata,
-          buff.dist = buff.dist,
-          lsample = lsample,
-          write2disk = write2disk
-        ),
-        dots
-      )
-    ) # do.call END
+    result <- do.call(.lrf,
+                      c(
+                        list(
+                          day = day, ldates = ldates,
+                          metadata = metadata, id = id,
+                          points = points, cov = cov, mask = mask,
+                          merged.drty = merged.drty, na.action = na.action,
+                          ntree = ntree, ED = ED, train.ts = train.ts,
+                          train.metadata = train.metadata, 
+                          buff.dist = buff.dist, lsample = lsample,
+                          write2disk = write2disk
+                        ),
+                      dots
+                    )
+                  ) # do.call END
 
     terra::wrap(result)
 

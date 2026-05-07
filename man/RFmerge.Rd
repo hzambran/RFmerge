@@ -1,7 +1,7 @@
 %%File RFmerge.Rd
 %% Part of the RFmerge R package, https://github.com/hzambran/RFmerge ; 
 %%                                https://cran.r-project.org/package=RFmerge
-%% Copyright 2019-2020 Mauricio Zambrano-Bigiarini, Oscar M. Baez-Villanueva
+%% Copyright 2019-2026 Mauricio Zambrano-Bigiarini, Oscar M. Baez-Villanueva
 %% Distributed under GPL 3 or later
 
 \name{RFmerge}
@@ -23,7 +23,8 @@ Merging of satellite datasets with ground observations using Random Forests (RF)
 RFmerge(x, ...)
 
 \method{RFmerge}{default}(x, metadata, cov, mask, training, 
-        id="id", lat = "lat", lon = "lon", ED = TRUE, 
+        id="id", lat = "lat", lon = "lon", 
+        ED = TRUE, rasterizedED=FALSE, 
         seed = NULL, ntree = 2000, na.action = stats::na.omit,
         parallel=c("none", "parallel", "parallelWin"),
         par.nnodes=parallel::detectCores()-1, 
@@ -31,7 +32,8 @@ RFmerge(x, ...)
         drty.out, use.pb=TRUE, verbose=TRUE,...)
 
 \method{RFmerge}{zoo}(x, metadata, cov, mask, training, 
-        id="id", lat = "lat", lon = "lon", ED = TRUE, 
+        id="id", lat = "lat", lon = "lon", 
+        ED = TRUE, rasterizedED=FALSE, 
         seed = NULL, ntree = 2000, na.action = stats::na.omit,
         parallel=c("none", "parallel", "parallelWin"),
         par.nnodes=parallel::detectCores()-1, 
@@ -75,6 +77,9 @@ Character, with the name of the column in \code{metadata} where the longitude of
 }
    \item{ED}{
 logical, should the Euclidean distances be computed an used as covariates in the random forest model?. The default value is \code{TRUE}.
+}
+   \item{rasterizedED}{
+logical, should the Euclidean distances between stations and grid cells be computed to the actual point coordinate (\code{rasterizedED=FALSE}) or to the rasterized station cell center (\code{rasterizedED=TRUE}). When \code{rasterizedED=FALSE}, the the self-distance between the station and its own grid cell is usually not zero. By default, \code{rasterizedED=FALSE}.
 }
    \item{seed}{
 Numeric, indicating  a single value, interpreted as an integer, or null.
@@ -124,20 +129,12 @@ further arguments to be passed to the low level function \kbd{randomForest.defau
 It returns a \code{RasterStack} object with as many layers as time steps are present in \code{x}. Each one of the layers in the output object has the same spatial resolution and spatial extent as the \code{cov} argument.
 }
 \references{
-Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2020).
-RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements.
-\emph{Remote Sensing of Environment}, 239, 111610.
-\doi{10.1016/j.rse.2019.111606}.
-\url{https://doi.org/10.1016/j.rse.2019.111606}. \cr
+Baez-Villanueva, O. M.; Zambrano-Bigiarini, M.; Beck, H.; McNamara, I.; Ribbe, L.; Nauditt, A.; Birkel, C.; Verbist, K.; Giraldo-Osorio, J.D.; Thinh, N.X. (2020). RF-MEP: a novel Random Forest method for merging gridded precipitation products and ground-based measurements. \emph{Remote Sensing of Environment}, 239, 111610. \doi{10.1016/j.rse.2019.111606}. \cr
 
-Hengl, T.; Nussbaum, M.; Wright, M. N.; Heuvelink, G. B.; Gräler, B. (2018).
-Random forest as a generic framework for predictive modeling of spatial and spatio-temporal variables.
-\emph{PeerJ}, 6, e5518.
-\doi{10.7717/peerj.5518}.
-\url{https://doi.org/10.7717/peerj.5518}.
+Hengl, T.; Nussbaum, M.; Wright, M. N.; Heuvelink, G. B.; Gräler, B. (2018). Random forest as a generic framework for predictive modeling of spatial and spatio-temporal variables. \emph{PeerJ}, 6, e5518. \doi{10.7717/peerj.5518}.
 }
 \author{
-Oscar M. Baez-Villanueva, \email{obaezvil@th-koeln.de} \cr
+Oscar M. Baez-Villanueva, \email{oscar.baezvillanueva@ugent.be} \cr
 Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}   \cr
 Juan D. Giraldo-Osorio, \email{j.giraldoo@javeriana.edu.co}
 }
