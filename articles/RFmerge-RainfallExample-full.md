@@ -369,7 +369,7 @@ system.time(rfmep.NoPar.geo <- RFmerge(x=ValparaisoPPts,
     ## [ Computing the Euclidean distances to each observation of the training set ...]
 
     ##    user  system elapsed 
-    ##  22.712   0.338  23.053
+    ##  22.139   0.299  22.442
 
 The argument `seed=1000` is used to make the random forest training and
 the station split reproducible.
@@ -468,7 +468,7 @@ system.time(rfmep.NoPar.utm <- RFmerge(x=ValparaisoPPts,
     ## [ Computing the Euclidean distances to each observation of the training set ...]
 
     ##    user  system elapsed 
-    ##  20.659   0.132  20.796
+    ##  19.824   0.131  19.957
 
 ## Running `RFmerge` using the `parallel` argument
 
@@ -550,7 +550,7 @@ system.time(rfmep.Par.geo <- RFmerge(x=ValparaisoPPts,
     ## [ Parallelisation finished ! ]
 
     ##    user  system elapsed 
-    ##  44.153   1.458  19.825
+    ##  40.785   1.385  18.453
 
 ## `RFmerge` outputs
 
@@ -1056,7 +1056,7 @@ This tutorial was built under:
 
     ## [1] "R version 4.6.0 (2026-04-24)"
 
-    ## [1] "RFmerge 0.3-3"
+    ## [1] "RFmerge 0.3-4"
 
     ## [1] "terra 1.9-25"
 

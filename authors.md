@@ -35,14 +35,14 @@ Sensing of Environment, 239, 111610. doi10.1016/j.rse.2019.111606.
 
 Zambrano-Bigiarini, M.; Baez-Villanueva O.M.; Giraldo-Osorio, J. ().
 RFmerge: Merging of Satellite Datasets with Ground Observations using
-Random Forests. R package version 0.3-3. URL
+Random Forests. R package version 0.3-4. URL
 https://cran.r-project.org/package=RFmerge.
 doi:10.32614/CRAN.package.RFmerge.
 
     @Manual{Zambrano-Bigiarini+al2026-RFmerge_pkg,
       title = {RFmerge: Merging of Satellite Datasets with Ground Observations using Random Forests},
       author = {{Mauricio Zambrano-Bigiarini} and {Oscar M. Baez-Villanueva} and {Juan Giraldo-Osorio}},
-      note = {R package version 0.3-3 . doi:10.32614/CRAN.package.RFmerge},
+      note = {R package version 0.3-4 . doi:10.32614/CRAN.package.RFmerge},
       url = {https://CRAN.R-project.org/package=RFmerge},
       doi = {10.32614/CRAN.package.RFmerge},
     }
