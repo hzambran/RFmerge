@@ -7,29 +7,7 @@ r:
  - release
  - devel
 
-branches:
-  except:
-    - example-data
-    - gh-pages
-
-before_install:
-    - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable --yes
-
-apt_packages: 
-    - gdal-bin
-    - libgdal-dev
-    - libxml2-dev
-    - libproj-dev
-    - libudunits2-0 
-    - libudunits2-dev
-
-
 notifications:
   email:
     on_success: change
     on_failure: change
-
-script:
-  - R CMD build . --compact-vignettes=gs+qpdf
-  - travis_wait 30 R CMD check *tar.gz --as-cran
-
