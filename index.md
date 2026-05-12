@@ -1,9 +1,10 @@
 # RFmerge
 
-RFmerge is an R package for precipitation merging, environmental data
-fusion, bias correction of gridded datasets, and Random Forest-based
-spatio-temporal prediction using rain gauges, satellite products,
-reanalysis data, topography, and Euclidean-distance covariates.
+RFmerge is an R package designed to merge gridded datasets with in situ
+observations using Random Forest as the core spatial prediction
+algorithm. The method incorporates spatial covariates such as
+topographic attributes and Euclidean distances, among others, to improve
+the accuracy and spatial consistency of the merged estimates.
 
 [![DOI](https://img.shields.io/badge/DOI-10.32614%2FCRAN.package.RFmerge-blue)](https://doi.org/CRAN.package.RFmerge)
 
@@ -26,7 +27,7 @@ status](https://www.r-pkg.org/badges/version/RFmerge)](https://CRAN.R-project.or
 ## Description
 
 [RFmerge](https://cran.r-project.org/package=RFmerge) is an R package
-for merging gridded environmental products with ground-based
+for merging gridded environmental datasets with ground-based
 observations to generate spatially consistent, analysis-ready datasets.
 It implements the Random Forest-based MErging Procedure (RF-MEP), a
 machine-learning framework introduced by Báez-Villanueva et al. (2020)
@@ -166,6 +167,19 @@ Runing `RFmerge` with parallelisation in GNU/Linux machines:
                      id="ID", lat="lat", lon="lon", mask=ValparaisoSHP.utm,
                      training=0.8, write2disk=TRUE, drty.out=drty.out)
 
+## Vignette
+
+[Here](https://doi.org/10.5281/zenodo.20061104) you can find an
+introductory vignette showing the use of `RFmege` to create an improved
+precipitation dataset by combining the satellite-based CHIRPSv2 and
+PERSIANN-CDR precipitation products, elevations from a DEM and rainfall
+observations recorded in rain gauges.
+
+> Zambrano-Bigiarini, M., Baez-Villanueva, O. M., Giraldo-Osorio, J. D.,
+> & McNamara, I. (2026). *Tutorial for merging satellite-based
+> precipitation datasets with ground observations using RFmerge
+> (\>=0.3-0)*. Zenodo. <https://doi.org/10.5281/zenodo.20061104>.
+
 ## Reporting bugs, requesting new features
 
 If you find an error in some function, or want to report a typo in the
@@ -214,14 +228,6 @@ BibTeX entries for LaTeX users are:
 > and Giraldo-Osorio, J.}, year = “2026”, note = {R package version
 > 0.3-0. <doi:10.32614/CRAN.package.RFmerge>}, url =
 > “<https://CRAN.R-project.org/package=RFmerge>” }
-
-## Vignette
-
-[Here](https://github.com/hzambran/RFmerge/blob/master/vignettes/RFmerge-RainfallExample-full.pdf)
-you can find an introductory vignette showing the use of `RFmege` to
-create an improved precipitation dataset by combining the
-satellite-based CHIRPSv2 and PERSIANN-CDR precipitation products,
-elevations from a DEM and rainfall observations recorded in rain gauges.
 
 ## Related Material
 

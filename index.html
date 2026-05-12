@@ -65,14 +65,14 @@
 </h1>
 </div>
 <!-- README badge block -->
-<p>RFmerge is an R package for precipitation merging, environmental data fusion, bias correction of gridded datasets, and Random Forest-based spatio-temporal prediction using rain gauges, satellite products, reanalysis data, topography, and Euclidean-distance covariates.</p>
+<p>RFmerge is an R package designed to merge gridded datasets with in situ observations using Random Forest as the core spatial prediction algorithm. The method incorporates spatial covariates such as topographic attributes and Euclidean distances, among others, to improve the accuracy and spatial consistency of the merged estimates.</p>
 <p><a href="https://doi.org/CRAN.package.RFmerge" class="external-link"><img src="https://img.shields.io/badge/DOI-10.32614%2FCRAN.package.RFmerge-blue" alt="DOI"></a></p>
 <p><a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.html" class="external-link"><img src="https://img.shields.io/badge/License-GPL%20v2%2B-blue.svg" alt="License: GPL (&gt;= 2)"></a> <a href="https://lifecycle.r-lib.org/articles/stages.html" class="external-link"><img src="https://img.shields.io/badge/lifecycle-stable-brightgreen.svg" alt="Lifecycle: stable"></a> <a href="https://CRAN.R-project.org/package=RFmerge" class="external-link"><img src="https://tinyverse.netlify.app/badge/RFmerge" alt="Dependencies"></a> <a href="https://hzambran.github.io/RFmerge/"><img src="https://img.shields.io/badge/docs-pkgdown-blue.svg" alt="Documentation"></a></p>
 <p><a href="https://github.com/hzambran/RFmerge" class="external-link"><img src="https://img.shields.io/github/r-package/v/hzambran/RFmerge/master" alt="GitHub package version (development)"></a> <a href="https://CRAN.R-project.org/package=RFmerge" class="external-link"><img src="https://www.r-pkg.org/badges/version/RFmerge" alt="CRAN status"></a> <a href="https://github.com/hzambran/RFmerge/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/hzambran/RFmerge/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="https://cran.r-project.org/package=RFmerge" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/last-month/RFmerge" alt="CRAN downloads (monthly)"></a> <a href="https://cran.r-project.org/package=RFmerge" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/RFmerge" alt="Downloads"></a></p>
 <div class="section level2">
 <h2 id="description">Description<a class="anchor" aria-label="anchor" href="#description"></a>
 </h2>
-<p><a href="https://cran.r-project.org/package=RFmerge" class="external-link">RFmerge</a> is an R package for merging gridded environmental products with ground-based observations to generate spatially consistent, analysis-ready datasets. It implements the Random Forest-based MErging Procedure (RF-MEP), a machine-learning framework introduced by Báez-Villanueva et al. (2020) to improve the spatio-temporal representation of precipitation by combining rain-gauge measurements, multiple gridded products, and topography-related predictors within a unified Random Forest model.</p>
+<p><a href="https://cran.r-project.org/package=RFmerge" class="external-link">RFmerge</a> is an R package for merging gridded environmental datasets with ground-based observations to generate spatially consistent, analysis-ready datasets. It implements the Random Forest-based MErging Procedure (RF-MEP), a machine-learning framework introduced by Báez-Villanueva et al. (2020) to improve the spatio-temporal representation of precipitation by combining rain-gauge measurements, multiple gridded products, and topography-related predictors within a unified Random Forest model.</p>
 <p>The methodological motivation is straightforward: no single source fully characterises environmental variability. Ground stations provide high-quality point measurements but sparse spatial coverage, whereas satellite, reanalysis, and other gridded products provide spatial continuity but often exhibit systematic bias, missed events, and scale-dependent errors. <a href="https://cran.r-project.org/package=RFmerge" class="external-link">RFmerge</a> exploits the complementary information contained in these sources to produce merged fields that better represent spatial patterns, temporal dynamics, and event occurrence, with particular value in complex terrain and data-scarce regions.</p>
 <p>In RF-MEP, a separate Random Forest model is fitted at each time step using station observations as the response variable and gridded covariates as predictors. These covariates may include satellite or reanalysis products, digital elevation models, and Euclidean-distance layers that account for proximity to observation sites. This design allows <a href="https://cran.r-project.org/package=RFmerge" class="external-link">RFmerge</a> to capture non-linear relations between precipitation and environmental controls while preserving flexibility across daily, monthly, seasonal, or annual applications.</p>
 <p>The approach was originally developed and evaluated for precipitation merging, where <a href="https://cran.r-project.org/package=RFmerge" class="external-link">RFmerge</a> outperformed the individual input products, alternative merging methods, and, in most cases, the benchmark merged dataset MSWEPv2.2 across multiple temporal scales. The same framework can also be adapted to other environmental variables when quality-controlled ground observations and suitable gridded covariates are available.</p>
@@ -97,7 +97,7 @@
 </h3>
 <pre><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://zoo.R-Forge.R-project.org/" class="external-link">zoo</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://hzambran.github.io/RFmerge/">RFmerge</a></span><span class="op">)</span></span></code></pre>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://mzb.cl/RFmerge/" class="external-link">RFmerge</a></span><span class="op">)</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="loading-times-series-of-ground-observations">Loading times series of ground observations:<a class="anchor" aria-label="anchor" href="#loading-times-series-of-ground-observations"></a>
@@ -166,6 +166,14 @@
 </div>
 </div>
 <div class="section level2">
+<h2 id="vignette">Vignette<a class="anchor" aria-label="anchor" href="#vignette"></a>
+</h2>
+<p><a href="https://doi.org/10.5281/zenodo.20061104" class="external-link">Here</a> you can find an introductory vignette showing the use of <code>RFmege</code> to create an improved precipitation dataset by combining the satellite-based CHIRPSv2 and PERSIANN-CDR precipitation products, elevations from a DEM and rainfall observations recorded in rain gauges.</p>
+<blockquote>
+<p>Zambrano-Bigiarini, M., Baez-Villanueva, O. M., Giraldo-Osorio, J. D., &amp; McNamara, I. (2026). <em>Tutorial for merging satellite-based precipitation datasets with ground observations using RFmerge (&gt;=0.3-0)</em>. Zenodo. <a href="https://doi.org/10.5281/zenodo.20061104" class="external-link uri">https://doi.org/10.5281/zenodo.20061104</a>.</p>
+</blockquote>
+</div>
+<div class="section level2">
 <h2 id="reporting-bugs-requesting-new-features">Reporting bugs, requesting new features<a class="anchor" aria-label="anchor" href="#reporting-bugs-requesting-new-features"></a>
 </h2>
 <p>If you find an error in some function, or want to report a typo in the documentation, or to request a new feature (and wish it be implemented :) you can do it <a href="https://github.com/hzambran/RFmerge/issues" class="external-link">here</a></p>
@@ -197,11 +205,6 @@
 <blockquote>
 <p>@Manual{Zambrano-Bigiarini+al2020-RFmerge_pkg, title = {RFmerge: Merging of Satellite Datasets with Ground Observations using Random Forests}, author = {Zambrano-Bigiarini, M. and Baez-Villanueva, O.M. and Giraldo-Osorio, J.}, year = “2026”, note = {R package version 0.3-0. <a href="doi:10.32614/CRAN.package.RFmerge" class="uri">doi:10.32614/CRAN.package.RFmerge</a>}, url = “<a href="https://CRAN.R-project.org/package=RFmerge" class="external-link uri">https://CRAN.R-project.org/package=RFmerge</a>” }</p>
 </blockquote>
-</div>
-<div class="section level2">
-<h2 id="vignette">Vignette<a class="anchor" aria-label="anchor" href="#vignette"></a>
-</h2>
-<p><a href="https://github.com/hzambran/RFmerge/blob/master/vignettes/RFmerge-RainfallExample-full.pdf" class="external-link">Here</a> you can find an introductory vignette showing the use of <code>RFmege</code> to create an improved precipitation dataset by combining the satellite-based CHIRPSv2 and PERSIANN-CDR precipitation products, elevations from a DEM and rainfall observations recorded in rain gauges.</p>
 </div>
 <div class="section level2">
 <h2 id="related-material">Related Material<a class="anchor" aria-label="anchor" href="#related-material"></a>

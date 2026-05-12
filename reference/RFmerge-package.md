@@ -57,7 +57,7 @@ spatial and spatio-temporal variables. PeerJ, 6, e5518.
 
 ``` r
 library(terra)
-#> terra 1.9.25
+#> terra 1.9.27
 
 data(ValparaisoPPts)    
 data(ValparaisoPPgis) 
